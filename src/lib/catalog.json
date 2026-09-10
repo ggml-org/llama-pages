@@ -572,5 +572,39 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "DeepSeek V4",
+		"brand": "DeepSeek",
+		"description": "DeepSeek's sparse mixture-of-experts line for agentic coding and reasoning. Flash is the smaller of the two, at 304B total parameters and 1M context.",
+		"details": "DeepSeek V4 is a sparse mixture-of-experts family aimed at code agents, full-stack development, and long reasoning chains. Flash is the member that ships as a GGUF: 304B total parameters with only a few experts active per token, so it runs far faster than its size suggests -- though every parameter still has to be in memory.\n\nReasoning effort is selectable (low, high, max), trading latency for deliberation, and the model takes 1M tokens of context. Even at Q2 it needs a very high-memory Mac.",
+		"released": "2026-07",
+		"license": "MIT",
+		"sizes": [
+			{
+				"name": "DeepSeek V4 Flash",
+				"params": "304B",
+				"builds": [
+					{
+						"quant": "MXFP4",
+						"size": "155 GB",
+						"sizeBytes": 154991539328,
+						"repo": "ggml-org/DeepSeek-V4-Flash-0731-GGUF"
+					},
+					{
+						"quant": "Q2_K",
+						"size": "117 GB",
+						"sizeBytes": 117349438592,
+						"repo": "ggml-org/DeepSeek-V4-Flash-0731-GGUF"
+					},
+					{
+						"quant": "Q2_K_S",
+						"size": "98.6 GB",
+						"sizeBytes": 98592511104,
+						"repo": "ggml-org/DeepSeek-V4-Flash-0731-GGUF"
+					}
+				]
+			}
+		]
 	}
 ]
