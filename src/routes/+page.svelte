@@ -60,17 +60,9 @@
 	import { families, minMemGB, slugify } from '$lib/catalog';
 	import { CopyButton, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
-	import {
-		MACOS_DOWNLOAD_URL,
-		MACOS_REPO_URL,
-		SITE_DESCRIPTION,
-		SITE_TITLE,
-		WINDOWS_REPO_URL
-	} from '$lib/constants';
+	import { MACOS_REPO_URL, SITE_DESCRIPTION, SITE_TITLE, WINDOWS_REPO_URL } from '$lib/constants';
 	import Prism from '$lib/prism';
 	import type { Snippet } from 'svelte';
-
-	let { data } = $props();
 
 	// -- Hero GitHub button ---------------------------------------------------------
 	//
@@ -274,18 +266,23 @@
 	<!-- The download buttons, one per app, each shown on its own OS. Phones
 	     and unrecognized systems get both, so visitors learn what there is
 	     for their computer. Linux has no app yet and gets the CLI instead
-	     (see the hero). The Windows link is resolved at build time (see
-	     +page.server.ts). The Windows button names Windows 11 because the
+	     (see the hero). Each button opens its OS's download page, which
+	     starts the download and shows the setup steps (see
+	     routes/download). The Windows button names Windows 11 because the
 	     app doesn't install on Windows 10: on the button, the requirement
 	     can't be skimmed past, and it goes wherever the button goes (the
 	     closing call to action, and the "other" visitors who get both). -->
 	{#snippet downloadButtons()}
-		<Button data-os-only="mac other" href={MACOS_DOWNLOAD_URL} size="lg">
+		<Button data-os-only="mac other" href={resolve('/download/[os]', { os: 'mac' })} size="lg">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<span class="mb-0.5">{@html appleIcon}</span>
 			Download for Mac
 		</Button>
-		<Button data-os-only="windows other" href={data.windowsDownloadUrl} size="lg">
+		<Button
+			data-os-only="windows other"
+			href={resolve('/download/[os]', { os: 'windows' })}
+			size="lg"
+		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html windowsIcon}
 			Download for Windows 11

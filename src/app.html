@@ -52,12 +52,15 @@
 				function (i) {
 					plausible.o = i || {};
 				};
-			// No options needed. The .dmg is hosted on github.com, and
-			// Plausible's click handler checks outbound links before file
-			// extensions and returns early -- so cross-domain downloads always
-			// land in the "Outbound Link: Click" goal, never "File Download".
-			// Find them there by breaking down on the url property. Outbound
-			// link tracking is enabled in the site settings, not here.
+			// No options needed. The homepage's download buttons open
+			// /download/mac and /download/windows, so their downloads are
+			// counted as those pages' pageviews. Direct links to the files
+			// (the download page's "Download it directly", the model catalog)
+			// go to github.com, and Plausible's click handler checks outbound
+			// links before file extensions and returns early -- so they land
+			// in the "Outbound Link: Click" goal, never "File Download". Find
+			// them there by breaking down on the url property. Outbound link
+			// tracking is enabled in the site settings, not here.
 			plausible.init();
 		</script>
 		%sveltekit.head%

@@ -1,3 +1,4 @@
+export { default as NewsletterSignup } from './content/NewsletterSignup.svelte';
 export { default as DocsCodeCopyButton } from './docs/DocsCodeCopyButton.svelte';
 export { default as DocsCopyPage } from './docs/DocsCopyPage.svelte';
 export { default as DocsFooterNav } from './docs/DocsFooterNav.svelte';
