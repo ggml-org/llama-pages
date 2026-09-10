@@ -1,5 +1,6 @@
 // Per-brand logos, mirroring LlamaBarn's ModelLogos asset set.
 // SVGs are inlined (?raw) so they inherit text color via `currentColor`.
+import deepseek from './deepseek.svg?raw';
 import gemma from './gemma.svg?raw';
 // GLM models are made by Z.ai, so we use the Z brand logo for that brand.
 import glm from './glm.svg?raw';
@@ -12,6 +13,7 @@ import qwen from './qwen.svg?raw';
 
 // Keyed by the `brand` label used in catalog.json.
 const byBrand: Record<string, string> = {
+	DeepSeek: deepseek,
 	Gemma: gemma,
 	GLM: glm,
 	Laguna: poolside,
