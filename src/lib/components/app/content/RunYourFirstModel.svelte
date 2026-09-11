@@ -4,10 +4,24 @@
 	import { families } from '$lib/catalog';
 	import { ModelsCatalogFamilyCard } from '$lib/components/app';
 
-	// A teaser of the catalog on the homepage: the featured families, newest
-	// first (`families` is already in that order), as a grid of tiles. The
-	// full, browsable catalog lives at /models.
-	const featured = families.filter((f) => f.featured);
+	// A teaser of the catalog on the homepage: a handpicked set of families,
+	// newest first (`families` is already in that order), as a grid of tiles.
+	// The full, browsable catalog lives at /models.
+	//
+	// Picked here rather than from the catalog's own `featured` flag: that flag
+	// is part of the published API, and what we choose to put on the homepage
+	// shouldn't change what the apps highlight. Six names, because the grid is
+	// three columns at desktop width and six fills two rows exactly.
+	const HOMEPAGE_FAMILIES = [
+		'Qwen 3.8',
+		'Laguna XS 2.1',
+		'DeepSeek V4',
+		'Gemma 4',
+		'GLM 4.7',
+		'GPT-OSS'
+	];
+
+	const featured = families.filter((f) => HOMEPAGE_FAMILIES.includes(f.name));
 </script>
 
 <section class="py-24">
