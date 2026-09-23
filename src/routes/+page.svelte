@@ -712,7 +712,7 @@ const reply = await client.chat.completions.create({
 				For developers
 			</span>
 			<h2 class="text-3xl leading-tight font-semibold tracking-tight md:text-4xl">
-				OpenAI-compatible.<br />Completely local.
+				OpenAI-compatible.
 			</h2>
 			<p class="leading-relaxed">
 				If your code works with OpenAI, it works with Llama. Change the base URL and keep everything
