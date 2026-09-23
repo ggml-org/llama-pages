@@ -457,7 +457,7 @@ const reply = await client.chat.completions.create({
 	     for people (ChatGPT) and an API for apps; Llama has the same two
 	     halves, on your computer. This is the section that answers "how is
 	     a menu bar app a platform?". -->
-	<section class="border-t border-border py-20">
+	<section class="py-20">
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
 			<h2 class="text-3xl font-semibold tracking-tight">Like OpenAI, but on your Mac</h2>
 			<p class="leading-relaxed text-muted-foreground">
@@ -531,7 +531,7 @@ const reply = await client.chat.completions.create({
 	</section>
 
 	<!-- 4. Nothing to learn first. The core promise. -->
-	<section class="grid grid-cols-1 items-center gap-10 border-t border-border py-20 md:grid-cols-2">
+	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2">
 		<div class="flex flex-col gap-4">
 			<h2 class="text-3xl font-semibold tracking-tight">Nothing to learn first</h2>
 			<p class="leading-relaxed text-muted-foreground">
@@ -560,7 +560,7 @@ const reply = await client.chat.completions.create({
 	     facts. -->
 	<!-- Two sizes on purpose: 4 MB is the installed app, 1 MB is the
 	     (compressed) download the hero quotes. -->
-	<section class="border-t border-border py-20">
+	<section class="py-20">
 		<h2 class="mb-10 text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
 			<div>
@@ -626,7 +626,7 @@ const reply = await client.chat.completions.create({
 	     line" shown, not claimed. -->
 	<section
 		id="developers"
-		class="grid scroll-mt-8 grid-cols-1 items-center gap-12 border-t border-border py-24 md:grid-cols-5"
+		class="grid scroll-mt-8 grid-cols-1 items-center gap-12 py-24 md:grid-cols-5"
 	>
 		<div class="flex flex-col gap-5 md:col-span-2">
 			<span class="font-mono text-xs font-medium tracking-widest text-accent uppercase">
@@ -760,7 +760,7 @@ const reply = await client.chat.completions.create({
 	</section>
 
 	<!-- Closing CTA. Back to the newcomer: one button, one sentence. -->
-	<section class="flex flex-col items-center gap-6 border-t border-border py-24 text-center">
+	<section class="flex flex-col items-center gap-6 py-24 text-center">
 		<h2 class="text-4xl font-semibold tracking-tight">Local AI starts here</h2>
 		<p class="text-muted-foreground">Free, open source, and yours to keep.</p>
 		<Button href={MACOS_DOWNLOAD_URL} size="lg" class="h-12 px-6 text-[15px]">
