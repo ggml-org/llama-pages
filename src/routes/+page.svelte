@@ -551,14 +551,17 @@ const reply = await client.chat.completions.create({
 				<!-- Callouts. Written directly on the wallpaper -- no card, no
 				     shadow -- so they read as annotations *about* the menu, not as
 				     more UI. On desktop the column is centered in the space left of
-				     the menu, both ways, so the margins around it are even. The
-				     grid's padding is uneven (the menu hangs just under the bar, so
-				     6px on top vs 48px below); md:mt-10.5 shifts the centered
-				     column down by half that difference, centering it on the whole
-				     wallpaper area rather than the padded cell. After the menu on
-				     phones. -->
+				     the menu, both ways, so the margins around it are even.
+				     Vertically it's centered on the whole panel, menu bar
+				     included, since the bar is transparent and reads as part of
+				     the wallpaper. The cell it sits in is almost that: the bar
+				     (44px) plus the grid's top padding (6px) is 50px above it, vs
+				     the grid's 48px bottom padding below it. md:-mt-0.5 shifts
+				     the column up by half that 2px difference. Keep it in sync
+				     with the bar's height and the grid's padding. After the menu
+				     on phones. -->
 				<ol
-					class="order-2 flex max-w-sm flex-col gap-7 px-1 py-2 md:order-1 md:mt-10.5 md:self-center md:justify-self-center"
+					class="order-2 flex max-w-sm flex-col gap-7 px-1 py-2 md:order-1 md:-mt-0.5 md:self-center md:justify-self-center"
 				>
 					{#each CALLOUTS as c, i (c.title)}
 						<li class="flex gap-3">
