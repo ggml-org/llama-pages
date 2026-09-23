@@ -778,7 +778,7 @@ const reply = await client.chat.completions.create({
 					{@render paramsChip(EXAMPLE_MODEL.params)}
 				</span>
 				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
-					<Check class="size-3.5 text-accent" /> Chosen by Llama, for your Mac
+					<Check class="size-3.5 text-sky-600 dark:text-sky-400" /> Chosen by Llama, for your Mac
 				</span>
 			</div>
 
@@ -804,7 +804,7 @@ const reply = await client.chat.completions.create({
 						     just noise when read aloud. -->
 						<span
 							aria-hidden="true"
-							class="shrink-0 rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent"
+							class="shrink-0 rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400"
 							>Auto</span
 						>
 					</li>
@@ -918,7 +918,7 @@ const reply = await client.chat.completions.create({
 				<svg
 					viewBox="0 0 200 112"
 					preserveAspectRatio="none"
-					class="absolute inset-0 size-full text-accent"
+					class="absolute inset-0 size-full text-sky-600 dark:text-sky-400"
 					fill="none"
 				>
 					<path d="M30 110V8H90V110Z" fill="currentColor" fill-opacity="0.22" />
@@ -951,7 +951,14 @@ const reply = await client.chat.completions.create({
 	{/snippet}
 
 	<section class="py-20">
-		<h2 class="mb-10 text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
+		<!-- The intro names the worry (local AI is heavy) rather than listing
+		     the cards, so it doesn't read as the cards' titles said twice. -->
+		<div class="mb-10 flex max-w-2xl flex-col gap-4">
+			<h2 class="text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
+			<p class="leading-relaxed">
+				Local AI has a reputation for eating disk space and memory. Llama keeps both to a minimum.
+			</p>
+		</div>
 		<!-- Three across only from lg: below that, the cards are too narrow
 		     for the drawings (the "stored once" chips would truncate). -->
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -1014,75 +1021,81 @@ const reply = await client.chat.completions.create({
 		</div>
 	</section>
 
-	<!-- 7. Developers: the API. The highlighted line makes "change one
-	     line" shown, not claimed. -->
-	<section
-		id="developers"
-		class="grid scroll-mt-8 grid-cols-1 items-center gap-12 py-24 md:grid-cols-5"
-	>
-		<div class="flex flex-col gap-5 md:col-span-2">
-			<span class="font-mono text-xs font-medium tracking-widest text-accent uppercase">
-				For developers
-			</span>
-			<h2 class="text-3xl leading-tight font-semibold tracking-tight md:text-4xl">
-				OpenAI-compatible.
-			</h2>
+	<!-- 7. Developers. One chapter with a single h2, like every other
+	     section, and two equal-weight h3 rows under it (the same h2 → h3
+	     pattern as "Like OpenAI, but on your Mac"). Before, these were two
+	     sections with mismatched heading sizes and an eyebrow on only the
+	     first, so it wasn't clear whether they were peers or parent/child. -->
+	<section id="developers" class="scroll-mt-8 py-20">
+		<div class="mb-12 flex max-w-2xl flex-col gap-4">
+			<h2 class="text-3xl font-semibold tracking-tight">Build on Llama</h2>
 			<p class="leading-relaxed">
-				If your code works with OpenAI, it works with Llama. Change the base URL and keep everything
-				else — no API keys, no usage bills.
+				Your apps get a local AI API they can all share, and Llama takes care of the engine and the
+				models.
 			</p>
-			<ul class="flex flex-col gap-2 text-sm text-muted-foreground">
-				<li class="flex gap-2">
-					<Check class="mt-0.5 size-4 shrink-0" /> OpenAI- and Anthropic-compatible endpoints
-				</li>
-				<li class="flex gap-2">
-					<Check class="mt-0.5 size-4 shrink-0" /> Streaming, tool calling, structured output, vision
-				</li>
-				<li class="flex gap-2">
-					<Check class="mt-0.5 size-4 shrink-0" /> Already use llama.cpp? Your models show up automatically
-				</li>
-				<li class="flex gap-2">
-					<Check class="mt-0.5 size-4 shrink-0" /> Reach it from your other devices over Tailscale
-				</li>
-			</ul>
-			<a
-				href={resolve('/docs/[...page]', { page: 'api' })}
-				class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
-			>
-				API reference <ArrowRight class="size-3.5" />
-			</a>
 		</div>
 
-		<!-- Dark in both themes: it reads as
-		     "code" at a glance and gives the page a strong focal point. -->
-		<div
-			class="overflow-hidden rounded-xl border border-border bg-[#111] text-[#e7e7e7] shadow-xl md:col-span-3"
-		>
-			<div class="flex items-center justify-between border-b border-white/10 px-2">
-				<div class="flex" role="tablist">
-					{#each SNIPPETS as s (s.id)}
-						<button
-							role="tab"
-							aria-selected={snippetId === s.id}
-							onclick={() => (snippetId = s.id)}
-							class="cursor-pointer border-b px-3 py-3 text-xs {snippetId === s.id
-								? 'border-white text-white'
-								: 'border-transparent text-white/45 hover:text-white/80'}"
-						>
-							{s.label}
-						</button>
-					{/each}
-				</div>
-				<button
-					onclick={copySnippet}
-					aria-label="Copy code"
-					class="cursor-pointer p-2 text-white/45 hover:text-white"
+		<!-- The API. The highlighted line makes "change one line" shown, not
+		     claimed. -->
+		<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-5">
+			<div class="flex flex-col gap-5 md:col-span-2">
+				<h3 class="text-xl font-semibold">OpenAI-compatible API</h3>
+				<p class="leading-relaxed">
+					If your code works with OpenAI, it works with Llama. Change the base URL and keep
+					everything else — no API keys, no usage bills.
+				</p>
+				<ul class="flex flex-col gap-2 text-sm text-muted-foreground">
+					<li class="flex gap-2">
+						<Check class="mt-0.5 size-4 shrink-0" /> OpenAI- and Anthropic-compatible endpoints
+					</li>
+					<li class="flex gap-2">
+						<Check class="mt-0.5 size-4 shrink-0" /> Streaming, tool calling, structured output, vision
+					</li>
+					<li class="flex gap-2">
+						<Check class="mt-0.5 size-4 shrink-0" /> Already use llama.cpp? Your models show up automatically
+					</li>
+					<li class="flex gap-2">
+						<Check class="mt-0.5 size-4 shrink-0" /> Reach it from your other devices over Tailscale
+					</li>
+				</ul>
+				<a
+					href={resolve('/docs/[...page]', { page: 'api' })}
+					class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
 				>
-					{#if copied}<Check class="size-4" />{:else}<Copy class="size-4" />{/if}
-				</button>
+					API reference <ArrowRight class="size-3.5" />
+				</a>
 			</div>
 
-			<!-- `dark` opts the tokens into the dark Prism palette (prism-theme.css)
+			<!-- Dark in both themes: it reads as
+		     "code" at a glance and gives the page a strong focal point. -->
+			<div
+				class="overflow-hidden rounded-xl border border-border bg-[#111] text-[#e7e7e7] shadow-xl md:col-span-3"
+			>
+				<div class="flex items-center justify-between border-b border-white/10 px-2">
+					<div class="flex" role="tablist">
+						{#each SNIPPETS as s (s.id)}
+							<button
+								role="tab"
+								aria-selected={snippetId === s.id}
+								onclick={() => (snippetId = s.id)}
+								class="cursor-pointer border-b px-3 py-3 text-xs {snippetId === s.id
+									? 'border-white text-white'
+									: 'border-transparent text-white/45 hover:text-white/80'}"
+							>
+								{s.label}
+							</button>
+						{/each}
+					</div>
+					<button
+						onclick={copySnippet}
+						aria-label="Copy code"
+						class="cursor-pointer p-2 text-white/45 hover:text-white"
+					>
+						{#if copied}<Check class="size-4" />{:else}<Copy class="size-4" />{/if}
+					</button>
+				</div>
+
+				<!-- `dark` opts the tokens into the dark Prism palette (prism-theme.css)
 			     regardless of the page theme, since this card is dark in both.
 
 			     The changed-line band is a neutral white rather than a color:
@@ -1091,70 +1104,73 @@ const reply = await client.chat.completions.create({
 			     per line), and the code is `relative` so it paints above it.
 
 			     The HTML is Prism's output for our own constant snippets. -->
-			<!-- eslint-disable svelte/no-at-html-tags -->
-			<pre
-				class="dark relative overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"><div
-					class="absolute inset-x-0 h-6 border-l-2 border-white/60 bg-white/[0.08]"
-					style="top: {16 + snippet.changed * 24}px"
-					aria-hidden="true"></div><code class="relative block px-5"
-					>{@html highlighted[snippet.id]}</code
-				></pre>
-			<!-- eslint-enable svelte/no-at-html-tags -->
-		</div>
-	</section>
-
-	<!-- 8. Developers: why depend on Llama instead of bundling a stack. The
-	     platform argument, aimed at the people who'd make the choice. -->
-	<section class="grid grid-cols-1 items-center gap-12 pb-24 md:grid-cols-5">
-		<div class="flex flex-col gap-5 md:col-span-2">
-			<h2 class="text-2xl leading-tight font-semibold tracking-tight">
-				Build on Llama instead of bundling it
-			</h2>
-			<p class="leading-relaxed">
-				Your app talks to Llama over the API, and a one-click link installs the model it needs. No
-				engine to ship, no gigabytes in your download — and your users keep one copy of each model
-				for all their apps.
-			</p>
+				<!-- eslint-disable svelte/no-at-html-tags -->
+				<pre
+					class="dark relative overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"><div
+						class="absolute inset-x-0 h-6 border-l-2 border-white/60 bg-white/[0.08]"
+						style="top: {16 + snippet.changed * 24}px"
+						aria-hidden="true"></div><code class="relative block px-5"
+						>{@html highlighted[snippet.id]}</code
+					></pre>
+				<!-- eslint-enable svelte/no-at-html-tags -->
+			</div>
 		</div>
 
-		<div class="flex flex-col gap-3 md:col-span-3">
-			<figure class="rounded-2xl border border-border p-5">
-				<figcaption class="mb-4 text-sm text-muted-foreground">Without Llama</figcaption>
-				<div class="grid grid-cols-3 gap-2 text-center text-xs">
-					{#each DIAGRAM_APPS as a (a)}
-						<div class="flex flex-col gap-1.5">
-							<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
-							<div
-								class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
-							>
-								own engine
-							</div>
-							<div
-								class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
-							>
-								own {exampleModelSize} copy
-							</div>
-						</div>
-					{/each}
-				</div>
-			</figure>
+		<!-- Why depend on Llama instead of bundling a stack. The platform
+		     argument, aimed at the people who'd make the choice.
 
-			<figure class="rounded-2xl border border-accent/40 bg-accent/5 p-5">
-				<figcaption class="mb-4 text-sm text-muted-foreground">With Llama</figcaption>
-				<div class="flex flex-col gap-1.5 text-center text-xs">
-					<div class="grid grid-cols-3 gap-2">
+		     Text above rather than beside the diagrams, so the two diagrams
+		     can sit side by side and read as a before/after. Beside the text
+		     they'd only get ~290px each, too narrow for the chips. -->
+		<div class="mt-20 flex flex-col gap-8">
+			<div class="flex max-w-2xl flex-col gap-5">
+				<h3 class="text-xl font-semibold">Nothing to bundle</h3>
+				<p class="leading-relaxed">
+					Your app talks to Llama over the API, and a one-click link installs the model it needs. No
+					engine to ship, no gigabytes in your download — and your users keep one copy of each model
+					for all their apps.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+				<figure class="rounded-2xl border border-border p-5">
+					<figcaption class="mb-4 text-sm text-muted-foreground">Without Llama</figcaption>
+					<div class="grid grid-cols-3 gap-2 text-center text-xs">
 						{#each DIAGRAM_APPS as a (a)}
-							<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
+							<div class="flex flex-col gap-1.5">
+								<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
+								<div
+									class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
+								>
+									own engine
+								</div>
+								<div
+									class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
+								>
+									own {exampleModelSize} copy
+								</div>
+							</div>
 						{/each}
 					</div>
-					<div class="rounded-lg bg-foreground px-2 py-2.5 font-medium text-background">
-						Llama · one engine, kept up to date
+				</figure>
+
+				<figure class="rounded-2xl border border-sky-500/40 bg-sky-500/5 p-5">
+					<figcaption class="mb-4 text-sm text-muted-foreground">With Llama</figcaption>
+					<div class="flex flex-col gap-1.5 text-center text-xs">
+						<div class="grid grid-cols-3 gap-2">
+							{#each DIAGRAM_APPS as a (a)}
+								<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
+							{/each}
+						</div>
+						<div class="rounded-lg bg-foreground px-2 py-2.5 font-medium text-background">
+							Llama · one engine, kept up to date
+						</div>
+						<div class="rounded-lg border border-foreground/20 px-2 py-2 text-muted-foreground">
+							one {exampleModelSize} copy, in the Hugging Face cache
+						</div>
 					</div>
-					<div class="rounded-lg border border-foreground/20 px-2 py-2 text-muted-foreground">
-						one {exampleModelSize} copy, in the Hugging Face cache
-					</div>
-				</div>
-			</figure>
+				</figure>
+			</div>
 		</div>
 	</section>
 
