@@ -17,6 +17,16 @@
 	// "Docs" nav link.
 	const onDocs = $derived(page.url.pathname === '/docs' || page.url.pathname.startsWith('/docs/'));
 
+	// Nav links are full-strength text, like the GitHub link on the right --
+	// muted gray read as disabled. The current section gets a solid
+	// underline; other links show a faint one on hover (the same faint
+	// underline the GitHub link always has).
+	function navLinkClass(active: boolean) {
+		return active
+			? 'text-foreground underline decoration-foreground decoration-2 underline-offset-[6px]'
+			: 'text-foreground decoration-foreground/30 underline-offset-[6px] hover:underline';
+	}
+
 	const NEXT_MODE = { dark: 'system', light: 'dark', system: 'light' } as const;
 
 	function cycleMode() {
@@ -27,7 +37,7 @@
 <header class="mx-auto flex w-full max-w-5xl items-center justify-between p-6 md:px-12">
 	<!-- Left: the logo (home) plus permanent site nav. A vertical hairline after
 	     the logo separates brand from nav, so the link doesn't read as part of
-	     the wordmark. "Models" always links to the catalog and lights up while
+	     the wordmark. "Models" always links to the catalog and is underlined while
 	     you're anywhere in the section; the page itself names where you are
 	     (each page leads with its own h1). -->
 	<nav class="flex items-center gap-4 text-[15px]">
@@ -40,7 +50,7 @@
 		<a
 			href={resolve('/models')}
 			aria-current={onModels ? 'page' : undefined}
-			class={onModels ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}
+			class={navLinkClass(onModels)}
 		>
 			Models
 		</a>
@@ -48,7 +58,7 @@
 		<a
 			href={resolve('/docs')}
 			aria-current={onDocs ? 'page' : undefined}
-			class={onDocs ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}
+			class={navLinkClass(onDocs)}
 		>
 			Docs
 		</a>
