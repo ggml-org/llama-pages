@@ -11,7 +11,7 @@
 	//   1. What is this?            -- hero text: a tiny menu bar app, two uses
 	//   2. What does it look like?  -- the real menu, with numbered callouts
 	//   3. How is it a platform?    -- "Like OpenAI": chat for you, API for apps
-	//   4. Is it hard?              -- "Nothing to learn first"
+	//   4. Is it hard?              -- "Nothing to set up": what Llama tunes
 	//   5. Is it heavy?             -- 4 MB, menu bar, unloads when idle
 	//   6. Will it run on my Mac?   -- models by memory tier
 	//   7. Can I build on it?       -- the API, one changed line
@@ -24,7 +24,10 @@
 		ChevronRight,
 		Code,
 		Copy,
+		Feather,
 		FileText,
+		HardDrive,
+		MemoryStick,
 		MessageSquare,
 		Terminal,
 		Video
@@ -69,19 +72,44 @@
 		{ example: 'Any OpenAI SDK', icon: Braces, label: 'Your own code' }
 	];
 
-	// -- Nothing to learn first --------------------------------------------------
+	// -- Nothing to set up --------------------------------------------------------
 	//
-	// Words a newcomer should never have to learn. Struck through so the point
-	// lands even for someone who doesn't know what they mean. This is also a
-	// public commitment: any surface that asks users to pick one of these is
-	// breaking the homepage's promise.
-	const JARGON = [
-		'Quantization',
-		'GGUF',
-		'Context size',
-		'Draft models',
-		'Server flags',
-		'Repositories'
+	// The settings Llama decides so users don't have to, each paired with how
+	// it decides. Newcomers can skip the jargon and still get the point (it's
+	// handled); enthusiasts, who know these settings, see that the choices
+	// are real and sensible. Every rule here mirrors the app's code
+	// (`ModelManager.generatedModelSections` and the catalog's quant pick),
+	// so keep them in sync -- if the app stops doing one, drop the row.
+	const TUNED = [
+		{ how: 'Highest precision that fits in memory', setting: 'Quantization' },
+		{ how: 'Only sizes that fit in memory', setting: 'Context size' },
+		{ how: 'On for models that understand images', setting: 'Image input' },
+		{ how: 'On for models that support it', setting: 'Speculative decoding' },
+		{ how: 'Larger on Macs with 32 GB or more', setting: 'Batch size' }
+	];
+
+	// -- Lightweight ---------------------------------------------------------------
+	//
+	// The three "is it heavy?" facts. Not "no windows" or "no Dock icon":
+	// Settings opens a window and shows a Dock icon while it's open. Model
+	// storage is the stronger third point anyway -- models are the heavy
+	// part, and other apps keep their own copies.
+	const LIGHT = [
+		{
+			body: 'A native Mac app, and just a 1 MB download — smaller than a photo.',
+			icon: Feather,
+			title: '4 MB app'
+		},
+		{
+			body: 'Kept in the Hugging Face cache, shared with llama.cpp and other tools.',
+			icon: HardDrive,
+			title: 'Each model stored once'
+		},
+		{
+			body: 'Models load when something asks for one and unload after 5 minutes idle.',
+			icon: MemoryStick,
+			title: 'Nothing loaded when idle'
+		}
 	];
 
 	// -- Menu mock ------------------------------------------------------------------
@@ -260,7 +288,7 @@ const reply = await client.chat.completions.create({
 	     The OpenAI comparison is left to section 3, where there's room to
 	     explain it -- in one line it confuses anyone who knows OpenAI only
 	     as ChatGPT. -->
-	<section class="flex flex-col items-center gap-8 pt-16 pb-12 text-center md:pt-24">
+	<section class="flex flex-col items-center gap-7 pt-10 pb-12 text-center md:pt-14">
 		<span
 			class="rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs text-muted-foreground"
 		>
@@ -273,9 +301,9 @@ const reply = await client.chat.completions.create({
 			Your AI.<br />On your computer.
 		</h1>
 
-		<p class="max-w-2xl text-lg leading-relaxed text-balance md:text-xl">
+		<p class="max-w-3xl text-lg leading-relaxed text-balance md:text-xl">
 			Llama is a tiny menu bar app that runs the latest open models on your Mac. Chat with them, or
-			use them in your other apps. Private, free, and nothing to set up.
+			use them in your other apps.
 		</p>
 
 		<div class="flex flex-col items-center gap-3 sm:flex-row">
@@ -299,9 +327,16 @@ const reply = await client.chat.completions.create({
 			</Button>
 		</div>
 
-		<!-- The size sits right under the buttons, where the "is this a big
-		     install?" doubt arises. -->
-		<p class="-mt-3 text-sm text-muted-foreground">1 MB download · Open source</p>
+		<!-- The reassurances sit right under the buttons, where the "should I
+		     click this?" doubts arise: size, cost, and privacy. Size leads
+		     because it annotates the Download button directly above it. The
+		     rest used to end the subline as a sentence; as a list they scan
+		     faster and leave the subline to say what Llama is. "Nothing to
+		     set up" isn't here: it's a promise rather than a checkable fact,
+		     and section 4 makes it properly. -->
+		<p class="-mt-3 text-sm text-muted-foreground">
+			1 MB download · Free and open source · Private
+		</p>
 
 		<!-- About half our visitors aren't on a Mac. Until there's a native
 		     app for them, the CLI is the honest next step, not a dead end. -->
@@ -321,7 +356,7 @@ const reply = await client.chat.completions.create({
 	     menu, which is exactly the relationship we want people to see. -->
 	<section class="pb-24">
 		<div
-			class="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(170deg,#b9c7d6_0%,#d8cfbf_70%,#cdb99a_100%)] shadow-2xl shadow-foreground/10 dark:bg-[linear-gradient(170deg,#1c2530_0%,#2a2620_70%,#33291d_100%)]"
+			class="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(170deg,#b9c7d6_0%,#d8cfbf_70%,#cdb99a_100%)] dark:bg-[linear-gradient(170deg,#1c2530_0%,#2a2620_70%,#33291d_100%)]"
 		>
 			<!-- macOS menu bar. The Llama icon is "pressed", since its menu is
 			     open. Sizes follow the real bar: status icons roughly as tall as
@@ -571,13 +606,16 @@ const reply = await client.chat.completions.create({
 		</div>
 	</section>
 
-	<!-- 4. Nothing to learn first. The core promise. -->
+	<!-- 4. Nothing to set up. The core promise, and the thing users say
+	     draws them to Llama. The card shows the configuration happening
+	     rather than just claiming it. -->
 	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2">
 		<div class="flex flex-col gap-4">
-			<h2 class="text-3xl font-semibold tracking-tight">Nothing to learn first</h2>
+			<h2 class="text-3xl font-semibold tracking-tight">Nothing to set up</h2>
 			<p class="leading-relaxed">
-				Running AI locally used to mean reading forum threads about file formats and settings. Llama
-				checks your computer and makes those choices for you. You only pick which model to talk to.
+				Running AI locally used to mean reading forum threads about settings. Llama checks your Mac
+				and sets up each model to run well on it, based on how llama.cpp actually works. You only
+				pick which model to talk to.
 			</p>
 			<!-- Reassurance for enthusiasts: simple by default doesn't mean
 			     locked down. -->
@@ -585,41 +623,45 @@ const reply = await client.chat.completions.create({
 				Know what you're doing? Every llama.cpp setting is still there, in one plain-text file.
 			</p>
 		</div>
-		<div class="flex flex-wrap gap-2">
-			{#each JARGON as word (word)}
-				<span
-					class="rounded-full border border-border px-4 py-2 font-mono text-sm text-muted-foreground line-through decoration-accent decoration-2"
-				>
-					{word}
-				</span>
-			{/each}
+		<div class="rounded-2xl border border-border bg-foreground/2 p-6">
+			<p class="mb-2 text-sm text-muted-foreground">Chosen by Llama, for your Mac</p>
+			<dl class="divide-y divide-border">
+				{#each TUNED as t (t.setting)}
+					<div
+						class="flex flex-col gap-0.5 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+					>
+						<dt class="font-mono text-sm">{t.setting}</dt>
+						<dd class="text-sm text-muted-foreground sm:text-right">{t.how}</dd>
+					</div>
+				{/each}
+			</dl>
 		</div>
 	</section>
 
 	<!-- 5. Lightweight. The sharpest contrast with every alternative. The
 	     menu itself is already on screen in the hero, so this is just the
-	     facts. -->
-	<!-- Two sizes on purpose: 4 MB is the installed app, 1 MB is the
-	     (compressed) download the hero quotes. -->
+	     facts. Two sizes on purpose: 4 MB is the installed app, 1 MB is the
+	     (compressed) download the hero quotes. The 5-minute unload is the
+	     app's default (`UserSettings.sleepIdleTime`); keep it in sync. -->
+
+	<!-- Small titled items with an icon rather than big numbers, so no
+	     single fact shouts. -->
 	<section class="py-20">
 		<h2 class="mb-10 text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
-			<div>
-				<p class="text-4xl font-semibold tracking-tight">4 MB</p>
-				<p class="mt-2">
-					A native Mac app, and just a 1 MB download — smaller than a photo on your phone.
-				</p>
-			</div>
-			<div>
-				<p class="text-4xl font-semibold tracking-tight">0 windows</p>
-				<p class="mt-2">It lives in your menu bar, ready whenever you or an app needs it.</p>
-			</div>
-			<div>
-				<p class="text-4xl font-semibold tracking-tight">0 GB idle</p>
-				<p class="mt-2">
-					Models load when something asks for one and unload when idle, so your Mac stays fast.
-				</p>
-			</div>
+			{#each LIGHT as l (l.title)}
+				<div class="flex flex-col gap-3">
+					<span
+						class="flex size-10 items-center justify-center rounded-xl border border-border bg-foreground/2"
+					>
+						<l.icon class="size-5" />
+					</span>
+					<div>
+						<p class="font-medium">{l.title}</p>
+						<p class="mt-1 leading-relaxed text-muted-foreground">{l.body}</p>
+					</div>
+				</div>
+			{/each}
 		</div>
 	</section>
 
