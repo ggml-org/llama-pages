@@ -1,18 +1,783 @@
 <script lang="ts">
-	import { HeroBanner, RunYourFirstModel } from '$lib/components/app';
-	import ShowcaseSections from '$lib/components/app/content/ShowcaseSections.svx';
-	import { SITE_DESCRIPTION, SITE_TITLE } from '$lib/constants';
+	// The homepage.
+	//
+	// What we're optimizing for: the 10M-users goal, which means most
+	// visitors are *not* local-model enthusiasts. So the page speaks to a
+	// newcomer first and a developer second, but it frames Llama as a
+	// platform from the very top -- chat is shown as one app among several
+	// that use the same local model, never as the product itself.
+	//
+	// Section order follows the questions a visitor asks, in order:
+	//   1. What is this?            -- hero text: a tiny menu bar app, two uses
+	//   2. What does it look like?  -- the real menu, with numbered callouts
+	//   3. How is it a platform?    -- "Like OpenAI": chat for you, API for apps
+	//   4. Is it hard?              -- "Nothing to learn first"
+	//   5. Is it heavy?             -- 4 MB, menu bar, unloads when idle
+	//   6. Will it run on my Mac?   -- models by memory tier
+	//   7. Can I build on it?       -- the API, one changed line
+	//   8. Why not bundle my own?   -- without/with diagram
+	import {
+		ArrowDown,
+		ArrowRight,
+		Braces,
+		Check,
+		ChevronRight,
+		Code,
+		Copy,
+		FileText,
+		MessageSquare,
+		Terminal,
+		Video
+	} from '@lucide/svelte';
+	import { resolve } from '$app/paths';
+	import appleIcon from '$lib/assets/apple-icon.svg?raw';
+	import { logoFor } from '$lib/assets/logos';
+	import { displaySize, families, minMemGB, slugify } from '$lib/catalog';
+	import { InstallCommand, Logo } from '$lib/components/app';
+	import { Button } from '$lib/components/ui/button';
+	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
+	import { deviceInfo } from '$lib/stores/device/index.svelte';
+	import { toast } from 'svelte-sonner';
+
+	// -- Hero shot callouts ------------------------------------------------------
+	//
+	// Numbered to match the markers placed on the menu. Each one maps a part
+	// of the menu to the OpenAI mental model or to the "easy" promise.
+	const CALLOUTS = [
+		{
+			body: 'Chat with any model in your browser. Like ChatGPT, but on your Mac.',
+			title: 'Open chat'
+		},
+		{
+			body: 'Your apps connect here. It speaks the OpenAI API, so coding agents, editors, and scripts just work.',
+			title: 'A local API'
+		},
+		{
+			body: 'Models that fit your Mac, one click to install. Llama picks the settings.',
+			title: 'Recommended for your Mac'
+		}
+	];
+
+	// -- "Like OpenAI" clients ----------------------------------------------------
+	//
+	// Kinds of apps that use the API. Pi is the one integration named, since
+	// it's the one we ship a plugin for.
+	const CLIENTS = [
+		{ example: 'Pi', icon: Terminal, label: 'Coding agents' },
+		{ example: 'OpenAI-compatible', icon: Code, label: 'Editors' },
+		{ example: 'OpenAI-compatible', icon: MessageSquare, label: 'Chat apps' },
+		{ example: 'Any OpenAI SDK', icon: Braces, label: 'Your own code' }
+	];
+
+	// -- Nothing to learn first --------------------------------------------------
+	//
+	// Words a newcomer should never have to learn. Struck through so the point
+	// lands even for someone who doesn't know what they mean. This is also a
+	// public commitment: any surface that asks users to pick one of these is
+	// breaking the homepage's promise.
+	const JARGON = [
+		'Quantization',
+		'GGUF',
+		'Context size',
+		'Draft models',
+		'Server flags',
+		'Repositories'
+	];
+
+	// -- Menu mock ------------------------------------------------------------------
+	//
+	// Rows as the shipping menu shows them (lowercase family names, a size
+	// chip), with real download sizes from the catalog.
+	type MenuModel = { brand: string; name: string; params: string; size: string };
+
+	const MENU_INSTALLED: MenuModel[] = [
+		{ brand: 'Qwen', name: 'Qwen3.8', params: '27B', size: '19.0 GB' },
+		{ brand: 'OpenAI', name: 'gpt-oss', params: '20B', size: '12.1 GB' },
+		{ brand: 'Gemma', name: 'gemma-4', params: 'E4B', size: '4.59 GB' }
+	];
+
+	const MENU_RECOMMENDED: MenuModel[] = [
+		{ brand: 'Gemma', name: 'gemma-4', params: '12B', size: '7.22 GB' }
+	];
+
+	// -- Models by memory --------------------------------------------------------
+	//
+	// Memory is the one spec a newcomer can look up (About This Mac), so the
+	// picks are organized by it rather than by parameter count. The tier is
+	// computed from the catalog, so it can't drift from what the app decides.
+	const PICKS = [
+		{ family: 'Gemma 4', note: 'Everyday questions, writing, and images' },
+		{ family: 'GPT-OSS', note: 'Step-by-step reasoning from OpenAI' },
+		{ family: 'Qwen 3.8', note: 'Strong at code, reasoning, and long documents' }
+	].flatMap((p) => {
+		const f = families.find((f) => f.name === p.family);
+
+		return f ? [{ ...p, f, mem: minMemGB(f) }] : [];
+	});
+
+	// -- API snippet ---------------------------------------------------------------
+	//
+	// Written so no line is wider than the card on desktop, and with the one
+	// line that differs from plain OpenAI usage highlighted (`changed`).
+	const SNIPPETS = [
+		{
+			changed: 3,
+			code: `from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:9931/v1",
+    api_key="local",
+)
+
+reply = client.chat.completions.create(
+    model="ggml-org/gpt-oss-20b-GGUF:MXFP4",
+    messages=[{"role": "user", "content": "Hi!"}],
+)`,
+			id: 'python',
+			label: 'Python'
+		},
+		{
+			changed: 3,
+			code: `import OpenAI from "openai";
+
+const client = new OpenAI({
+  baseURL: "http://localhost:9931/v1",
+  apiKey: "local",
+});
+
+const reply = await client.chat.completions.create({
+  model: "ggml-org/gpt-oss-20b-GGUF:MXFP4",
+  messages: [{ role: "user", content: "Hi!" }],
+});`,
+			id: 'js',
+			label: 'JavaScript'
+		},
+		{
+			changed: 0,
+			code: `curl http://localhost:9931/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "ggml-org/gpt-oss-20b-GGUF:MXFP4",
+    "messages": [{"role": "user", "content": "Hi!"}]
+  }'`,
+			id: 'curl',
+			label: 'curl'
+		}
+	];
+
+	let snippetId = $state('python');
+	let copied = $state(false);
+
+	const snippet = $derived(SNIPPETS.find((s) => s.id === snippetId)!);
+
+	function copySnippet() {
+		navigator.clipboard.writeText(snippet.code);
+		toast.success('Copied to clipboard!');
+		copied = true;
+		setTimeout(() => (copied = false), 2000);
+	}
+
+	// -- Without / with diagram ----------------------------------------------------
+	//
+	// The per-app model size is a real download (Qwen 3.8 at Q4) rather than a
+	// made-up number, so the waste it illustrates is honest.
+	const DIAGRAM_APPS = ['Chat app', 'Coding agent', 'Your app'];
+	const exampleModelSize = displaySize(
+		families.find((f) => f.name === 'Qwen 3.8')?.sizes[0]?.builds.find((b) => b.quant === 'Q4_K_M')
+			?.sizeBytes
+	).replace(/\.\d+ GB$/, ' GB');
 </script>
 
 <svelte:head>
-	<title>{SITE_TITLE}</title>
-	<meta name="description" content={SITE_DESCRIPTION} />
+	<title>Llama · Your AI, on your computer</title>
+	<meta
+		name="description"
+		content="Run the latest open models on your computer. Chat with them, or connect them to your coding agents, editors, and apps. Free, private, and nothing to configure."
+	/>
 </svelte:head>
 
 <main class="mx-auto w-full max-w-5xl px-6 md:px-12">
-	<HeroBanner />
+	<!-- A numbered marker, shared by the menu and the callouts so the two
+	     visibly refer to each other. -->
+	{#snippet marker(n: number)}
+		<span
+			class="flex size-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-semibold text-white"
+			>{n}</span
+		>
+	{/snippet}
 
-	<ShowcaseSections />
+	<!-- A marker pinned to the menu's edge, level with the text it labels,
+	     so the menu's own layout isn't shifted to make room. It's placed
+	     relative to the labeled text (wrap that text in a relative span):
+	     the menu's padding (12px) + row padding (4px) + border (1px) put the
+	     edge 17px from the text, and backing off by half the marker (10px)
+	     centers it on the edge. Left-edge markers face the callouts; "Open
+	     chat" is right-aligned, so its marker sits on the right edge where
+	     it can't be mistaken for the "Llama" title. -->
+	{#snippet edgeMarker(n: number, side: 'left' | 'right')}
+		<span
+			class="absolute top-1/2 -translate-y-1/2 {side === 'left'
+				? 'right-[calc(100%+7px)]'
+				: 'left-[calc(100%+7px)]'} rounded-full ring-2 ring-background"
+		>
+			{@render marker(n)}
+		</span>
+	{/snippet}
 
-	<RunYourFirstModel />
+	<!-- One model row in the menu mock. Installed rows open a submenu
+	     (chevron); recommended rows download (arrow). -->
+	{#snippet menuModel(m: MenuModel, recommended: boolean)}
+		<div class="flex items-center gap-2.5 px-1 py-1.5">
+			<span
+				class="flex size-7 shrink-0 items-center justify-center rounded-full bg-foreground/6 [&_svg]:size-4"
+			>
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html logoFor(m.brand)}
+			</span>
+			<span class="min-w-0 flex-1">
+				<span class="flex items-center gap-1.5">
+					{m.name}
+					<span class="rounded border border-border px-1 text-[10px] text-muted-foreground"
+						>{m.params}</span
+					>
+				</span>
+				<span class="block text-xs text-muted-foreground">{m.size}</span>
+			</span>
+			{#if recommended}
+				<ArrowDown class="size-3.5 text-muted-foreground" />
+			{:else}
+				<ChevronRight class="size-3.5 text-muted-foreground" />
+			{/if}
+		</div>
+	{/snippet}
+
+	<!-- 1. Hero. The headline stays emotional and short; the subline does
+	     the explaining: what it physically is (a tiny menu bar app), what it
+	     does (runs models), and the two ways to use it (chat, other apps).
+	     The OpenAI comparison is left to section 3, where there's room to
+	     explain it -- in one line it confuses anyone who knows OpenAI only
+	     as ChatGPT. -->
+	<section class="flex flex-col items-center gap-8 pt-16 pb-12 text-center md:pt-24">
+		<span
+			class="rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs text-muted-foreground"
+		>
+			Built on llama.cpp and Hugging Face
+		</span>
+
+		<h1
+			class="text-5xl leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl md:text-7xl"
+		>
+			Your AI.<br />On your computer.
+		</h1>
+
+		<p class="max-w-2xl text-lg leading-relaxed text-balance text-muted-foreground md:text-xl">
+			Llama is a tiny menu bar app that runs the latest open models on your Mac. Chat with them, or
+			use them in your other apps. Private, free, and nothing to set up.
+		</p>
+
+		<div class="flex flex-col items-center gap-3 sm:flex-row">
+			<Button href={MACOS_DOWNLOAD_URL} size="lg" class="h-12 px-6 text-[15px]">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				<span class="mb-0.5">{@html appleIcon}</span>
+				Download for Mac
+			</Button>
+
+			<!-- The second button is the demo video, not "For developers":
+			     developers scroll to their section anyway, while "what does it
+			     actually do?" is the question most visitors still have here.
+			     The length in the label tells people it's a video and a small
+			     commitment -- keep it true when the video changes. No href yet
+			     (so it renders as a plain button and does nothing): the current
+			     intro predates the rename and is being replaced. Add the new
+			     video's URL here, with target="_blank". -->
+			<Button size="lg" variant="outline" class="h-12 px-6 text-[15px]">
+				<Video class="size-4.5" />
+				2-min demo
+			</Button>
+		</div>
+
+		<!-- The size sits right under the buttons, where the "is this a big
+		     install?" doubt arises. -->
+		<p class="-mt-3 text-sm text-muted-foreground">1 MB download · Open source</p>
+
+		<!-- About half our visitors aren't on a Mac. Until there's a native
+		     app for them, the CLI is the honest next step, not a dead end. -->
+		{#if !deviceInfo.isMac}
+			<div class="flex w-full max-w-2xl flex-col items-center gap-3">
+				<p class="text-sm text-muted-foreground">Not on a Mac? Install from the terminal:</p>
+				<InstallCommand />
+			</div>
+		{/if}
+	</section>
+
+	<!-- 2. Hero shot: the actual product. What you download is a menu bar
+	     menu, so that's the picture -- modeled on the real one, with three
+	     numbered callouts pointing at the parts that explain everything
+	     else: "Open chat" (the ChatGPT part), the address (the API part),
+	     and the recommendations (why it's easy). Chat is reached *from* the
+	     menu, which is exactly the relationship we want people to see. -->
+	<section class="pb-24">
+		<div
+			class="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(170deg,#b9c7d6_0%,#d8cfbf_70%,#cdb99a_100%)] shadow-2xl shadow-foreground/10 dark:bg-[linear-gradient(170deg,#1c2530_0%,#2a2620_70%,#33291d_100%)]"
+		>
+			<!-- macOS menu bar. The Llama icon is "pressed", since its menu is
+			     open. Sizes follow the real bar: status icons roughly as tall as
+			     the clock's capitals. The Logo component sizes itself from
+			     --logo-height (a utility class can't override it). Wi-Fi and
+			     battery are drawn inline to match macOS's glyphs -- the Lucide
+			     ones are thin outlines and read as a different OS. -->
+			<div
+				aria-hidden="true"
+				class="flex items-center justify-end gap-3.5 bg-background/50 px-4 py-1 text-xs font-medium text-foreground/85 backdrop-blur"
+			>
+				<span class="flex h-5 items-center rounded bg-foreground/15 px-1.5">
+					<Logo --logo-height="0.75rem" />
+				</span>
+
+				<!-- Wi-Fi: a filled wedge plus two thick arcs, like SF Symbols'
+				     `wifi`. Arcs share the wedge's center and span ±45°. -->
+				<svg viewBox="0 0 20 15" class="h-[12px] w-auto" fill="none">
+					<path
+						d="M1.87 5.87A11.5 11.5 0 0 1 18.13 5.87M4.84 8.84A7.3 7.3 0 0 1 15.16 8.84"
+						stroke="currentColor"
+						stroke-width="2.6"
+						stroke-linecap="round"
+					/>
+					<path
+						d="M10 14.2 7.31 11.31A3.8 3.8 0 0 1 12.69 11.31Z"
+						fill="currentColor"
+						stroke="currentColor"
+						stroke-linejoin="round"
+					/>
+				</svg>
+
+				<!-- Battery, charging: a solid body with the small unfilled share
+				     dimmed, a dimmed terminal, and a large bolt knocked out of the
+				     body. Proportions follow the macOS glyph (about 2:1). -->
+				<svg viewBox="0 0 28 13" class="h-[12px] w-auto">
+					<mask id="battery-bolt">
+						<rect width="28" height="13" fill="white" />
+						<path d="M13.3 1.4 7.8 7.4h3.4l-1.3 4.2 5.3-6h-3.4Z" fill="black" />
+					</mask>
+					<g mask="url(#battery-bolt)">
+						<rect width="24.5" height="13" rx="4" fill="currentColor" opacity="0.35" />
+						<path d="M4 0h16v13H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4Z" fill="currentColor" />
+					</g>
+					<rect x="25.6" y="4.2" width="2" height="4.6" rx="1" fill="currentColor" opacity="0.4" />
+				</svg>
+
+				<span>Wed 10:24</span>
+			</div>
+
+			<div class="grid grid-cols-1 gap-6 p-4 md:grid-cols-[1fr_21rem] md:gap-10 md:p-8 md:pt-2">
+				<!-- Callouts. Written directly on the wallpaper -- no card, no
+				     shadow -- so they read as annotations *about* the menu, not as
+				     more UI. On desktop the column is centered in the space left of
+				     the menu, both ways, so the margins around it are even. The
+				     grid's padding is uneven (the menu hangs just under the bar, so
+				     8px on top vs 32px below); md:mt-6 shifts the centered column
+				     down by half that difference, centering it on the whole wallpaper
+				     area rather than the padded cell. After the menu on phones. -->
+				<ol
+					class="order-2 flex max-w-sm flex-col gap-7 px-1 py-2 md:order-1 md:mt-6 md:self-center md:justify-self-center"
+				>
+					{#each CALLOUTS as c, i (c.title)}
+						<li class="flex gap-3">
+							{@render marker(i + 1)}
+							<span>
+								<span class="block text-sm font-medium">{c.title}</span>
+								<span class="mt-0.5 block text-sm leading-relaxed text-foreground/70">
+									{c.body}
+								</span>
+							</span>
+						</li>
+					{/each}
+				</ol>
+
+				<!-- The menu itself. Mirrors the shipping layout: name and
+				     address, "Open chat", installed models, recommendations,
+				     catalog link, footer. Quant and context chips are left out
+				     on purpose: this page promises newcomers never see that jargon. -->
+				<div
+					aria-hidden="true"
+					class="order-1 w-full rounded-xl border border-border bg-background/95 p-3 text-sm shadow-xl backdrop-blur md:order-2"
+				>
+					<div class="flex items-start justify-between px-1">
+						<div>
+							<p class="flex items-center gap-1.5 font-semibold">
+								Llama <span class="size-1.5 rounded-full bg-foreground/30"></span>
+							</p>
+							<p class="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+								<span class="relative">
+									{@render edgeMarker(2, 'left')}
+									localhost:9931
+								</span>
+								<Copy class="size-3" />
+							</p>
+						</div>
+						<p class="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400">
+							<span class="relative">
+								Open chat
+								{@render edgeMarker(1, 'right')}
+							</span>
+						</p>
+					</div>
+
+					<p class="mt-3 border-t border-border px-1 pt-2 text-xs text-muted-foreground">
+						Installed models
+					</p>
+					{#each MENU_INSTALLED as m (m.name + m.params)}
+						{@render menuModel(m, false)}
+					{/each}
+
+					<p
+						class="mt-2 flex items-center gap-1.5 border-t border-border px-1 pt-2 text-xs text-muted-foreground"
+					>
+						<span class="relative">
+							{@render edgeMarker(3, 'left')}
+							Recommended for your Mac
+						</span>
+					</p>
+					{#each MENU_RECOMMENDED as m (m.name + m.params)}
+						{@render menuModel(m, true)}
+					{/each}
+
+					<div
+						class="mt-2 flex items-center justify-between border-t border-border px-1 pt-2 text-xs text-muted-foreground"
+					>
+						<span>llama.cpp</span>
+						<span class="flex gap-2"><span>Settings</span><span>Quit</span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. The mental model, spelled out. Everyone knows OpenAI has an app
+	     for people (ChatGPT) and an API for apps; Llama has the same two
+	     halves, on your computer. This is the section that answers "how is
+	     a menu bar app a platform?". -->
+	<section class="border-t border-border py-20">
+		<div class="mb-10 flex max-w-2xl flex-col gap-4">
+			<h2 class="text-3xl font-semibold tracking-tight">Like OpenAI, but on your Mac</h2>
+			<p class="leading-relaxed text-muted-foreground">
+				OpenAI has ChatGPT for people and an API for the apps built on it. Llama gives you both,
+				running on your own computer, with models you choose.
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+			<!-- For you: the chat. A private document, because that's where
+			     "it stays on your computer" obviously matters. -->
+			<div class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6">
+				<div>
+					<p class="text-xs tracking-wide text-muted-foreground uppercase">For you</p>
+					<h3 class="mt-1 text-xl font-semibold">
+						Chat <span class="font-normal text-muted-foreground">· like ChatGPT</span>
+					</h3>
+				</div>
+				<div
+					aria-hidden="true"
+					class="flex flex-1 flex-col gap-3 rounded-xl border border-border bg-background p-4 text-sm"
+				>
+					<div class="ml-auto flex max-w-[85%] flex-col items-end gap-1.5">
+						<span
+							class="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground"
+						>
+							<FileText class="size-3" /> lease-agreement.pdf
+						</span>
+						<p class="rounded-2xl bg-muted px-3 py-2">Summarize this and flag anything unusual.</p>
+					</div>
+					<p class="leading-relaxed text-foreground/85">
+						It's a standard 12-month lease. Two things stand out: it renews automatically unless you
+						give 90 days' notice, and…
+					</p>
+				</div>
+				<p class="text-sm text-muted-foreground">
+					Click “Open chat” in the menu. Nothing to set up.
+				</p>
+			</div>
+
+			<!-- For your apps: the API. Categories, not a logo wall -- Pi is
+			     the only integration we can name with confidence today. -->
+			<div class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6">
+				<div>
+					<p class="text-xs tracking-wide text-muted-foreground uppercase">For your apps</p>
+					<h3 class="mt-1 text-xl font-semibold">
+						API <span class="font-normal text-muted-foreground">· like the OpenAI API</span>
+					</h3>
+				</div>
+				<div class="flex flex-1 flex-col gap-2 text-sm">
+					{#each CLIENTS as c (c.label)}
+						<div
+							class="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3"
+						>
+							<c.icon class="size-4 text-muted-foreground" />
+							<span class="flex-1">{c.label}</span>
+							<span class="text-xs text-muted-foreground">{c.example}</span>
+						</div>
+					{/each}
+				</div>
+				<p class="text-sm text-muted-foreground">
+					Point any app that works with OpenAI at
+					<code class="font-mono text-foreground">localhost:9931/v1</code>
+				</p>
+			</div>
+		</div>
+
+		<p class="mt-6 text-center text-sm text-muted-foreground">
+			Same models for both. Download once, use everywhere.
+		</p>
+	</section>
+
+	<!-- 4. Nothing to learn first. The core promise. -->
+	<section class="grid grid-cols-1 items-center gap-10 border-t border-border py-20 md:grid-cols-2">
+		<div class="flex flex-col gap-4">
+			<h2 class="text-3xl font-semibold tracking-tight">Nothing to learn first</h2>
+			<p class="leading-relaxed text-muted-foreground">
+				Running AI locally used to mean reading forum threads about file formats and settings. Llama
+				checks your computer and makes those choices for you. You only pick which model to talk to.
+			</p>
+			<!-- Reassurance for enthusiasts: simple by default doesn't mean
+			     locked down. -->
+			<p class="text-sm leading-relaxed text-muted-foreground">
+				Know what you're doing? Every llama.cpp setting is still there, in one plain-text file.
+			</p>
+		</div>
+		<div class="flex flex-wrap gap-2">
+			{#each JARGON as word (word)}
+				<span
+					class="rounded-full border border-border px-4 py-2 font-mono text-sm text-muted-foreground line-through decoration-accent decoration-2"
+				>
+					{word}
+				</span>
+			{/each}
+		</div>
+	</section>
+
+	<!-- 5. Lightweight. The sharpest contrast with every alternative. The
+	     menu itself is already on screen in the hero, so this is just the
+	     facts. -->
+	<!-- Two sizes on purpose: 4 MB is the installed app, 1 MB is the
+	     (compressed) download the hero quotes. -->
+	<section class="border-t border-border py-20">
+		<h2 class="mb-10 text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
+		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+			<div>
+				<p class="text-4xl font-semibold tracking-tight">4 MB</p>
+				<p class="mt-2 text-muted-foreground">
+					A native Mac app, and just a 1 MB download — smaller than a photo on your phone.
+				</p>
+			</div>
+			<div>
+				<p class="text-4xl font-semibold tracking-tight">0 windows</p>
+				<p class="mt-2 text-muted-foreground">
+					It lives in your menu bar, ready whenever you or an app needs it.
+				</p>
+			</div>
+			<div>
+				<p class="text-4xl font-semibold tracking-tight">0 GB idle</p>
+				<p class="mt-2 text-muted-foreground">
+					Models load when something asks for one and unload when idle, so your Mac stays fast.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. Models by memory tier. Answers "will it run on my computer?" --
+	     the most common newcomer worry -- with the one number they can check. -->
+	<section class="py-20">
+		<div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+			<div class="flex max-w-xl flex-col gap-3">
+				<h2 class="text-3xl font-semibold tracking-tight">A great model for every Mac</h2>
+				<p class="text-muted-foreground">
+					Llama suggests one that fits when you open it. Here's where to start.
+				</p>
+			</div>
+			<a
+				href={resolve('/models')}
+				class="inline-flex shrink-0 items-center gap-1.5 text-sm underline underline-offset-4"
+			>
+				All models <ArrowRight class="size-3.5" />
+			</a>
+		</div>
+
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+			{#each PICKS as p (p.family)}
+				<a
+					href={resolve(`/models/${slugify(p.f.name)}`)}
+					class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6 transition-colors hover:border-foreground/25"
+				>
+					{#if p.mem}
+						<span class="text-sm text-muted-foreground">{p.mem} GB Mac or more</span>
+					{/if}
+					<span class="flex items-center gap-2 text-xl font-medium [&>span>svg]:size-5">
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						<span aria-hidden="true">{@html logoFor(p.f.brand)}</span>
+						{p.f.name}
+					</span>
+					<span class="text-sm text-muted-foreground">{p.note}</span>
+				</a>
+			{/each}
+		</div>
+	</section>
+
+	<!-- 7. Developers: the API. The highlighted line makes "change one
+	     line" shown, not claimed. -->
+	<section
+		id="developers"
+		class="grid scroll-mt-8 grid-cols-1 items-center gap-12 border-t border-border py-24 md:grid-cols-5"
+	>
+		<div class="flex flex-col gap-5 md:col-span-2">
+			<span class="font-mono text-xs font-medium tracking-widest text-accent uppercase">
+				For developers
+			</span>
+			<h2 class="text-3xl leading-tight font-semibold tracking-tight md:text-4xl">
+				OpenAI-compatible.<br />Completely local.
+			</h2>
+			<p class="leading-relaxed text-muted-foreground">
+				If your code works with OpenAI, it works with Llama. Change the base URL and keep everything
+				else — no API keys, no usage bills.
+			</p>
+			<ul class="flex flex-col gap-2 text-sm text-muted-foreground">
+				<li class="flex gap-2">
+					<Check class="mt-0.5 size-4 shrink-0" /> OpenAI- and Anthropic-compatible endpoints
+				</li>
+				<li class="flex gap-2">
+					<Check class="mt-0.5 size-4 shrink-0" /> Streaming, tool calling, structured output, vision
+				</li>
+				<li class="flex gap-2">
+					<Check class="mt-0.5 size-4 shrink-0" /> Already use llama.cpp? Your models show up automatically
+				</li>
+				<li class="flex gap-2">
+					<Check class="mt-0.5 size-4 shrink-0" /> Reach it from your other devices over Tailscale
+				</li>
+			</ul>
+			<a
+				href={resolve('/docs/[...page]', { page: 'api' })}
+				class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
+			>
+				API reference <ArrowRight class="size-3.5" />
+			</a>
+		</div>
+
+		<!-- Dark in both themes: it reads as
+		     "code" at a glance and gives the page a strong focal point. -->
+		<div
+			class="overflow-hidden rounded-xl border border-border bg-[#111] text-[#e7e7e7] shadow-xl md:col-span-3"
+		>
+			<div class="flex items-center justify-between border-b border-white/10 px-2">
+				<div class="flex" role="tablist">
+					{#each SNIPPETS as s (s.id)}
+						<button
+							role="tab"
+							aria-selected={snippetId === s.id}
+							onclick={() => (snippetId = s.id)}
+							class="cursor-pointer border-b px-3 py-3 text-xs {snippetId === s.id
+								? 'border-white text-white'
+								: 'border-transparent text-white/45 hover:text-white/80'}"
+						>
+							{s.label}
+						</button>
+					{/each}
+				</div>
+				<button
+					onclick={copySnippet}
+					aria-label="Copy code"
+					class="cursor-pointer p-2 text-white/45 hover:text-white"
+				>
+					{#if copied}<Check class="size-4" />{:else}<Copy class="size-4" />{/if}
+				</button>
+			</div>
+
+			<pre class="overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"><code
+					>{#each snippet.code.split('\n') as line, i (i)}<span
+							class="block px-5 {i === snippet.changed
+								? 'bg-[oklch(0.67_0.2_42/0.22)] text-white'
+								: ''}">{line || ' '}</span
+						>{/each}</code
+				></pre>
+		</div>
+	</section>
+
+	<!-- 8. Developers: why depend on Llama instead of bundling a stack. The
+	     platform argument, aimed at the people who'd make the choice. -->
+	<section class="grid grid-cols-1 items-center gap-12 pb-24 md:grid-cols-5">
+		<div class="flex flex-col gap-5 md:col-span-2">
+			<h2 class="text-2xl leading-tight font-semibold tracking-tight">
+				Build on Llama instead of bundling it
+			</h2>
+			<p class="leading-relaxed text-muted-foreground">
+				Your app talks to Llama over the API, and a one-click link installs the model it needs. No
+				engine to ship, no gigabytes in your download — and your users keep one copy of each model
+				for all their apps.
+			</p>
+			<div class="rounded-xl border border-border bg-foreground/3 p-4 font-mono text-[12px]">
+				<div class="mb-1 text-muted-foreground"># one-click model install</div>
+				<div class="break-all">llama://install?repo=ggml-org/gemma-4-E4B-it-GGUF</div>
+			</div>
+		</div>
+
+		<div class="flex flex-col gap-3 md:col-span-3">
+			<figure class="rounded-2xl border border-border p-5">
+				<figcaption class="mb-4 text-sm text-muted-foreground">Without Llama</figcaption>
+				<div class="grid grid-cols-3 gap-2 text-center text-xs">
+					{#each DIAGRAM_APPS as a (a)}
+						<div class="flex flex-col gap-1.5">
+							<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
+							<div
+								class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
+							>
+								own engine
+							</div>
+							<div
+								class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
+							>
+								own {exampleModelSize} copy
+							</div>
+						</div>
+					{/each}
+				</div>
+			</figure>
+
+			<figure class="rounded-2xl border border-accent/40 bg-accent/5 p-5">
+				<figcaption class="mb-4 text-sm text-muted-foreground">With Llama</figcaption>
+				<div class="flex flex-col gap-1.5 text-center text-xs">
+					<div class="grid grid-cols-3 gap-2">
+						{#each DIAGRAM_APPS as a (a)}
+							<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
+						{/each}
+					</div>
+					<div class="rounded-lg bg-foreground px-2 py-2.5 font-medium text-background">
+						Llama · one engine, kept up to date
+					</div>
+					<div class="rounded-lg border border-foreground/20 px-2 py-2 text-muted-foreground">
+						one {exampleModelSize} copy, in the Hugging Face cache
+					</div>
+				</div>
+			</figure>
+		</div>
+	</section>
+
+	<!-- Closing CTA. Back to the newcomer: one button, one sentence. -->
+	<section class="flex flex-col items-center gap-6 border-t border-border py-24 text-center">
+		<h2 class="text-4xl font-semibold tracking-tight">Local AI starts here</h2>
+		<p class="text-muted-foreground">Free, open source, and yours to keep.</p>
+		<Button href={MACOS_DOWNLOAD_URL} size="lg" class="h-12 px-6 text-[15px]">
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			<span class="mb-0.5">{@html appleIcon}</span>
+			Download for Mac
+		</Button>
+		<!-- For the developers who scrolled this far: the install they'd
+		     reach for anyway. -->
+		<p class="text-sm text-muted-foreground">
+			or <code class="font-mono text-foreground">brew install --cask llama-app</code>
+		</p>
+		{#if !deviceInfo.isMac}
+			<div class="mt-2 flex w-full max-w-2xl flex-col items-center gap-3">
+				<p class="text-sm text-muted-foreground">Not on a Mac? Install from the terminal:</p>
+				<InstallCommand />
+			</div>
+		{/if}
+	</section>
 </main>
