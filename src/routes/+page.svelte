@@ -521,16 +521,54 @@ const reply = await client.chat.completions.create({
 						</div>
 					{/each}
 				</div>
-				<p class="text-sm text-muted-foreground">
+				<!-- A div, not a p: the global `p code` rule (prism-theme.css) adds
+				     side margins and the accent color, which indents the address
+				     when it wraps onto its own line. -->
+				<div class="text-sm text-muted-foreground">
 					Point any app that works with OpenAI at
 					<code class="font-mono text-foreground">localhost:9931/v1</code>
-				</p>
+				</div>
 			</div>
 		</div>
 
-		<p class="mt-6 text-center text-sm text-muted-foreground">
-			Same models for both. Download once, use everywhere.
-		</p>
+		<!-- The shared foundation: one set of models under both halves. The
+		     connectors and the full-width block make "same models for both"
+		     visible as a stack rather than a footnote. Connectors are hidden
+		     on mobile, where the cards stack and there's no "both" to join. -->
+		<div aria-hidden="true" class="hidden grid-cols-2 gap-4 md:grid">
+			<div class="mx-auto h-4 w-px bg-border"></div>
+			<div class="mx-auto h-4 w-px bg-border"></div>
+		</div>
+		<div
+			class="mt-4 flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 px-6 py-4 md:mt-0 md:flex-row md:items-center md:justify-between"
+		>
+			<!-- One line, body size: this is the base, not a third feature
+			     card, so it shouldn't outweigh the chips beside it. The
+			     connectors already say "underneath both", so no eyebrow. -->
+			<h3 class="font-semibold">
+				Your models <span class="font-normal text-muted-foreground"
+					>· download once, use everywhere</span
+				>
+			</h3>
+			<!-- The same models as in the menu mock above, so the page tells
+			     one consistent story. -->
+			<div class="flex flex-wrap gap-2 text-sm">
+				{#each MENU_INSTALLED as m (m.name + m.params)}
+					<span
+						class="flex items-center gap-2 rounded-full border border-border bg-background py-1 pr-3 pl-1"
+					>
+						<span
+							class="flex size-6 items-center justify-center rounded-full bg-foreground/6 [&_svg]:size-3.5"
+						>
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html logoFor(m.brand)}
+						</span>
+						{m.name}
+						<span class="text-xs text-muted-foreground">{m.params}</span>
+					</span>
+				{/each}
+			</div>
+		</div>
 	</section>
 
 	<!-- 4. Nothing to learn first. The core promise. -->
