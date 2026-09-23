@@ -814,10 +814,6 @@ const reply = await client.chat.completions.create({
 				engine to ship, no gigabytes in your download — and your users keep one copy of each model
 				for all their apps.
 			</p>
-			<div class="rounded-xl border border-border bg-foreground/3 p-4 font-mono text-[12px]">
-				<div class="mb-1 text-muted-foreground"># one-click model install</div>
-				<div class="break-all">llama://install?repo=ggml-org/gemma-4-E4B-it-GGUF</div>
-			</div>
 		</div>
 
 		<div class="flex flex-col gap-3 md:col-span-3">
