@@ -39,6 +39,7 @@
 	import { InstallCommand, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
+	import Prism from '$lib/prism';
 	import { deviceInfo } from '$lib/stores/device/index.svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -162,7 +163,8 @@ reply = client.chat.completions.create(
     messages=[{"role": "user", "content": "Hi!"}],
 )`,
 			id: 'python',
-			label: 'Python'
+			label: 'Python',
+			lang: 'python'
 		},
 		{
 			changed: 3,
@@ -178,7 +180,8 @@ const reply = await client.chat.completions.create({
   messages: [{ role: "user", content: "Hi!" }],
 });`,
 			id: 'js',
-			label: 'JavaScript'
+			label: 'JavaScript',
+			lang: 'javascript'
 		},
 		{
 			changed: 0,
@@ -189,9 +192,18 @@ const reply = await client.chat.completions.create({
     "messages": [{"role": "user", "content": "Hi!"}]
   }'`,
 			id: 'curl',
-			label: 'curl'
+			label: 'curl',
+			lang: 'bash'
 		}
 	];
+
+	// Highlighted once up front. The whole snippet is highlighted rather than
+	// line by line because some tokens span lines (the curl JSON body is one
+	// multi-line string), so the changed line is marked with a separate band
+	// behind the text instead of by wrapping each line.
+	const highlighted = Object.fromEntries(
+		SNIPPETS.map((s) => [s.id, Prism.highlight(s.code, Prism.languages[s.lang], s.lang)])
+	);
 
 	let snippetId = $state('python');
 	let copied = $state(false);
@@ -769,13 +781,24 @@ const reply = await client.chat.completions.create({
 				</button>
 			</div>
 
-			<pre class="overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"><code
-					>{#each snippet.code.split('\n') as line, i (i)}<span
-							class="block px-5 {i === snippet.changed
-								? 'bg-[oklch(0.67_0.2_42/0.22)] text-white'
-								: ''}">{line || ' '}</span
-						>{/each}</code
+			<!-- `dark` opts the tokens into the dark Prism palette (prism-theme.css)
+			     regardless of the page theme, since this card is dark in both.
+
+			     The changed-line band is a neutral white rather than a color:
+			     red reads as a removed line and green as an added one. It sits
+			     at the line's offset (py-4 = 16px top padding, leading-6 = 24px
+			     per line), and the code is `relative` so it paints above it.
+
+			     The HTML is Prism's output for our own constant snippets. -->
+			<!-- eslint-disable svelte/no-at-html-tags -->
+			<pre
+				class="dark relative overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"><div
+					class="absolute inset-x-0 h-6 border-l-2 border-white/60 bg-white/[0.08]"
+					style="top: {16 + snippet.changed * 24}px"
+					aria-hidden="true"></div><code class="relative block px-5"
+					>{@html highlighted[snippet.id]}</code
 				></pre>
+			<!-- eslint-enable svelte/no-at-html-tags -->
 		</div>
 	</section>
 

@@ -14,6 +14,14 @@ code[class*='language-'] {
 	font-family: var(--font-mono);
 }
 
+/* The stock prism.css theme puts a translucent white box behind these, which
+   shows up as grey blocks on dark code */
+.token.operator,
+.token.entity,
+.token.url {
+	background: none !important;
+}
+
 /* Dark mode Prism color overrides */
 .dark .token.comment,
 .dark .token.prolog,
