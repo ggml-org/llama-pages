@@ -196,6 +196,9 @@ const reply = await client.chat.completions.create({
 	/>
 </svelte:head>
 
+<!-- Two text colors only. Content -- headings and the paragraphs under them --
+     uses the default foreground. `text-muted-foreground` is for asides: small
+     print, captions, labels, and the UI inside mockups. -->
 <main class="mx-auto w-full max-w-5xl px-6 md:px-12">
 	<!-- A numbered marker, shared by the menu and the callouts so the two
 	     visibly refer to each other. -->
@@ -270,7 +273,7 @@ const reply = await client.chat.completions.create({
 			Your AI.<br />On your computer.
 		</h1>
 
-		<p class="max-w-2xl text-lg leading-relaxed text-balance text-muted-foreground md:text-xl">
+		<p class="max-w-2xl text-lg leading-relaxed text-balance md:text-xl">
 			Llama is a tiny menu bar app that runs the latest open models on your Mac. Chat with them, or
 			use them in your other apps. Private, free, and nothing to set up.
 		</p>
@@ -460,7 +463,7 @@ const reply = await client.chat.completions.create({
 	<section class="py-20">
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
 			<h2 class="text-3xl font-semibold tracking-tight">Like OpenAI, but on your Mac</h2>
-			<p class="leading-relaxed text-muted-foreground">
+			<p class="leading-relaxed">
 				OpenAI has ChatGPT for people and an API for the apps built on it. Llama gives you both,
 				running on your own computer, with models you choose.
 			</p>
@@ -534,7 +537,7 @@ const reply = await client.chat.completions.create({
 	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2">
 		<div class="flex flex-col gap-4">
 			<h2 class="text-3xl font-semibold tracking-tight">Nothing to learn first</h2>
-			<p class="leading-relaxed text-muted-foreground">
+			<p class="leading-relaxed">
 				Running AI locally used to mean reading forum threads about file formats and settings. Llama
 				checks your computer and makes those choices for you. You only pick which model to talk to.
 			</p>
@@ -565,19 +568,17 @@ const reply = await client.chat.completions.create({
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
 			<div>
 				<p class="text-4xl font-semibold tracking-tight">4 MB</p>
-				<p class="mt-2 text-muted-foreground">
+				<p class="mt-2">
 					A native Mac app, and just a 1 MB download — smaller than a photo on your phone.
 				</p>
 			</div>
 			<div>
 				<p class="text-4xl font-semibold tracking-tight">0 windows</p>
-				<p class="mt-2 text-muted-foreground">
-					It lives in your menu bar, ready whenever you or an app needs it.
-				</p>
+				<p class="mt-2">It lives in your menu bar, ready whenever you or an app needs it.</p>
 			</div>
 			<div>
 				<p class="text-4xl font-semibold tracking-tight">0 GB idle</p>
-				<p class="mt-2 text-muted-foreground">
+				<p class="mt-2">
 					Models load when something asks for one and unload when idle, so your Mac stays fast.
 				</p>
 			</div>
@@ -590,9 +591,7 @@ const reply = await client.chat.completions.create({
 		<div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 			<div class="flex max-w-xl flex-col gap-3">
 				<h2 class="text-3xl font-semibold tracking-tight">A great model for every Mac</h2>
-				<p class="text-muted-foreground">
-					Llama suggests one that fits when you open it. Here's where to start.
-				</p>
+				<p>Llama suggests one that fits when you open it. Here's where to start.</p>
 			</div>
 			<a
 				href={resolve('/models')}
@@ -635,7 +634,7 @@ const reply = await client.chat.completions.create({
 			<h2 class="text-3xl leading-tight font-semibold tracking-tight md:text-4xl">
 				OpenAI-compatible.<br />Completely local.
 			</h2>
-			<p class="leading-relaxed text-muted-foreground">
+			<p class="leading-relaxed">
 				If your code works with OpenAI, it works with Llama. Change the base URL and keep everything
 				else — no API keys, no usage bills.
 			</p>
@@ -707,7 +706,7 @@ const reply = await client.chat.completions.create({
 			<h2 class="text-2xl leading-tight font-semibold tracking-tight">
 				Build on Llama instead of bundling it
 			</h2>
-			<p class="leading-relaxed text-muted-foreground">
+			<p class="leading-relaxed">
 				Your app talks to Llama over the API, and a one-click link installs the model it needs. No
 				engine to ship, no gigabytes in your download — and your users keep one copy of each model
 				for all their apps.
@@ -762,7 +761,7 @@ const reply = await client.chat.completions.create({
 	<!-- Closing CTA. Back to the newcomer: one button, one sentence. -->
 	<section class="flex flex-col items-center gap-6 py-24 text-center">
 		<h2 class="text-4xl font-semibold tracking-tight">Local AI starts here</h2>
-		<p class="text-muted-foreground">Free, open source, and yours to keep.</p>
+		<p>Free, open source, and yours to keep.</p>
 		<Button href={MACOS_DOWNLOAD_URL} size="lg" class="h-12 px-6 text-[15px]">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<span class="mb-0.5">{@html appleIcon}</span>
