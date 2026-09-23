@@ -12,9 +12,11 @@
 	href="https://github.com/ggml-org/llama.cpp"
 	target="_blank"
 	rel="noreferrer"
-	class="inline-flex items-center gap-2 text-[15px] text-foreground"
+	class="group inline-flex items-center gap-2 text-[15px] text-foreground"
 >
-	<span class="underline decoration-foreground/30 underline-offset-4">GitHub</span>
+	<!-- Same faint hover underline as the Models and Docs nav links. No resting
+	     underline: in the header, a solid underline marks the current section. -->
+	<span class="decoration-foreground/30 underline-offset-[6px] group-hover:underline">GitHub</span>
 
 	{#if formatted}
 		<span

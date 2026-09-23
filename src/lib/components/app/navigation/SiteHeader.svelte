@@ -19,8 +19,7 @@
 
 	// Nav links are full-strength text, like the GitHub link on the right --
 	// muted gray read as disabled. The current section gets a solid
-	// underline; other links show a faint one on hover (the same faint
-	// underline the GitHub link always has).
+	// underline; other links (and the GitHub link) show a faint one on hover.
 	function navLinkClass(active: boolean) {
 		return active
 			? 'text-foreground underline decoration-foreground decoration-2 underline-offset-[6px]'
@@ -39,8 +38,9 @@
 	     the logo separates brand from nav, so the link doesn't read as part of
 	     the wordmark. "Models" always links to the catalog and is underlined while
 	     you're anywhere in the section; the page itself names where you are
-	     (each page leads with its own h1). -->
-	<nav class="flex items-center gap-4 text-[15px]">
+	     (each page leads with its own h1). Gaps widen from md up; phones keep
+	     the tighter gap so both sides still fit on one row. -->
+	<nav class="flex items-center gap-4 text-[15px] md:gap-6">
 		<a href={resolve('/')}>
 			<Logo --logo-height="1.5rem" />
 		</a>
@@ -64,7 +64,7 @@
 		</a>
 	</nav>
 
-	<div class="flex items-center gap-4">
+	<div class="flex items-center gap-4 md:gap-6">
 		<GitHubLink {stars} />
 
 		<button
