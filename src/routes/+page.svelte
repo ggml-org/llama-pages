@@ -243,6 +243,18 @@ const reply = await client.chat.completions.create({
 		setTimeout(() => (copied = false), 2000);
 	}
 
+	// -- Closing CTA ------------------------------------------------------------------
+
+	const BREW_COMMAND = 'brew install --cask llama-app';
+	let brewCopied = $state(false);
+
+	function copyBrewCommand() {
+		navigator.clipboard.writeText(BREW_COMMAND);
+		toast.success('Copied to clipboard!');
+		brewCopied = true;
+		setTimeout(() => (brewCopied = false), 2000);
+	}
+
 	// -- Without / with diagram ----------------------------------------------------
 	//
 	// The per-app model size is a real download (Qwen 3.8 at Q4) rather than a
@@ -1156,10 +1168,24 @@ const reply = await client.chat.completions.create({
 			Download for Mac
 		</Button>
 		<!-- For the developers who scrolled this far: the install they'd
-		     reach for anyway. -->
-		<p class="text-sm text-muted-foreground">
-			or <code class="font-mono text-foreground">brew install --cask llama-app</code>
-		</p>
+		     reach for anyway. The "or" sits on its own line so it reads as a
+		     choice between the button and the command, and the command gets a
+		     subtle chip so it reads as something to copy into a terminal. A
+		     div, not a p: the global `p code` rule (prism-theme.css) would
+		     force the accent color and add side margins. -->
+		<div class="flex flex-col items-center gap-3 text-sm">
+			<span class="text-muted-foreground">or</span>
+			<div class="flex items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3">
+				<code class="font-mono text-foreground">{BREW_COMMAND}</code>
+				<button
+					onclick={copyBrewCommand}
+					aria-label={brewCopied ? 'Copied command' : 'Copy command'}
+					class="cursor-pointer rounded-md p-1.5 text-muted-foreground hover:text-foreground"
+				>
+					{#if brewCopied}<Check class="size-3.5" />{:else}<Copy class="size-3.5" />{/if}
+				</button>
+			</div>
+		</div>
 		{#if !deviceInfo.isMac}
 			<div class="mt-2 flex w-full max-w-2xl flex-col items-center gap-3">
 				<p class="text-sm text-muted-foreground">Not on a Mac? Install from the terminal:</p>
