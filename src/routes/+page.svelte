@@ -24,13 +24,16 @@
 		ChevronRight,
 		Code,
 		Copy,
-		Feather,
 		FileText,
-		HardDrive,
-		MemoryStick,
+		Gauge,
+		Image,
+		Layers,
 		MessageSquare,
+		Package,
+		ScrollText,
 		Terminal,
-		Video
+		Video,
+		Zap
 	} from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import appleIcon from '$lib/assets/apple-icon.svg?raw';
@@ -73,46 +76,6 @@
 		{ example: 'Any OpenAI SDK', icon: Braces, label: 'Your own code' }
 	];
 
-	// -- Nothing to set up --------------------------------------------------------
-	//
-	// The settings Llama decides so users don't have to, each paired with how
-	// it decides. Newcomers can skip the jargon and still get the point (it's
-	// handled); enthusiasts, who know these settings, see that the choices
-	// are real and sensible. Every rule here mirrors the app's code
-	// (`ModelManager.generatedModelSections` and the catalog's quant pick),
-	// so keep them in sync -- if the app stops doing one, drop the row.
-	const TUNED = [
-		{ how: 'Highest precision that fits in memory', setting: 'Quantization' },
-		{ how: 'Only sizes that fit in memory', setting: 'Context size' },
-		{ how: 'On for models that understand images', setting: 'Image input' },
-		{ how: 'On for models that support it', setting: 'Speculative decoding' },
-		{ how: 'Larger on Macs with 32 GB or more', setting: 'Batch size' }
-	];
-
-	// -- Lightweight ---------------------------------------------------------------
-	//
-	// The three "is it heavy?" facts. Not "no windows" or "no Dock icon":
-	// Settings opens a window and shows a Dock icon while it's open. Model
-	// storage is the stronger third point anyway -- models are the heavy
-	// part, and other apps keep their own copies.
-	const LIGHT = [
-		{
-			body: 'A native Mac app, and just a 1 MB download — smaller than a photo.',
-			icon: Feather,
-			title: '4 MB app'
-		},
-		{
-			body: 'Kept in the Hugging Face cache, shared with llama.cpp and other tools.',
-			icon: HardDrive,
-			title: 'Each model stored once'
-		},
-		{
-			body: 'Models load when something asks for one and unload after 5 minutes idle.',
-			icon: MemoryStick,
-			title: 'Nothing loaded when idle'
-		}
-	];
-
 	// -- Menu mock ------------------------------------------------------------------
 	//
 	// Rows as the shipping menu shows them (lowercase family names, a size
@@ -128,6 +91,59 @@
 	const MENU_RECOMMENDED: MenuModel[] = [
 		{ brand: 'Gemma', name: 'gemma-4', params: '12B', size: '7.22 GB' }
 	];
+
+	// -- Nothing to set up --------------------------------------------------------
+	//
+	// The settings Llama decides so users don't have to, each paired with how
+	// it decides. Newcomers can skip the jargon and still get the point (it's
+	// handled); enthusiasts, who know these settings, see that the choices
+	// are real and sensible. Every rule here mirrors the app's code
+	// (`ModelManager.generatedModelSections` and the catalog's quant pick),
+	// so keep them in sync -- if the app stops doing one, drop the row.
+	//
+	// Each row gets an icon so the card reads as a settings screen at a
+	// glance, before any of the jargon has to be parsed.
+	const TUNED = [
+		{ how: 'Highest precision that fits in memory', icon: Gauge, setting: 'Quantization' },
+		{ how: 'Only sizes that fit in memory', icon: ScrollText, setting: 'Context size' },
+		{ how: 'On for models that understand images', icon: Image, setting: 'Image input' },
+		{ how: 'On for models that support it', icon: Zap, setting: 'Speculative decoding' },
+		{ how: 'Larger on Macs with 32 GB or more', icon: Layers, setting: 'Batch size' }
+	];
+
+	// The model named in the card's header, and the shared file in the
+	// "stored once" drawing below. The same Qwen as in the menu mock, so the
+	// page keeps telling one story. It understands images, so no row in the
+	// settings card is contradicted by the example.
+	const EXAMPLE_MODEL = MENU_INSTALLED[0];
+
+	// -- Lightweight ---------------------------------------------------------------
+	//
+	// The three "is it heavy?" facts. Not "no windows" or "no Dock icon":
+	// Settings opens a window and shows a Dock icon while it's open. Model
+	// storage is the stronger third point anyway -- models are the heavy
+	// part, and other apps keep their own copies. Each card draws its fact
+	// (see the snippets in the markup), so the copy here stays one line.
+	const LIGHT = [
+		{
+			body: 'A native Mac app, and just a 1 MB download — smaller than a photo.',
+			id: 'size',
+			title: '4 MB app'
+		},
+		{
+			body: 'Kept in the Hugging Face cache, shared with llama.cpp and other tools.',
+			id: 'storage',
+			title: 'Each model stored once'
+		},
+		{
+			body: 'Models load when something asks for one and unload after 5 minutes idle.',
+			id: 'idle',
+			title: 'Nothing loaded when idle'
+		}
+	] as const;
+
+	// The tools shown sharing one model file in the "stored once" drawing.
+	const SHARED_BY = ['Llama', 'llama.cpp', 'Other tools'];
 
 	// -- Models by memory --------------------------------------------------------
 	//
@@ -620,8 +636,9 @@ const reply = await client.chat.completions.create({
 
 	<!-- 4. Nothing to set up. The core promise, and the thing users say
 	     draws them to Llama. The card shows the configuration happening
-	     rather than just claiming it. -->
-	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2">
+	     rather than just claiming it: it's drawn as a settings screen for
+	     one model where every setting is already on "Auto". -->
+	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2 md:gap-12">
 		<div class="flex flex-col gap-4">
 			<h2 class="text-3xl font-semibold tracking-tight">Nothing to set up</h2>
 			<p class="leading-relaxed">
@@ -635,18 +652,56 @@ const reply = await client.chat.completions.create({
 				Know what you're doing? Every llama.cpp setting is still there, in one plain-text file.
 			</p>
 		</div>
-		<div class="rounded-2xl border border-border bg-foreground/2 p-6">
-			<p class="mb-2 text-sm text-muted-foreground">Chosen by Llama, for your Mac</p>
-			<dl class="divide-y divide-border">
-				{#each TUNED as t (t.setting)}
-					<div
-						class="flex flex-col gap-0.5 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+
+		<div class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-5">
+			<!-- Header: which model, and that the work is done. -->
+			<div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-1">
+				<span class="flex items-center gap-2 text-sm font-medium">
+					<span
+						aria-hidden="true"
+						class="flex size-6 items-center justify-center rounded-full bg-foreground/6 [&_svg]:size-3.5"
 					>
-						<dt class="font-mono text-sm">{t.setting}</dt>
-						<dd class="text-sm text-muted-foreground sm:text-right">{t.how}</dd>
-					</div>
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html logoFor(EXAMPLE_MODEL.brand)}
+					</span>
+					{EXAMPLE_MODEL.name}
+					<span class="rounded border border-border px-1 text-[10px] text-muted-foreground"
+						>{EXAMPLE_MODEL.params}</span
+					>
+				</span>
+				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
+					<Check class="size-3.5 text-accent" /> Chosen by Llama, for your Mac
+				</span>
+			</div>
+
+			<!-- A list rather than a <dl>: each row also holds an icon and a
+			     pill, which a <dl>'s row wrapper isn't allowed to contain.
+			     Setting names are in the body font, not mono -- they're
+			     labels here, not something to type. -->
+			<ul class="divide-y divide-border rounded-xl border border-border bg-background">
+				{#each TUNED as t (t.setting)}
+					<li class="flex items-center gap-3 px-4 py-3">
+						<span
+							aria-hidden="true"
+							class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5"
+						>
+							<t.icon class="size-4 text-muted-foreground" />
+						</span>
+						<span class="min-w-0 flex-1">
+							<span class="block text-sm font-medium">{t.setting}</span>
+							<span class="block text-sm text-muted-foreground">{t.how}</span>
+						</span>
+						<!-- Hidden from screen readers: the header already says
+						     Llama chose all of these, so "Auto" five times over is
+						     just noise when read aloud. -->
+						<span
+							aria-hidden="true"
+							class="shrink-0 rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent"
+							>Auto</span
+						>
+					</li>
 				{/each}
-			</dl>
+			</ul>
 		</div>
 	</section>
 
@@ -654,29 +709,167 @@ const reply = await client.chat.completions.create({
 	     menu itself is already on screen in the hero, so this is just the
 	     facts. Two sizes on purpose: 4 MB is the installed app, 1 MB is the
 	     (compressed) download the hero quotes. The 5-minute unload is the
-	     app's default (`UserSettings.sleepIdleTime`); keep it in sync. -->
+	     app's default (`UserSettings.sleepIdleTime`); keep it in sync.
 
-	<!-- Small titled items with an icon rather than big numbers, so no
-	     single fact shouts. -->
+	     Each fact gets a small drawing of itself instead of a big number, so
+	     no single fact shouts, and instead of an icon, which says nothing
+	     the title doesn't. -->
+
+	<!-- 4 MB: the two files a user actually handles, which also explains
+	     why the card says 4 MB while the hero and body say 1 MB. The size
+	     shares the file name's line (baseline-aligned), not the row's
+	     vertical center, so it reads as that file's size. -->
+	{#snippet sizeArt()}
+		<div class="flex flex-col gap-4">
+			<div class="flex items-center gap-3">
+				<span
+					class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-muted-foreground"
+				>
+					<Package class="size-4" />
+				</span>
+				<span class="min-w-0 flex-1">
+					<span class="flex items-baseline justify-between gap-3 text-sm">
+						<span class="font-medium">Llama.dmg</span>
+						<span class="font-mono">1 MB</span>
+					</span>
+					<span class="block text-muted-foreground">Download</span>
+				</span>
+			</div>
+			<div class="flex items-center gap-3">
+				<span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5">
+					<Logo --logo-height="0.875rem" />
+				</span>
+				<span class="min-w-0 flex-1">
+					<span class="flex items-baseline justify-between gap-3 text-sm">
+						<span class="font-medium">Llama.app</span>
+						<span class="font-mono">4 MB</span>
+					</span>
+					<span class="block text-muted-foreground">Installed</span>
+				</span>
+			</div>
+		</div>
+	{/snippet}
+
+	<!-- Stored once: three tools converging on a single model file. The
+	     chips sit in a 3-column grid so their centers land near 1/6, 1/2,
+	     and 5/6 of the width, where the connectors start. The connectors are right-angled, like a bus: each chip drops to a shared horizontal line, and one line drops from its middle to the file. The SVG stretches
+	     to the panel's width (preserveAspectRatio="none"); non-scaling
+	     strokes keep the lines 1px regardless. -->
+	{#snippet storageArt()}
+		<div class="flex flex-col items-center">
+			<div class="grid w-full grid-cols-3 gap-1.5 text-center">
+				{#each SHARED_BY as tool (tool)}
+					<span class="truncate rounded-md border border-border px-1 py-1">{tool}</span>
+				{/each}
+			</div>
+			<svg
+				viewBox="0 0 120 28"
+				preserveAspectRatio="none"
+				class="h-7 w-full text-foreground/25"
+				fill="none"
+			>
+				<path d="M20 0V14H100V0M60 0V28" stroke="currentColor" vector-effect="non-scaling-stroke" />
+			</svg>
+			<!-- Full width, spanning the three tools above, and laid out like
+			     the file rows in the size drawing: the model and where it lives
+			     on the left, its size on disk on the right, on the name's line. -->
+			<span
+				class="flex w-full items-center gap-2.5 rounded-lg border border-foreground/20 bg-foreground/3 py-1.5 pr-3 pl-2.5"
+			>
+				<span class="[&_svg]:size-4">
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+					{@html logoFor(EXAMPLE_MODEL.brand)}
+				</span>
+				<span class="min-w-0 flex-1">
+					<span class="flex items-baseline justify-between gap-3">
+						<span class="font-medium">{EXAMPLE_MODEL.name} {EXAMPLE_MODEL.params}</span>
+						<span class="font-mono text-muted-foreground">{EXAMPLE_MODEL.size}</span>
+					</span>
+					<span class="block text-[11px] text-muted-foreground">In the Hugging Face cache</span>
+				</span>
+			</span>
+		</div>
+	{/snippet}
+
+	<!-- Idle: memory over time. Nothing, then a request loads the model,
+	     it's used, sits idle for 5 minutes, and is unloaded.
+
+	     Each stretch is labeled inside itself rather than on an axis below,
+	     so there's nothing to match up. "In use" and "idle" hold the same
+	     memory, so they're told apart by style: in use is solid, idle is a
+	     paler fill under a dashed edge -- still loaded, just waiting. No axis
+	     title ("memory used"): the block labels and the card's text already
+	     say what's up and what's down. "Unloaded" is right-aligned rather
+	     than centered in its stretch, which is too narrow for it. The
+	     labels are positioned in % of the width, matching the chart's x
+	     coordinates out of 200 (30 = 15%, 90 = 45%, 150 = 75%), and the
+	     plateau spans y 8-110 of the 112px-tall box (h-28), hence pt-2 on the block labels and bottom-1.5 (2px baseline + 4px) on "Unloaded". -->
+	{#snippet idleArt()}
+		<div class="flex flex-col">
+			<div class="relative h-28 text-[11px] whitespace-nowrap">
+				<svg
+					viewBox="0 0 200 112"
+					preserveAspectRatio="none"
+					class="absolute inset-0 size-full text-accent"
+					fill="none"
+				>
+					<path d="M30 110V8H90V110Z" fill="currentColor" fill-opacity="0.22" />
+					<path d="M90 110V8H150V110Z" fill="currentColor" fill-opacity="0.07" />
+					<path
+						d="M0 110H30V8H90M150 8V110H200"
+						stroke="currentColor"
+						stroke-width="1.5"
+						stroke-linejoin="round"
+						vector-effect="non-scaling-stroke"
+					/>
+					<path
+						d="M90 8H150"
+						stroke="currentColor"
+						stroke-width="1.5"
+						stroke-dasharray="4 3"
+						vector-effect="non-scaling-stroke"
+					/>
+				</svg>
+				<span
+					class="absolute inset-y-0 left-[15%] flex w-[30%] items-center justify-center pt-2 font-medium"
+					>In use</span
+				>
+				<span class="absolute inset-y-0 left-[45%] flex w-[30%] items-center justify-center pt-2"
+					>5 min idle</span
+				>
+				<span class="absolute right-0 bottom-1.5 text-muted-foreground">Unloaded</span>
+			</div>
+		</div>
+	{/snippet}
+
 	<section class="py-20">
 		<h2 class="mb-10 text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
-		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
-			{#each LIGHT as l (l.title)}
-				<div class="flex flex-col gap-3">
-					<span
-						class="flex size-10 items-center justify-center rounded-xl border border-border bg-foreground/2"
-					>
-						<l.icon class="size-5" />
-					</span>
+		<!-- Three across only from lg: below that, the cards are too narrow
+		     for the drawings (the "stored once" chips would truncate). -->
+		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+			{#each LIGHT as l (l.id)}
+				<!-- Text first, drawing pinned to the bottom (mt-auto). The grid
+				     stretches every card to the tallest one, and the slack goes
+				     into the gap between the two -- so the drawings keep their
+				     natural heights instead of being boxed to a common one. -->
+				<div class="flex flex-col gap-8 rounded-2xl border border-border bg-foreground/2 p-6">
 					<div>
-						<p class="font-medium">{l.title}</p>
+						<h3 class="font-medium">{l.title}</h3>
 						<p class="mt-1 leading-relaxed text-muted-foreground">{l.body}</p>
+					</div>
+					<div aria-hidden="true" class="mt-auto text-xs">
+						{#if l.id === 'size'}
+							{@render sizeArt()}
+						{:else if l.id === 'storage'}
+							{@render storageArt()}
+						{:else}
+							{@render idleArt()}
+						{/if}
 					</div>
 				</div>
 			{/each}
 		</div>
 	</section>
-
 	<!-- 6. Models by memory tier. Answers "will it run on my computer?" --
 	     the most common newcomer worry -- with the one number they can check. -->
 	<section class="py-20">
