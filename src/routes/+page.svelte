@@ -19,6 +19,7 @@
 	import {
 		ArrowDown,
 		ArrowRight,
+		ArrowUpRight,
 		Braces,
 		Check,
 		ChevronRight,
@@ -28,6 +29,7 @@
 		Gauge,
 		Image,
 		Layers,
+		LayoutGrid,
 		MessageSquare,
 		Package,
 		ScrollText,
@@ -79,11 +81,19 @@
 	// -- Menu mock ------------------------------------------------------------------
 	//
 	// Rows as the shipping menu shows them (lowercase family names, a size
-	// chip), with real download sizes from the catalog.
-	type MenuModel = { brand: string; name: string; params: string; size: string };
+	// chip), with real download sizes from the catalog. `loaded` marks the
+	// model currently in memory, which the app shows as a solid blue logo
+	// circle -- one touch of color that also says "it's running".
+	type MenuModel = {
+		brand: string;
+		loaded?: boolean;
+		name: string;
+		params: string;
+		size: string;
+	};
 
 	const MENU_INSTALLED: MenuModel[] = [
-		{ brand: 'Qwen', name: 'Qwen3.8', params: '27B', size: '19.0 GB' },
+		{ brand: 'Qwen', loaded: true, name: 'Qwen3.8', params: '27B', size: '19.0 GB' },
 		{ brand: 'OpenAI', name: 'gpt-oss', params: '20B', size: '12.1 GB' },
 		{ brand: 'Gemma', name: 'gemma-4', params: 'E4B', size: '4.59 GB' }
 	];
@@ -257,10 +267,14 @@ const reply = await client.chat.completions.create({
      print, captions, labels, and the UI inside mockups. -->
 <main class="mx-auto w-full max-w-5xl px-6 md:px-12">
 	<!-- A numbered marker, shared by the menu and the callouts so the two
-	     visibly refer to each other. -->
+	     visibly refer to each other. In the text color rather than a hue:
+	     the sky is already blue, and blue is taken inside the menu (the
+	     link, the loaded model), so a colored marker either clashes or
+	     reads as part of the app. Near-black stands out on both the sky
+	     and the menu and reads as an annotation. -->
 	{#snippet marker(n: number)}
 		<span
-			class="flex size-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-semibold text-white"
+			class="flex size-5 shrink-0 items-center justify-center rounded-full bg-foreground text-[11px] font-semibold text-background"
 			>{n}</span
 		>
 	{/snippet}
@@ -283,29 +297,40 @@ const reply = await client.chat.completions.create({
 		</span>
 	{/snippet}
 
+	<!-- The parameter-count chip next to a model's name, styled like the
+	     app's: a tinted, bordered capsule. -->
+	{#snippet paramsChip(params: string)}
+		<span
+			class="rounded-[5px] border border-foreground/10 bg-foreground/4 px-1.5 text-[11px] leading-4 text-muted-foreground"
+			>{params}</span
+		>
+	{/snippet}
+
 	<!-- One model row in the menu mock. Installed rows open a submenu
-	     (chevron); recommended rows download (arrow). -->
+	     (chevron); recommended rows download (arrow). Lines are set tight
+	     (leading-4.5 / leading-4), as in the app, so the rows sit close
+	     together; the trailing glyph is fainter than the secondary text. -->
 	{#snippet menuModel(m: MenuModel, recommended: boolean)}
-		<div class="flex items-center gap-2.5 px-1 py-1.5">
+		<div class="flex items-center gap-2.5 px-1 py-1">
 			<span
-				class="flex size-7 shrink-0 items-center justify-center rounded-full bg-foreground/6 [&_svg]:size-4"
+				class="flex size-7 shrink-0 items-center justify-center rounded-full [&_svg]:size-4 {m.loaded
+					? 'bg-blue-500 text-white'
+					: 'bg-foreground/6'}"
 			>
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html logoFor(m.brand)}
 			</span>
 			<span class="min-w-0 flex-1">
-				<span class="flex items-center gap-1.5">
+				<span class="flex items-center gap-1.5 leading-4.5">
 					{m.name}
-					<span class="rounded border border-border px-1 text-[10px] text-muted-foreground"
-						>{m.params}</span
-					>
+					{@render paramsChip(m.params)}
 				</span>
-				<span class="block text-xs text-muted-foreground">{m.size}</span>
+				<span class="block text-[13px] leading-4 text-muted-foreground">{m.size}</span>
 			</span>
 			{#if recommended}
-				<ArrowDown class="size-3.5 text-muted-foreground" />
+				<ArrowDown class="size-3.5 text-foreground/35" />
 			{:else}
-				<ChevronRight class="size-3.5 text-muted-foreground" />
+				<ChevronRight class="size-3.5 text-foreground/35" />
 			{/if}
 		</div>
 	{/snippet}
@@ -383,69 +408,157 @@ const reply = await client.chat.completions.create({
 	     and the recommendations (why it's easy). Chat is reached *from* the
 	     menu, which is exactly the relationship we want people to see. -->
 	<section class="pb-24">
+		<!-- The wallpaper: a clear daytime sky, blue only -- deeper at the
+		     top, paling toward the bottom right like a sky toward the
+		     horizon. The top-left patch is only slightly brighter (still
+		     clearly blue, so the panel's edge doesn't vanish into the white
+		     page). No warm tones (they read as a sunset, i.e. sad), and no
+		     pink, purple, or green -- so it reads upbeat without competing
+		     with the menu. Kept pale so the callouts' text stays easy to
+		     read; the dark version is the same sky at night. -->
 		<div
-			class="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(170deg,#b9c7d6_0%,#d8cfbf_70%,#cdb99a_100%)] dark:bg-[linear-gradient(170deg,#1c2530_0%,#2a2620_70%,#33291d_100%)]"
+			class="overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]"
 		>
-			<!-- macOS menu bar. The Llama icon is "pressed", since its menu is
-			     open. Sizes follow the real bar: status icons roughly as tall as
+			<!-- macOS menu bar. No background of its own: in current macOS the
+			     bar is transparent, with the icons straight on the wallpaper.
+			     The Llama icon is "pressed", since its menu is open. Sizes follow the real bar: status icons roughly as tall as
 			     the clock's capitals. The Logo component sizes itself from
 			     --logo-height (a utility class can't override it). Wi-Fi and
 			     battery are drawn inline to match macOS's glyphs -- the Lucide
-			     ones are thin outlines and read as a different OS. -->
+			     ones are thin outlines and read as a different OS.
+
+			     A status item's menu hangs from its icon: the menu's left edge
+			     sits just left of the icon. So the status items span exactly
+			     the menu's width, starting at its left edge (the pl-1 is the
+			     small step in from the edge the real one has). On phones that's
+			     the bar's full padded width (px-4, like the grid's p-4). From md
+			     it's the menu's 21rem (w-84), right-aligned in the bar's 3rem
+			     padding (pr-12), the same as the grid's -- so it lines up with
+			     the menu at both ends. Keep those in sync.
+
+			     From md the bar and the menu are also inset from the panel's
+			     top and right edges (pt-5, pr-12), as if the picture were a
+			     crop of a larger screen: the menu floats on the wallpaper
+			     instead of being jammed into the corner. The icons' natural
+			     widths don't add up to the menu's, so justify-between spreads
+			     the rest evenly; Spotlight, Control Center, and sound are there
+			     so the gaps stay close to macOS's rather than yawning. -->
 			<div
 				aria-hidden="true"
-				class="flex items-center justify-end gap-3.5 bg-background/50 px-4 py-1 text-xs font-medium text-foreground/85 backdrop-blur"
+				class="flex justify-end px-4 py-1 text-xs font-medium text-foreground/85 md:pt-5 md:pr-12"
 			>
-				<span class="flex h-5 items-center rounded bg-foreground/15 px-1.5">
-					<Logo --logo-height="0.75rem" />
-				</span>
+				<div class="flex w-full items-center justify-between pl-1 md:w-84">
+					<span class="flex h-5 items-center rounded-full bg-foreground/15 px-2">
+						<Logo --logo-height="0.75rem" />
+					</span>
 
-				<!-- Wi-Fi: a filled wedge plus two thick arcs, like SF Symbols'
+					<!-- Sound: a filled speaker and two arcs, like `speaker.wave.2.fill`. -->
+					<svg viewBox="0 0 19 14" class="h-3 w-auto" fill="none">
+						<path d="M1 4.6h3.1L8.4 1.2v11.6L4.1 9.4H1Z" fill="currentColor" />
+						<path
+							d="M11.2 4.6a3.4 3.4 0 0 1 0 4.8M13.9 2.2a6.9 6.9 0 0 1 0 9.6"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+						/>
+					</svg>
+
+					<!-- Wi-Fi: a filled wedge plus two thick arcs, like SF Symbols'
 				     `wifi`. Arcs share the wedge's center and span ±45°. -->
-				<svg viewBox="0 0 20 15" class="h-[12px] w-auto" fill="none">
-					<path
-						d="M1.87 5.87A11.5 11.5 0 0 1 18.13 5.87M4.84 8.84A7.3 7.3 0 0 1 15.16 8.84"
-						stroke="currentColor"
-						stroke-width="2.6"
-						stroke-linecap="round"
-					/>
-					<path
-						d="M10 14.2 7.31 11.31A3.8 3.8 0 0 1 12.69 11.31Z"
-						fill="currentColor"
-						stroke="currentColor"
-						stroke-linejoin="round"
-					/>
-				</svg>
+					<svg viewBox="0 0 20 15" class="h-3 w-auto" fill="none">
+						<path
+							d="M1.87 5.87A11.5 11.5 0 0 1 18.13 5.87M4.84 8.84A7.3 7.3 0 0 1 15.16 8.84"
+							stroke="currentColor"
+							stroke-width="2.6"
+							stroke-linecap="round"
+						/>
+						<path
+							d="M10 14.2 7.31 11.31A3.8 3.8 0 0 1 12.69 11.31Z"
+							fill="currentColor"
+							stroke="currentColor"
+							stroke-linejoin="round"
+						/>
+					</svg>
 
-				<!-- Battery, charging: a solid body with the small unfilled share
+					<!-- Battery, charging: a solid body with the small unfilled share
 				     dimmed, a dimmed terminal, and a large bolt knocked out of the
 				     body. Proportions follow the macOS glyph (about 2:1). -->
-				<svg viewBox="0 0 28 13" class="h-[12px] w-auto">
-					<mask id="battery-bolt">
-						<rect width="28" height="13" fill="white" />
-						<path d="M13.3 1.4 7.8 7.4h3.4l-1.3 4.2 5.3-6h-3.4Z" fill="black" />
-					</mask>
-					<g mask="url(#battery-bolt)">
-						<rect width="24.5" height="13" rx="4" fill="currentColor" opacity="0.35" />
-						<path d="M4 0h16v13H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4Z" fill="currentColor" />
-					</g>
-					<rect x="25.6" y="4.2" width="2" height="4.6" rx="1" fill="currentColor" opacity="0.4" />
-				</svg>
+					<svg viewBox="0 0 28 13" class="h-3 w-auto">
+						<mask id="battery-bolt">
+							<rect width="28" height="13" fill="white" />
+							<path d="M13.3 1.4 7.8 7.4h3.4l-1.3 4.2 5.3-6h-3.4Z" fill="black" />
+						</mask>
+						<g mask="url(#battery-bolt)">
+							<rect width="24.5" height="13" rx="4" fill="currentColor" opacity="0.35" />
+							<path d="M4 0h16v13H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4Z" fill="currentColor" />
+						</g>
+						<rect
+							x="25.6"
+							y="4.2"
+							width="2"
+							height="4.6"
+							rx="1"
+							fill="currentColor"
+							opacity="0.4"
+						/>
+					</svg>
 
-				<span>Wed 10:24</span>
+					<!-- Spotlight: a magnifier with a thick stroke, like
+				     `magnifyingglass`. -->
+					<svg viewBox="0 0 14 14" class="h-3 w-auto" fill="none">
+						<circle cx="5.9" cy="5.9" r="4.4" stroke="currentColor" stroke-width="1.9" />
+						<path
+							d="M9.2 9.2 12.8 12.8"
+							stroke="currentColor"
+							stroke-width="2.2"
+							stroke-linecap="round"
+						/>
+					</svg>
+
+					<!-- Control Center: two switches with their knobs at opposite
+				     ends, like `switch.2`. -->
+					<svg viewBox="0 0 18 14" class="h-3 w-auto" fill="none">
+						<rect
+							x="0.8"
+							y="0.8"
+							width="16.4"
+							height="5.4"
+							rx="2.7"
+							stroke="currentColor"
+							stroke-width="1.5"
+						/>
+						<rect
+							x="0.8"
+							y="7.8"
+							width="16.4"
+							height="5.4"
+							rx="2.7"
+							stroke="currentColor"
+							stroke-width="1.5"
+						/>
+						<circle cx="3.5" cy="3.5" r="2.7" fill="currentColor" />
+						<circle cx="14.5" cy="10.5" r="2.7" fill="currentColor" />
+					</svg>
+
+					<!-- The date only where there's room for it. -->
+					<span>Wed <span class="max-sm:hidden">Sep 23&nbsp;</span>10:24</span>
+				</div>
 			</div>
 
-			<div class="grid grid-cols-1 gap-6 p-4 md:grid-cols-[1fr_21rem] md:gap-10 md:p-8 md:pt-2">
+			<div
+				class="grid grid-cols-1 gap-6 p-4 pt-1.5 md:grid-cols-[1fr_21rem] md:gap-10 md:p-12 md:pt-1.5"
+			>
 				<!-- Callouts. Written directly on the wallpaper -- no card, no
 				     shadow -- so they read as annotations *about* the menu, not as
 				     more UI. On desktop the column is centered in the space left of
 				     the menu, both ways, so the margins around it are even. The
 				     grid's padding is uneven (the menu hangs just under the bar, so
-				     8px on top vs 32px below); md:mt-6 shifts the centered column
-				     down by half that difference, centering it on the whole wallpaper
-				     area rather than the padded cell. After the menu on phones. -->
+				     6px on top vs 48px below); md:mt-10.5 shifts the centered
+				     column down by half that difference, centering it on the whole
+				     wallpaper area rather than the padded cell. After the menu on
+				     phones. -->
 				<ol
-					class="order-2 flex max-w-sm flex-col gap-7 px-1 py-2 md:order-1 md:mt-6 md:self-center md:justify-self-center"
+					class="order-2 flex max-w-sm flex-col gap-7 px-1 py-2 md:order-1 md:mt-10.5 md:self-center md:justify-self-center"
 				>
 					{#each CALLOUTS as c, i (c.title)}
 						<li class="flex gap-3">
@@ -464,41 +577,47 @@ const reply = await client.chat.completions.create({
 				     address, "Open chat", installed models, recommendations,
 				     catalog link, footer. Quant and context chips are left out
 				     on purpose: this page promises newcomers never see that jargon. -->
+				<!-- Translucent, like a real menu's material: the wallpaper
+				     tints it through the blur. The green dot is the server's
+				     running state, as in the app. "Open chat" sits on the
+				     address's line, not the title's, as it does in the app.
+
+				     The edge is drawn like a macOS menu's: a light "shine" hairline
+				     on the menu's edge (the border -- kept as a border, since the
+				     edge markers' offset counts its 1px) and a dark hairline just
+				     outside it (a 1px spread shadow), on top of the soft drop
+				     shadow. -->
 				<div
 					aria-hidden="true"
-					class="order-1 w-full rounded-xl border border-border bg-background/95 p-3 text-sm shadow-xl backdrop-blur md:order-2"
+					class="order-1 w-full rounded-xl border border-white/70 bg-background/85 p-3 text-sm shadow-[0_0_0_1px_rgb(0_0_0/0.15),0_16px_40px_-8px_rgb(0_0_0/0.3)] backdrop-blur-xl backdrop-saturate-150 md:order-2 dark:border-white/12 dark:shadow-[0_0_0_1px_rgb(0_0_0/0.7),0_16px_40px_-8px_rgb(0_0_0/0.6)]"
 				>
-					<div class="flex items-start justify-between px-1">
-						<div>
-							<p class="flex items-center gap-1.5 font-semibold">
-								Llama <span class="size-1.5 rounded-full bg-foreground/30"></span>
-							</p>
-							<p class="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+					<div class="px-1">
+						<p class="flex items-center gap-1.5 text-[15px] leading-5 font-semibold">
+							Llama <span class="size-1.5 rounded-full bg-green-500"></span>
+						</p>
+						<div class="mt-0.5 flex items-center justify-between text-[13px]">
+							<span class="flex items-center gap-1.5 text-muted-foreground">
 								<span class="relative">
 									{@render edgeMarker(2, 'left')}
 									localhost:9931
 								</span>
-								<Copy class="size-3" />
-							</p>
-						</div>
-						<p class="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400">
-							<span class="relative">
+								<Copy class="size-3.5" />
+							</span>
+							<span class="relative text-blue-600 dark:text-blue-400">
 								Open chat
 								{@render edgeMarker(1, 'right')}
 							</span>
-						</p>
+						</div>
 					</div>
 
-					<p class="mt-3 border-t border-border px-1 pt-2 text-xs text-muted-foreground">
+					<p class="mt-3 border-t border-border px-1 pt-2.5 pb-0.5 text-[13px] text-foreground/80">
 						Installed models
 					</p>
 					{#each MENU_INSTALLED as m (m.name + m.params)}
 						{@render menuModel(m, false)}
 					{/each}
 
-					<p
-						class="mt-2 flex items-center gap-1.5 border-t border-border px-1 pt-2 text-xs text-muted-foreground"
-					>
+					<p class="mt-2 border-t border-border px-1 pt-2.5 pb-0.5 text-[13px] text-foreground/80">
 						<span class="relative">
 							{@render edgeMarker(3, 'left')}
 							Recommended for your Mac
@@ -508,11 +627,31 @@ const reply = await client.chat.completions.create({
 						{@render menuModel(m, true)}
 					{/each}
 
+					<!-- The catalog link, laid out like a model row. -->
+					<div class="mt-2 flex items-center gap-2.5 border-t border-border px-1 pt-2 pb-1">
+						<span
+							class="flex size-7 shrink-0 items-center justify-center rounded-full bg-foreground/6"
+						>
+							<LayoutGrid class="size-3.5 text-foreground/70" />
+						</span>
+						<span class="min-w-0 flex-1">
+							<span class="block leading-4.5">Browse models</span>
+							<span class="block text-[13px] leading-4 text-muted-foreground">
+								Full catalog on the web
+							</span>
+						</span>
+						<ArrowUpRight class="size-3.5 text-foreground/35" />
+					</div>
+
+					<!-- Settings and Quit are small bordered buttons in the app. -->
 					<div
-						class="mt-2 flex items-center justify-between border-t border-border px-1 pt-2 text-xs text-muted-foreground"
+						class="mt-2 flex items-center justify-between border-t border-border px-1 pt-2.5 text-[13px] text-muted-foreground"
 					>
 						<span>llama.cpp</span>
-						<span class="flex gap-2"><span>Settings</span><span>Quit</span></span>
+						<span class="flex gap-1.5">
+							<span class="rounded-md border border-foreground/15 px-1.5 leading-5">Settings</span>
+							<span class="rounded-md border border-foreground/15 px-1.5 leading-5">Quit</span>
+						</span>
 					</div>
 				</div>
 			</div>
@@ -665,9 +804,7 @@ const reply = await client.chat.completions.create({
 						{@html logoFor(EXAMPLE_MODEL.brand)}
 					</span>
 					{EXAMPLE_MODEL.name}
-					<span class="rounded border border-border px-1 text-[10px] text-muted-foreground"
-						>{EXAMPLE_MODEL.params}</span
-					>
+					{@render paramsChip(EXAMPLE_MODEL.params)}
 				</span>
 				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
 					<Check class="size-3.5 text-accent" /> Chosen by Llama, for your Mac
