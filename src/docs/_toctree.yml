@@ -16,3 +16,7 @@
       title: Web UI
     - local: api
       title: API server
+- title: Conceptual Guides
+  sections:
+    - local: prefill-vs-decode
+      title: Prefill vs Decode
