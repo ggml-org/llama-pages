@@ -9,6 +9,7 @@ export { default as DocsSearch } from './docs/DocsSearch.svelte';
 export { default as DocsSectionNav } from './docs/DocsSectionNav.svelte';
 export { default as DocsSidebar } from './docs/DocsSidebar.svelte';
 export { default as DocsToc } from './docs/DocsToc.svelte';
+export { default as DevOsSwitcher } from './misc/DevOsSwitcher.svelte';
 export { default as Logo } from './misc/Logo.svelte';
 export { default as SeoMetadata } from './misc/SeoMetadata.svelte';
 export { default as ModelsCatalogFamilyCard } from './models-catalog/ModelsCatalogFamilyCard.svelte';
