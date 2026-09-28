@@ -9,7 +9,7 @@
 </script>
 
 <a
-	href="https://github.com/ggml-org/llama.cpp"
+	href="https://github.com/ggml-org/Llama-macOS"
 	target="_blank"
 	rel="noreferrer"
 	class="group inline-flex items-center gap-2 text-[15px] text-foreground"

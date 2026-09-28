@@ -6,7 +6,7 @@ export const load: LayoutServerLoad = async ({ fetch }) => {
 	let stars: number | null = null;
 
 	try {
-		const res = await fetch('https://api.github.com/repos/ggml-org/llama.cpp');
+		const res = await fetch('https://api.github.com/repos/ggml-org/Llama-macOS');
 
 		if (res.ok) {
 			const json = (await res.json()) as { stargazers_count?: number };
