@@ -7,7 +7,7 @@ const INSTALL_COMMAND = 'curl -LsSf https://llama.app/install.sh | sh';
 
 describe('+page.svelte', () => {
 	it('renders install command and package manager link', async () => {
-		render(HomePage);
+		render(HomePage, { data: { windowsDownloadUrl: '' } } as never);
 
 		await expect.element(page.getByText(INSTALL_COMMAND)).toBeInTheDocument();
 
@@ -34,7 +34,7 @@ describe('+page.svelte', () => {
 			});
 		}
 
-		render(HomePage);
+		render(HomePage, { data: { windowsDownloadUrl: '' } } as never);
 
 		const copyButton = page.getByRole('button', { name: 'Copy command' });
 

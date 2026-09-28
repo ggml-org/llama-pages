@@ -16,6 +16,15 @@
 	//   6. Will it run on my Mac?   -- models by memory tier
 	//   7. Can I build on it?       -- the API, one changed line
 	//   8. Why not bundle my own?   -- without/with diagram
+	//
+	// The page adapts to the visitor's OS: Mac visitors get the Mac app,
+	// Windows visitors the Windows app, Linux visitors the CLI, and everyone
+	// else (phones, crawlers) both apps. The pictures and most of the facts
+	// are the Mac app's, since that's the reference design the Windows app
+	// is following; for other visitors the copy says "your computer" rather
+	// than "your Mac". The switching is done with `data-os-only` (see
+	// app.css) rather than in Svelte, so the prerendered page never flashes
+	// the wrong OS's button before hydration.
 	import {
 		ArrowDown,
 		ArrowRight,
@@ -40,21 +49,24 @@
 	import { resolve } from '$app/paths';
 	import appleIcon from '$lib/assets/apple-icon.svg?raw';
 	import { logoFor } from '$lib/assets/logos';
+	import windowsIcon from '$lib/assets/windows-icon.svg?raw';
 	import { displaySize, families, minMemGB, slugify } from '$lib/catalog';
 	import { InstallCommand, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
 	import Prism from '$lib/prism';
-	import { deviceInfo } from '$lib/stores/device/index.svelte';
 	import { toast } from 'svelte-sonner';
+
+	let { data } = $props();
 
 	// -- Hero shot callouts ------------------------------------------------------
 	//
 	// Numbered to match the markers placed on the menu. Each one maps a part
 	// of the menu to the OpenAI mental model or to the "easy" promise.
+	// `{device}` is rendered as "your Mac" or "your computer" (withDevice).
 	const CALLOUTS = [
 		{
-			body: 'Chat with any model in your browser. Like ChatGPT, but on your Mac.',
+			body: 'Chat with any model in your browser. Like ChatGPT, but on {device}.',
 			title: 'Open chat'
 		},
 		{
@@ -62,7 +74,7 @@
 			title: 'A local API'
 		},
 		{
-			body: 'Models that fit your Mac, one click to install. Llama picks the settings.',
+			body: 'Models that fit {device}, one click to install. Llama picks the settings.',
 			title: 'Recommended for your Mac'
 		}
 	];
@@ -278,6 +290,57 @@ const reply = await client.chat.completions.create({
      uses the default foreground. `text-muted-foreground` is for asides: small
      print, captions, labels, and the UI inside mockups. -->
 <main class="mx-auto w-full max-w-5xl px-6 md:px-12">
+	<!-- "Mac" for Mac visitors and `other` for everyone else, for copy that
+	     addresses the visitor's computer ("your Mac" / "your computer"). -->
+	{#snippet macOr(other: string)}<span data-os-only="mac">Mac</span><span
+			data-os-only="windows linux other">{other}</span
+		>{/snippet}
+
+	<!-- `text` with each `{device}` in it rendered as "your Mac" or "your
+	     computer", for copy that lives in the script's constants. -->
+	{#snippet withDevice(text: string)}
+		{#each text.split('{device}') as part, i (i)}{#if i > 0}your {@render macOr(
+					'computer'
+				)}{/if}{part}{/each}
+	{/snippet}
+
+	<!-- The download buttons, one per app, each shown on its own OS. Phones
+	     and unrecognized systems get both, so visitors learn what there is
+	     for their computer. Linux has no app yet and gets the CLI instead
+	     (linuxInstall). The Windows link is resolved at build time (see
+	     +page.server.ts). -->
+	{#snippet downloadButtons()}
+		<Button
+			data-os-only="mac other"
+			href={MACOS_DOWNLOAD_URL}
+			size="lg"
+			class="h-12 px-6 text-[15px]"
+		>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			<span class="mb-0.5">{@html appleIcon}</span>
+			Download for Mac
+		</Button>
+		<Button
+			data-os-only="windows other"
+			href={data.windowsDownloadUrl}
+			size="lg"
+			class="h-12 px-6 text-[15px]"
+		>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html windowsIcon}
+			Download for Windows
+		</Button>
+	{/snippet}
+
+	<!-- Linux's stand-in for the download buttons: the CLI, which is the
+	     honest next step rather than a dead end until there's an app. -->
+	{#snippet linuxInstall()}
+		<div data-os-only="linux" class="flex w-full max-w-2xl flex-col items-center gap-3">
+			<p class="text-sm text-muted-foreground">On Linux? Install the command-line version:</p>
+			<InstallCommand />
+		</div>
+	{/snippet}
+
 	<!-- A numbered marker, shared by the menu and the callouts so the two
 	     visibly refer to each other. In the text color rather than a hue:
 	     the sky is already blue, and blue is taken inside the menu (the
@@ -352,7 +415,11 @@ const reply = await client.chat.completions.create({
 	     does (runs models), and the two ways to use it (chat, other apps).
 	     The OpenAI comparison is left to section 3, where there's room to
 	     explain it -- in one line it confuses anyone who knows OpenAI only
-	     as ChatGPT. -->
+	     as ChatGPT.
+
+	     The subline names the app the visitor can get: the Mac one on a Mac,
+	     the Windows one on Windows, and both elsewhere. The Windows app isn't
+	     tiny (it's a .NET app, tens of MB), so its line doesn't say so. -->
 	<section class="flex flex-col items-center gap-7 pt-10 pb-12 text-center md:pt-14">
 		<span
 			class="rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs text-muted-foreground"
@@ -367,16 +434,20 @@ const reply = await client.chat.completions.create({
 		</h1>
 
 		<p class="max-w-3xl text-lg leading-relaxed text-balance md:text-xl">
-			Llama is a tiny menu bar app that runs the latest open models on your Mac. Chat with them, or
-			use them in your other apps.
+			<span data-os-only="mac">
+				Llama is a tiny menu bar app that runs the latest open models on your Mac.
+			</span>
+			<span data-os-only="windows">
+				Llama is a system tray app that runs the latest open models on your PC.
+			</span>
+			<span data-os-only="linux other">
+				Llama is an app for Mac and Windows that runs the latest open models on your computer.
+			</span>
+			Chat with them, or use them in your other apps.
 		</p>
 
 		<div class="flex flex-col items-center gap-3 sm:flex-row">
-			<Button href={MACOS_DOWNLOAD_URL} size="lg" class="h-12 px-6 text-[15px]">
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				<span class="mb-0.5">{@html appleIcon}</span>
-				Download for Mac
-			</Button>
+			{@render downloadButtons()}
 
 			<!-- The second button is the demo video, not "For developers":
 			     developers scroll to their section anyway, while "what does it
@@ -398,19 +469,16 @@ const reply = await client.chat.completions.create({
 		     rest used to end the subline as a sentence; as a list they scan
 		     faster and leave the subline to say what Llama is. "Nothing to
 		     set up" isn't here: it's a promise rather than a checkable fact,
-		     and section 4 makes it properly. -->
+		     and section 4 makes it properly. The size is the Mac app's, so
+		     it's left out elsewhere; Windows states its requirement instead,
+		     since the app doesn't install on Windows 10. -->
 		<p class="-mt-3 text-sm text-muted-foreground">
-			1 MB download · Free and open source · Private
+			<span data-os-only="mac">1 MB download ·</span>
+			<span data-os-only="windows">For Windows 11 ·</span>
+			Free and open source · Private
 		</p>
 
-		<!-- About half our visitors aren't on a Mac. Until there's a native
-		     app for them, the CLI is the honest next step, not a dead end. -->
-		{#if !deviceInfo.isMac}
-			<div class="flex w-full max-w-2xl flex-col items-center gap-3">
-				<p class="text-sm text-muted-foreground">Not on a Mac? Install from the terminal:</p>
-				<InstallCommand />
-			</div>
-		{/if}
+		{@render linuxInstall()}
 	</section>
 
 	<!-- 2. Hero shot: the actual product. What you download is a menu bar
@@ -537,7 +605,7 @@ const reply = await client.chat.completions.create({
 							<span>
 								<span class="block text-sm font-medium">{c.title}</span>
 								<span class="mt-0.5 block text-sm leading-relaxed text-foreground/70">
-									{c.body}
+									{@render withDevice(c.body)}
 								</span>
 							</span>
 						</li>
@@ -627,6 +695,13 @@ const reply = await client.chat.completions.create({
 				</div>
 			</div>
 		</div>
+
+		<!-- The shot is the Mac app. Windows visitors were just offered the
+		     Windows app, so say where it lives there, or the macOS menu bar
+		     reads as "this isn't for you". -->
+		<p data-os-only="windows" class="mt-3 text-center text-sm text-muted-foreground">
+			Shown on a Mac. On Windows, Llama lives in the system tray.
+		</p>
 	</section>
 
 	<!-- 3. The mental model, spelled out. Everyone knows OpenAI has an app
@@ -635,7 +710,9 @@ const reply = await client.chat.completions.create({
 	     a menu bar app a platform?". -->
 	<section class="py-20">
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
-			<h2 class="text-3xl font-semibold tracking-tight">Like OpenAI, but on your Mac</h2>
+			<h2 class="text-3xl font-semibold tracking-tight">
+				Like OpenAI, but on your {@render macOr('computer')}
+			</h2>
 			<p class="leading-relaxed">
 				OpenAI has ChatGPT to chat with and an API to build on. Llama gives you both, running on
 				your own computer, with models you choose.
@@ -752,9 +829,11 @@ const reply = await client.chat.completions.create({
 		<div class="flex flex-col gap-4">
 			<h2 class="text-3xl font-semibold tracking-tight">Nothing to set up</h2>
 			<p class="leading-relaxed">
-				Running AI locally used to mean reading forum threads about settings. Llama checks your Mac
-				and sets up each model to run well on it, based on how llama.cpp actually works. You only
-				pick which model to talk to.
+				Running AI locally used to mean reading forum threads about settings. Llama checks your {@render macOr(
+					'computer'
+				)}
+				and sets up each model to run well on it, based on how llama.cpp actually works. You only pick
+				which model to talk to.
 			</p>
 			<!-- Reassurance for enthusiasts: simple by default doesn't mean
 			     locked down. -->
@@ -778,7 +857,9 @@ const reply = await client.chat.completions.create({
 					{@render paramsChip(EXAMPLE_MODEL.params)}
 				</span>
 				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
-					<Check class="size-3.5 text-sky-600 dark:text-sky-400" /> Chosen by Llama, for your Mac
+					<Check class="size-3.5 text-sky-600 dark:text-sky-400" /> Chosen by Llama, for your {@render macOr(
+						'computer'
+					)}
 				</span>
 			</div>
 
@@ -950,7 +1031,9 @@ const reply = await client.chat.completions.create({
 		</div>
 	{/snippet}
 
-	<section class="py-20">
+	<!-- Not shown on Windows: the facts are the Mac app's, and the Windows
+	     app isn't a 1 MB download and keeps models loaded by default. -->
+	<section data-os-only="mac linux other" class="py-20">
 		<!-- The intro names the worry (local AI is heavy) rather than listing
 		     the cards, so it doesn't read as the cards' titles said twice. -->
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
@@ -990,7 +1073,9 @@ const reply = await client.chat.completions.create({
 	<section class="py-20">
 		<div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 			<div class="flex max-w-xl flex-col gap-3">
-				<h2 class="text-3xl font-semibold tracking-tight">A great model for every Mac</h2>
+				<h2 class="text-3xl font-semibold tracking-tight">
+					A great model for every {@render macOr('computer')}
+				</h2>
 				<p>Llama suggests one that fits when you open it. Here's where to start.</p>
 			</div>
 			<a
@@ -1008,7 +1093,9 @@ const reply = await client.chat.completions.create({
 					class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6 transition-colors hover:border-foreground/25"
 				>
 					{#if p.mem}
-						<span class="text-sm text-muted-foreground">{p.mem} GB Mac or more</span>
+						<span class="text-sm text-muted-foreground"
+							>{p.mem} GB {@render macOr('of memory')} or more</span
+						>
 					{/if}
 					<span class="flex items-center gap-2 text-xl font-medium [&>span>svg]:size-5">
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -1054,7 +1141,8 @@ const reply = await client.chat.completions.create({
 					<li class="flex gap-2">
 						<Check class="mt-0.5 size-4 shrink-0" /> Already use llama.cpp? Your models show up automatically
 					</li>
-					<li class="flex gap-2">
+					<!-- Mac app only, for now. -->
+					<li data-os-only="mac linux other" class="flex gap-2">
 						<Check class="mt-0.5 size-4 shrink-0" /> Reach it from your other devices over Tailscale
 					</li>
 				</ul>
@@ -1178,18 +1266,17 @@ const reply = await client.chat.completions.create({
 	<section class="flex flex-col items-center gap-6 py-24 text-center">
 		<h2 class="text-4xl font-semibold tracking-tight">Local AI starts here</h2>
 		<p>Free, open source, and yours to keep.</p>
-		<Button href={MACOS_DOWNLOAD_URL} size="lg" class="h-12 px-6 text-[15px]">
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			<span class="mb-0.5">{@html appleIcon}</span>
-			Download for Mac
-		</Button>
+		<div class="flex flex-col items-center gap-3 sm:flex-row">
+			{@render downloadButtons()}
+		</div>
 		<!-- For the developers who scrolled this far: the install they'd
 		     reach for anyway. The "or" sits on its own line so it reads as a
 		     choice between the button and the command, and the command gets a
 		     subtle chip so it reads as something to copy into a terminal. A
 		     div, not a p: the global `p code` rule (prism-theme.css) would
-		     force the accent color and add side margins. -->
-		<div class="flex flex-col items-center gap-3 text-sm">
+		     force the accent color and add side margins. Mac only: the cask
+		     is the Mac app. -->
+		<div data-os-only="mac" class="flex flex-col items-center gap-3 text-sm">
 			<span class="text-muted-foreground">or</span>
 			<div class="flex items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3">
 				<code class="font-mono text-foreground">{BREW_COMMAND}</code>
@@ -1202,11 +1289,6 @@ const reply = await client.chat.completions.create({
 				</button>
 			</div>
 		</div>
-		{#if !deviceInfo.isMac}
-			<div class="mt-2 flex w-full max-w-2xl flex-col items-center gap-3">
-				<p class="text-sm text-muted-foreground">Not on a Mac? Install from the terminal:</p>
-				<InstallCommand />
-			</div>
-		{/if}
+		{@render linuxInstall()}
 	</section>
 </main>

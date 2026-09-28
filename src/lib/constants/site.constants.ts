@@ -3,6 +3,12 @@
 export const MACOS_DOWNLOAD_URL =
 	'https://github.com/ggml-org/Llama-macOS/releases/latest/download/Llama.dmg';
 
+// The Llama Windows app's latest release (ggml-org/Llama-Windows). Its
+// assets have the version in their names, so there's no stable direct link
+// like the Mac one; the homepage resolves the bundle's URL at build time
+// (routes/+page.server.ts) and falls back to this page.
+export const WINDOWS_RELEASES_URL = 'https://github.com/ggml-org/Llama-Windows/releases/latest';
+
 export const SITE_TITLE = 'llama.app - Official home for llama.cpp';
 export const SITE_DESCRIPTION = 'Official website for the llama.cpp project';
 export const SITE_URL = 'https://llama.app';
