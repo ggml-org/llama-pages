@@ -1,11 +1,14 @@
 <script lang="ts">
 	// The homepage.
 	//
-	// What we're optimizing for: the 10M-users goal, which means most
-	// visitors are *not* local-model enthusiasts. So the page speaks to a
-	// newcomer first and a developer second, but it frames Llama as a
-	// platform from the very top -- chat is shown as one app among several
-	// that use the same local model, never as the product itself.
+	// Who it's for: mostly developers, but developers who are new to local
+	// AI. The 10M-users goal means most visitors are *not* local-model
+	// enthusiasts, and being a developer doesn't change that -- they know
+	// what an API is, not what quantization or context size to pick. So the
+	// page assumes technical comfort but no local-AI knowledge, and it
+	// frames Llama as a platform from the very top -- chat is shown as one
+	// app among several that use the same local model, never as the product
+	// itself.
 	//
 	// Section order follows the questions a visitor asks, in order:
 	//   1. What is this?            -- hero text: a tiny menu bar app, two uses
@@ -43,7 +46,6 @@
 		Package,
 		ScrollText,
 		Terminal,
-		Video,
 		Zap
 	} from '@lucide/svelte';
 	import { resolve } from '$app/paths';
@@ -77,6 +79,15 @@
 			body: 'Models that fit {device}, one click to install. Llama picks the settings.',
 			title: 'Recommended for your Mac'
 		}
+	];
+
+	// -- Hero GitHub button ---------------------------------------------------------
+	//
+	// One per OS (see the button's comment); `os` is its `data-os-only`.
+	const GITHUB_REPOS = [
+		{ os: 'mac other', url: 'https://github.com/ggml-org/Llama-macOS' },
+		{ os: 'windows', url: 'https://github.com/ggml-org/Llama-Windows' },
+		{ os: 'linux', url: 'https://github.com/ggml-org/llama.cpp' }
 	];
 
 	// -- "Like OpenAI" clients ----------------------------------------------------
@@ -449,18 +460,27 @@ const reply = await client.chat.completions.create({
 		<div class="flex flex-col items-center gap-3 sm:flex-row">
 			{@render downloadButtons()}
 
-			<!-- The second button is the demo video, not "For developers":
-			     developers scroll to their section anyway, while "what does it
-			     actually do?" is the question most visitors still have here.
-			     The length in the label tells people it's a video and a small
-			     commitment -- keep it true when the video changes. No href yet
-			     (so it renders as a plain button and does nothing): the current
-			     intro predates the rename and is being replaced. Add the new
-			     video's URL here, with target="_blank". -->
-			<Button size="lg" variant="outline" class="h-12 px-6 text-[15px]">
-				<Video class="size-4.5" />
-				2-min demo
-			</Button>
+			<!-- The second button is the repo: most users are developers, and
+			     for them the source is the natural next click and a trust signal.
+			     Each OS gets the repo of what it's offered -- the Mac or Windows
+			     app, or llama.cpp for Linux's CLI -- so Windows visitors don't land
+			     on the Mac app's code. Everyone else gets the Mac app's, matching
+			     the header's GitHub link. (It was a demo video before; worth
+			     bringing back if one gets made.) -->
+			{#each GITHUB_REPOS as r (r.url)}
+				<Button
+					data-os-only={r.os}
+					href={r.url}
+					target="_blank"
+					rel="noreferrer"
+					size="lg"
+					variant="outline"
+					class="h-12 px-6 text-[15px]"
+				>
+					View on GitHub
+					<ArrowUpRight class="size-4" />
+				</Button>
+			{/each}
 		</div>
 
 		<!-- The reassurances sit right under the buttons, where the "should I
@@ -1269,7 +1289,7 @@ const reply = await client.chat.completions.create({
 		<div class="flex flex-col items-center gap-3 sm:flex-row">
 			{@render downloadButtons()}
 		</div>
-		<!-- For the developers who scrolled this far: the install they'd
+		<!-- For those who live in the terminal: the install they'd
 		     reach for anyway. The "or" sits on its own line so it reads as a
 		     choice between the button and the command, and the command gets a
 		     subtle chip so it reads as something to copy into a terminal. A
