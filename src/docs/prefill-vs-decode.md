@@ -17,7 +17,7 @@ So here's how prefill looks like. We do one pass through the model: we read the 
 
 ### What affects the performance of prefill
 
-Prefill is compute-bound, and is slower when you have: 
+Prefill is usually compute-bound, because the whole sequence is processed in parallel. "Compute-bound" is a fancy way to say that the more flops your GPU has, the faster it will do prefill. The following factors affect prefill performance:
 
 - A longer prompt or longer context
 - A larger or more computationally expensive model
