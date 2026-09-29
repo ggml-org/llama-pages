@@ -33,7 +33,7 @@
 	}
 </script>
 
-<header class="mx-auto flex w-full max-w-5xl items-center justify-between p-6 md:px-12">
+<header class="mx-auto flex w-full max-w-6xl items-center justify-between p-6 md:px-12">
 	<!-- Left: the logo (home) plus permanent site nav. A vertical hairline after
 	     the logo separates brand from nav, so the link doesn't read as part of
 	     the wordmark. "Models" always links to the catalog and is underlined while

@@ -300,7 +300,7 @@ const reply = await client.chat.completions.create({
 <!-- Two text colors only. Content -- headings and the paragraphs under them --
      uses the default foreground. `text-muted-foreground` is for asides: small
      print, captions, labels, and the UI inside mockups. -->
-<main class="mx-auto w-full max-w-5xl px-6 md:px-12">
+<main class="mx-auto w-full max-w-6xl px-6 md:px-12">
 	<!-- "Mac" for Mac visitors and `other` for everyone else, for copy that
 	     addresses the visitor's computer ("your Mac" / "your computer"). -->
 	{#snippet macOr(other: string)}<span data-os-only="mac">Mac</span><span

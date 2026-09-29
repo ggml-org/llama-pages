@@ -11,7 +11,7 @@
 	<meta name="description" content="Curated open models you can run locally with llama.cpp." />
 </svelte:head>
 
-<main class="mx-auto w-full max-w-5xl px-6 pt-8 pb-24 md:px-12">
+<main class="mx-auto w-full max-w-6xl px-6 pt-8 pb-24 md:px-12">
 	<!-- Header, mirroring the model detail pages: headline / byline / standfirst.
 	     The byline carries the one catalog-level fact not visible in the list
 	     itself: how fresh the curation is (the newest family's release month).
