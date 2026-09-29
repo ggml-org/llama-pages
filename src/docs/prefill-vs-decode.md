@@ -100,4 +100,4 @@ end-to-end latency ≈ TTFT + number of output tokens × TPOT
 
 ## Improving metrics
 
-There are many tricks to improve the throughput and memory such as speculative decoding and quantization, which are covered under conceptual guides.
+There are many tricks to improve throughput and memory, such as speculative decoding or quantization. They will be covered in additional guides.
