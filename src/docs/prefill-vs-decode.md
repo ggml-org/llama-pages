@@ -30,7 +30,7 @@ After choosing the first output token, the model enters an autoregressive loop. 
 
 Due to these repeated read/writes, decoding is memory-bandwidth-bound: the faster you can move stuff to the GPU, the faster the generation speed. There's not much computation involved in generating a single token, so memory transfers dominate. Batching inputs, however, helps maximize compute. When we decode multiple generations together, we read the weights _once_ for all the items in the batch, and the GPU generates the next tokens for all the conversations in parallel. This makes batched generation compute-bound, and we can get better throughput (the number of processed tokens increases).
 
-### What makes decode slower
+### Factors that affect decoding speed
 
 - A larger model or higher-precision weights
 - Lower memory bandwidth
