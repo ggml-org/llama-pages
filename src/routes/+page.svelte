@@ -19,6 +19,7 @@
 	//   6. Will it run on my Mac?   -- models by memory tier
 	//   7. Can I build on it?       -- the API, one changed line
 	//   8. Why not bundle my own?   -- without/with diagram
+	//   9. How do I get it?         -- the app, or the engine on its own
 	//
 	// The page adapts to the visitor's OS: Mac visitors get the Mac app,
 	// Windows visitors the Windows app, Linux visitors the CLI, and everyone
@@ -235,8 +236,18 @@ const reply = await client.chat.completions.create({
 	const maxSnippetLines = Math.max(...SNIPPETS.map((s) => s.code.split('\n').length));
 
 	// -- Closing CTA ------------------------------------------------------------------
-
+	//
+	// The Mac app's cask, and the command-line install: llama.cpp's install
+	// scripts (the same ones InstallCommand shows, one per OS, switched with
+	// `data-os-only` so the prerendered page never shows the wrong one) and
+	// the serve command from the docs' quickstart, so the card and the docs
+	// agree on the first model.
 	const BREW_COMMAND = 'brew install --cask llama-app';
+	const CLI_INSTALL = [
+		{ command: 'curl -LsSf https://llama.app/install.sh | sh', os: 'mac linux other' },
+		{ command: 'irm https://llama.app/install.ps1 | iex', os: 'windows' }
+	];
+	const SERVE_COMMAND = 'llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0';
 
 	// -- Without / with diagram ----------------------------------------------------
 	//
@@ -512,10 +523,16 @@ const reply = await client.chat.completions.create({
 	     the Windows one on Windows, and both elsewhere. The Windows app isn't
 	     tiny (it's a .NET app, tens of MB), so its line doesn't say so. -->
 	<section class="flex flex-col items-center gap-7 pt-10 pb-12 text-center md:pt-14">
+		<!-- Who makes it, not what it's built on: any local AI app can say
+		     "built on llama.cpp", only Llama can say it's by the llama.cpp
+		     team. Hugging Face stays, since newcomers are more likely to know
+		     it than llama.cpp. "Team at", not "from the makers of": the app
+		     didn't start with llama.cpp's authors, but that team builds and
+		     maintains it now. -->
 		<span
 			class="rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs text-muted-foreground"
 		>
-			Built on llama.cpp and Hugging Face
+			By the llama.cpp team at Hugging Face
 		</span>
 
 		<h1
@@ -1207,6 +1224,24 @@ const reply = await client.chat.completions.create({
 				</a>
 			{/each}
 		</div>
+
+		<!-- The breadth behind the picks, in plain words: any GGUF model on
+		     Hugging Face installs in one click, through the "Use this model"
+		     menu on its page (Llama is listed there as `llama-app` in
+		     huggingface.js's local-apps.ts, which opens the app's
+		     `llama://install` deep link). "GGUF" isn't named -- it's the kind
+		     of term the page promises you don't need; the link lands on
+		     GGUF models anyway. Mac only: the HF entry is macOS-only, and the
+		     Windows app doesn't handle the deep link yet. -->
+		<p data-os-only="mac" class="mt-6 text-sm text-muted-foreground">
+			Or install any of
+			<a
+				href="https://huggingface.co/models?library=gguf&sort=trending"
+				target="_blank"
+				rel="noreferrer"
+				class="text-foreground underline underline-offset-4">thousands of models on Hugging Face</a
+			>: choose Llama under “Use this model” on a model’s page.
+		</p>
 	</section>
 
 	<!-- 7. Developers. One chapter with a single h2, like every other
@@ -1358,32 +1393,126 @@ const reply = await client.chat.completions.create({
 		</div>
 	</section>
 
-	<!-- Closing CTA. Back to the newcomer: one button, one sentence. -->
+	<!-- A command to copy: a subtle chip, so it reads as something for a
+	     terminal. It wraps at spaces on narrow screens rather than scrolling:
+	     a clipped command hides its end (`| sh`), and the copy button is
+	     there for copying it right. `os` is its `data-os-only`, if it's only
+	     for some systems. -->
+	{#snippet command(text: string, os?: string)}
+		<div
+			data-os-only={os}
+			class="flex min-w-0 items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3 text-[13px]"
+		>
+			<code class="min-w-0 flex-1 font-mono break-words text-foreground">{text}</code>
+			<CopyButton
+				{text}
+				what="command"
+				iconClass="size-3.5"
+				class="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-foreground"
+			/>
+		</div>
+	{/snippet}
+
+	<!-- 9. Closing CTA: the two ways to get Llama, side by side. They aren't
+	     alternatives but a superset: the app installs the same `llama`
+	     command as the install scripts (the same binary, linked onto PATH),
+	     so the app is the command line plus the app. The titles say so
+	     ("includes the command line" / "Command line only"), so no one reads
+	     the cards as a choice between two different products. The app is
+	     recommended and comes first; the command line alone is for Linux,
+	     servers, and scripts, and leaves models and settings to you.
+
+	     Linux has no app, so it gets the command-line card alone, centered.
+	     The cards are half-width flex items rather than a two-column grid so
+	     that a lone card centers instead of sitting in the left column. -->
 	<section class="flex flex-col items-center gap-6 py-24 text-center">
 		<h2 class="text-4xl leading-tight font-semibold tracking-tight">Local AI starts here</h2>
 		<p class="text-lg leading-relaxed text-pretty">Free, open source, and yours to keep.</p>
-		<!-- Hidden on Linux: there's no app to download or view the source of,
-		     so the CLI install below stands in for the whole row. -->
-		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3 sm:flex-row">
-			{@render downloadButtons()}
-		</div>
-		<!-- For those who live in the terminal: the install they'd
-		     reach for anyway. The "or" sits on its own line so it reads as a
-		     choice between the button and the command, and the command gets a
-		     subtle chip so it reads as something to copy into a terminal. Mac
-		     only: the cask is the Mac app. -->
-		<div data-os-only="mac" class="flex flex-col items-center gap-3 text-sm">
-			<span class="text-muted-foreground">or</span>
-			<div class="flex items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3">
-				<code class="font-mono text-foreground">{BREW_COMMAND}</code>
-				<CopyButton
-					text={BREW_COMMAND}
-					what="command"
-					iconClass="size-3.5"
-					class="rounded-md p-1.5 text-muted-foreground hover:text-foreground"
-				/>
+
+		<!-- Wide enough that the serve command fits on one line in half of
+		     it, on desktop. -->
+		<div class="mt-6 flex w-full max-w-5xl flex-col gap-4 text-left md:flex-row md:justify-center">
+			<!-- The app. "Everything on this page" ties the card to the rest of
+			     the page, which is all about the app, so the card doesn't need
+			     to repeat it. The title's aside mirrors the other card's "only". -->
+			<div
+				data-os-only="mac windows other"
+				class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6 md:w-1/2"
+			>
+				<div>
+					<p class="text-xs tracking-wide text-muted-foreground uppercase">Recommended</p>
+					<h3 class="mt-1 text-xl font-semibold">
+						App <span class="font-normal text-muted-foreground">· includes the command line</span>
+					</h3>
+				</div>
+				<p class="leading-relaxed text-foreground/70">
+					Everything on this page: models picked to fit your {@render macOr('computer')}, chat, and
+					the API, with nothing to set up.
+				</p>
+				<!-- `mt-auto` keeps the buttons at the bottom when the other card
+				     is taller. The buttons wrap for visitors who get both apps,
+				     since the two don't fit side by side in half the width. -->
+				<div class="mt-auto flex flex-col gap-3">
+					<div class="flex flex-wrap gap-3">
+						{@render downloadButtons()}
+					</div>
+					<!-- For those who live in the terminal: the install they'd
+					     reach for anyway. Mac only: the cask is the Mac app. -->
+					<div data-os-only="mac" class="flex items-center gap-2 text-sm">
+						<span class="text-muted-foreground">or</span>
+						{@render command(BREW_COMMAND)}
+					</div>
+				</div>
+			</div>
+
+			<!-- The command line alone. "Only" in the title, against the app's
+			     "includes the command line", makes the relationship plain; the
+			     body names llama.cpp so people who came for the engine recognize
+			     it. "OpenAI-compatible" rather than "the same API": the port and
+			     the model names differ from the app's. The two steps are the
+			     docs' quickstart, and the links go on to the docs and to the
+			     engine's repo. -->
+			<div
+				class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6 md:w-1/2"
+			>
+				<div>
+					<p class="text-xs tracking-wide text-muted-foreground uppercase">
+						For Linux, servers, and scripts
+					</p>
+					<h3 class="mt-1 text-xl font-semibold">Command line only</h3>
+				</div>
+				<p class="leading-relaxed text-foreground/70">
+					Just llama.cpp's <code class="font-mono text-[0.9em]">llama</code> command, without the app:
+					the same engine, an OpenAI-compatible API, and a web chat, with the models and settings up to
+					you.
+				</p>
+				<div class="mt-auto flex flex-col gap-2">
+					<p class="text-xs text-muted-foreground">Install</p>
+					{#each CLI_INSTALL as c (c.command)}
+						{@render command(c.command, c.os)}
+					{/each}
+					<p class="mt-2 text-xs text-muted-foreground">
+						Run a model, then open <code class="font-mono">localhost:8080</code>
+					</p>
+					{@render command(SERVE_COMMAND)}
+				</div>
+				<p class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+					<a
+						href={resolve('/docs/[...page]', { page: 'quickstart' })}
+						class="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
+					>
+						Quickstart <ArrowRight class="size-3.5" />
+					</a>
+					<a
+						href="https://github.com/ggml-org/llama.cpp"
+						target="_blank"
+						rel="noreferrer"
+						class="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
+					>
+						llama.cpp on GitHub <ArrowUpRight class="size-3.5" />
+					</a>
+				</p>
 			</div>
 		</div>
-		{@render linuxInstall()}
 	</section>
 </main>
