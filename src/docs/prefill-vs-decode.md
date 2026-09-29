@@ -10,7 +10,7 @@ During prefill, the model processes the input tokens in parallel. Each transform
 time to first token ≈ prompt processing time + first token generation
 ```
 
-So here's how prefill looks like. We do one pass, we read the weights once to GPU, and write the KV cache to memory, generate the first token.
+So here's how prefill looks like. We do one pass through the model: we read the weights once to perform the computations on GPU, generate the first token, and save the KV cache to memory for future use.
 
 ![prefill](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/prefill.png)
 
