@@ -259,6 +259,11 @@ const reply = await client.chat.completions.create({
 
 	const snippet = $derived(SNIPPETS.find((s) => s.id === snippetId)!);
 
+	// The code area is sized to the longest snippet so switching tabs doesn't
+	// change its height and shift the rest of the page. The shorter ones just
+	// leave some empty space at the bottom.
+	const maxSnippetLines = Math.max(...SNIPPETS.map((s) => s.code.split('\n').length));
+
 	function copySnippet() {
 		navigator.clipboard.writeText(snippet.code);
 		toast.success('Copied to clipboard!');
@@ -1210,11 +1215,13 @@ const reply = await client.chat.completions.create({
 			     red reads as a removed line and green as an added one. It sits
 			     at the line's offset (py-4 = 16px top padding, leading-6 = 24px
 			     per line), and the code is `relative` so it paints above it.
+			     The min-height uses the same numbers to fit the longest snippet.
 
 			     The HTML is Prism's output for our own constant snippets. -->
 				<!-- eslint-disable svelte/no-at-html-tags -->
 				<pre
-					class="dark relative overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"><div
+					class="dark relative overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"
+					style="min-height: {32 + maxSnippetLines * 24}px"><div
 						class="absolute inset-x-0 h-6 border-l-2 border-white/60 bg-white/[0.08]"
 						style="top: {16 + snippet.changed * 24}px"
 						aria-hidden="true"></div><code class="relative block px-5"
