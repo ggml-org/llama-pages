@@ -72,7 +72,9 @@
 	// of the menu to the OpenAI mental model or to the "easy" promise.
 	// `{device}` is rendered as "your Mac" or "your computer" (withDevice).
 	// `{machine}` is the word the pictured menu uses ("Mac" or "PC"), so the
-	// title quotes the menu exactly (see the `callouts` snippet).
+	// title quotes the menu exactly (see the `callouts` snippet). The menu
+	// says "this Mac", not "your Mac": the picks are based on this machine's
+	// hardware, and "your" could read as picked for your taste.
 	const CALLOUTS = [
 		{
 			body: 'Chat with any model in your browser. Like ChatGPT, but on {device}.',
@@ -84,7 +86,7 @@
 		},
 		{
 			body: 'Models that fit {device}, one click to install. Llama picks the settings.',
-			title: 'Recommended for your {machine}'
+			title: 'Recommended for this {machine}'
 		}
 	];
 
@@ -500,7 +502,7 @@ const reply = await client.chat.completions.create({
 		<p class="mt-2 border-t border-border px-1 pt-2.5 pb-0.5 text-[13px] text-foreground/80">
 			<span class="relative">
 				{@render edgeMarker(3, 'left')}
-				Recommended for your {machine}
+				Recommended for this {machine}
 			</span>
 		</p>
 		{#each MENU_RECOMMENDED as m (m.name + m.params)}
