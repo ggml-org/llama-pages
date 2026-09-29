@@ -57,7 +57,7 @@
 	import appleIcon from '$lib/assets/apple-icon.svg?raw';
 	import { logoFor } from '$lib/assets/logos';
 	import windowsIcon from '$lib/assets/windows-icon.svg?raw';
-	import { displaySize, families, minMemGB, slugify } from '$lib/catalog';
+	import { families, minMemGB, slugify } from '$lib/catalog';
 	import { CopyButton, InstallCommand, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
@@ -91,6 +91,14 @@
 	// what it's going for).
 	const WALLPAPER =
 		'bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]';
+
+	// -- Menu frame -----------------------------------------------------------------
+	//
+	// The menu's material and edge, shared by the Mac menu and the Windows
+	// flyout (see the Mac menu's comment); each adds its own corners. The
+	// border stays at 1px, since the edge markers' offset counts it.
+	const MENU_FRAME =
+		'border border-white/70 bg-background/85 p-3 text-sm shadow-[0_0_0_1px_rgb(0_0_0/0.15),0_16px_40px_-8px_rgb(0_0_0/0.3)] backdrop-blur-xl backdrop-saturate-150 dark:border-white/12 dark:shadow-[0_0_0_1px_rgb(0_0_0/0.7),0_16px_40px_-8px_rgb(0_0_0/0.6)]';
 
 	// -- Menu mock ------------------------------------------------------------------
 	//
@@ -165,6 +173,12 @@
 	//
 	// Written so no line is wider than the card on desktop, and with the one
 	// line that differs from plain OpenAI usage highlighted (`changed`).
+	//
+	// Each is highlighted once up front (`html`). The whole snippet is
+	// highlighted rather than line by line because some tokens span lines
+	// (the curl JSON body is one multi-line string), so the changed line is
+	// marked with a separate band behind the text instead of by wrapping
+	// each line.
 	const SNIPPETS = [
 		{
 			changed: 3,
@@ -179,7 +193,6 @@ reply = client.chat.completions.create(
     model="ggml-org/gpt-oss-20b-GGUF:MXFP4",
     messages=[{"role": "user", "content": "Hi!"}],
 )`,
-			id: 'python',
 			label: 'Python',
 			lang: 'python'
 		},
@@ -196,7 +209,6 @@ const reply = await client.chat.completions.create({
   model: "ggml-org/gpt-oss-20b-GGUF:MXFP4",
   messages: [{ role: "user", content: "Hi!" }],
 });`,
-			id: 'js',
 			label: 'JavaScript',
 			lang: 'javascript'
 		},
@@ -208,23 +220,14 @@ const reply = await client.chat.completions.create({
     "model": "ggml-org/gpt-oss-20b-GGUF:MXFP4",
     "messages": [{"role": "user", "content": "Hi!"}]
   }'`,
-			id: 'curl',
 			label: 'curl',
 			lang: 'bash'
 		}
-	];
+	].map((s) => ({ ...s, html: Prism.highlight(s.code, Prism.languages[s.lang], s.lang) }));
 
-	// Highlighted once up front. The whole snippet is highlighted rather than
-	// line by line because some tokens span lines (the curl JSON body is one
-	// multi-line string), so the changed line is marked with a separate band
-	// behind the text instead of by wrapping each line.
-	const highlighted = Object.fromEntries(
-		SNIPPETS.map((s) => [s.id, Prism.highlight(s.code, Prism.languages[s.lang], s.lang)])
-	);
-
-	let snippetId = $state('python');
-
-	const snippet = $derived(SNIPPETS.find((s) => s.id === snippetId)!);
+	// Raw, so it stays the array's own object and the tabs can compare it
+	// with `===` (a deep $state would wrap it in a proxy).
+	let snippet = $state.raw(SNIPPETS[0]);
 
 	// The code area is sized to the longest snippet so switching tabs doesn't
 	// change its height and shift the rest of the page. The shorter ones just
@@ -237,15 +240,13 @@ const reply = await client.chat.completions.create({
 
 	// -- Without / with diagram ----------------------------------------------------
 	//
-	// The per-app model size is a real download (Qwen 3.8 at Q4) rather than a
-	// made-up number, so the waste it illustrates is honest. Rounded to whole
-	// GB, and also used by the "stored once" drawing, which shows the same
-	// file -- only the menu mock keeps the app's "19.0 GB" format.
+	// The per-app model size is the example model's real download, as the
+	// menu mock shows it, rather than a made-up number, so the waste it
+	// illustrates is honest. Rounded to whole GB, and also used by the
+	// "stored once" drawing, which shows the same file -- only the menu mock
+	// keeps the app's "19.0 GB" format.
 	const DIAGRAM_APPS = ['Chat app', 'Coding agent', 'Your app'];
-	const exampleModelSize = displaySize(
-		families.find((f) => f.name === 'Qwen 3.8')?.sizes[0]?.builds.find((b) => b.quant === 'Q4_K_M')
-			?.sizeBytes
-	).replace(/\.\d+ GB$/, ' GB');
+	const exampleModelSize = `${Math.round(parseFloat(EXAMPLE_MODEL.size))} GB`;
 </script>
 
 <svelte:head>
@@ -716,10 +717,7 @@ const reply = await client.chat.completions.create({
 				     edge markers' offset counts its 1px) and a dark hairline just
 				     outside it (a 1px spread shadow), on top of the soft drop
 				     shadow. -->
-				<div
-					aria-hidden="true"
-					class="order-1 w-full rounded-xl border border-white/70 bg-background/85 p-3 text-sm shadow-[0_0_0_1px_rgb(0_0_0/0.15),0_16px_40px_-8px_rgb(0_0_0/0.3)] backdrop-blur-xl backdrop-saturate-150 md:order-2 dark:border-white/12 dark:shadow-[0_0_0_1px_rgb(0_0_0/0.7),0_16px_40px_-8px_rgb(0_0_0/0.6)]"
-				>
+				<div aria-hidden="true" class="order-1 w-full rounded-xl md:order-2 {MENU_FRAME}">
 					{@render menuBody('Mac')}
 				</div>
 			</div>
@@ -754,13 +752,12 @@ const reply = await client.chat.completions.create({
 			<!-- The Mac menu's edge (shine, dark hairline, drop shadow -- see
 			     there): Windows 11's own flatter edge, a single faint hairline,
 			     was tried and looked weaker against the wallpaper. Only the
-			     corners are Windows' (8px). The border is kept at 1px, since the
-			     edge markers' offset counts it.
+			     corners are Windows' (8px).
 			     Segoe UI for Windows visitors (who are the only ones who see
 			     this), so the flyout's text looks like theirs. -->
 			<div
 				aria-hidden="true"
-				class="order-1 rounded-lg border border-white/70 bg-background/85 p-3 font-['Segoe_UI_Variable_Text','Segoe_UI',system-ui,sans-serif] text-sm shadow-[0_0_0_1px_rgb(0_0_0/0.15),0_16px_40px_-8px_rgb(0_0_0/0.3)] backdrop-blur-xl backdrop-saturate-150 md:col-start-2 md:row-start-1 dark:border-white/12 dark:shadow-[0_0_0_1px_rgb(0_0_0/0.7),0_16px_40px_-8px_rgb(0_0_0/0.6)]"
+				class="order-1 rounded-lg font-['Segoe_UI_Variable_Text','Segoe_UI',system-ui,sans-serif] md:col-start-2 md:row-start-1 {MENU_FRAME}"
 			>
 				{@render menuBody('PC')}
 			</div>
@@ -1082,40 +1079,38 @@ const reply = await client.chat.completions.create({
 	     coordinates out of 200 (30 = 15%, 90 = 45%, 150 = 75%), and the
 	     plateau spans y 8-110 of the 112px-tall box (h-28), hence pt-2 on the block labels and bottom-1.5 (2px baseline + 4px) on "Unloaded". -->
 	{#snippet idleArt()}
-		<div class="flex flex-col">
-			<div class="relative h-28 text-[11px] whitespace-nowrap">
-				<svg
-					viewBox="0 0 200 112"
-					preserveAspectRatio="none"
-					class="absolute inset-0 size-full text-sky-600 dark:text-sky-400"
-					fill="none"
-				>
-					<path d="M30 110V8H90V110Z" fill="currentColor" fill-opacity="0.22" />
-					<path d="M90 110V8H150V110Z" fill="currentColor" fill-opacity="0.07" />
-					<path
-						d="M0 110H30V8H90M150 8V110H200"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linejoin="round"
-						vector-effect="non-scaling-stroke"
-					/>
-					<path
-						d="M90 8H150"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-dasharray="4 3"
-						vector-effect="non-scaling-stroke"
-					/>
-				</svg>
-				<span
-					class="absolute inset-y-0 left-[15%] flex w-[30%] items-center justify-center pt-2 font-medium"
-					>In use</span
-				>
-				<span class="absolute inset-y-0 left-[45%] flex w-[30%] items-center justify-center pt-2"
-					>5 min idle</span
-				>
-				<span class="absolute right-0 bottom-1.5 text-muted-foreground">Unloaded</span>
-			</div>
+		<div class="relative h-28 text-[11px] whitespace-nowrap">
+			<svg
+				viewBox="0 0 200 112"
+				preserveAspectRatio="none"
+				class="absolute inset-0 size-full text-sky-600 dark:text-sky-400"
+				fill="none"
+			>
+				<path d="M30 110V8H90V110Z" fill="currentColor" fill-opacity="0.22" />
+				<path d="M90 110V8H150V110Z" fill="currentColor" fill-opacity="0.07" />
+				<path
+					d="M0 110H30V8H90M150 8V110H200"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linejoin="round"
+					vector-effect="non-scaling-stroke"
+				/>
+				<path
+					d="M90 8H150"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-dasharray="4 3"
+					vector-effect="non-scaling-stroke"
+				/>
+			</svg>
+			<span
+				class="absolute inset-y-0 left-[15%] flex w-[30%] items-center justify-center pt-2 font-medium"
+				>In use</span
+			>
+			<span class="absolute inset-y-0 left-[45%] flex w-[30%] items-center justify-center pt-2"
+				>5 min idle</span
+			>
+			<span class="absolute right-0 bottom-1.5 text-muted-foreground">Unloaded</span>
 		</div>
 	{/snippet}
 
@@ -1267,12 +1262,12 @@ const reply = await client.chat.completions.create({
 			>
 				<div class="flex items-center justify-between border-b border-white/10 px-2">
 					<div class="flex" role="tablist">
-						{#each SNIPPETS as s (s.id)}
+						{#each SNIPPETS as s (s.label)}
 							<button
 								role="tab"
-								aria-selected={snippetId === s.id}
-								onclick={() => (snippetId = s.id)}
-								class="cursor-pointer border-b px-3 py-3 text-xs {snippetId === s.id
+								aria-selected={snippet === s}
+								onclick={() => (snippet = s)}
+								class="cursor-pointer border-b px-3 py-3 text-xs {snippet === s
 									? 'border-white text-white'
 									: 'border-transparent text-white/45 hover:text-white/80'}"
 							>
@@ -1299,8 +1294,7 @@ const reply = await client.chat.completions.create({
 					style="min-height: {32 + maxSnippetLines * 24}px"><div
 						class="absolute inset-x-0 h-6 border-l-2 border-white/60 bg-white/[0.08]"
 						style="top: {16 + snippet.changed * 24}px"
-						aria-hidden="true"></div><code class="relative block px-5"
-						>{@html highlighted[snippet.id]}</code
+						aria-hidden="true"></div><code class="relative block px-5">{@html snippet.html}</code
 					></pre>
 				<!-- eslint-enable svelte/no-at-html-tags -->
 			</div>
