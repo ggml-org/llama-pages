@@ -58,37 +58,13 @@
 	import { logoFor } from '$lib/assets/logos';
 	import windowsIcon from '$lib/assets/windows-icon.svg?raw';
 	import { displaySize, families, minMemGB, slugify } from '$lib/catalog';
-	import { InstallCommand, Logo } from '$lib/components/app';
+	import { CopyButton, InstallCommand, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
 	import Prism from '$lib/prism';
-	import { toast } from 'svelte-sonner';
+	import type { Snippet } from 'svelte';
 
 	let { data } = $props();
-
-	// -- Hero shot callouts ------------------------------------------------------
-	//
-	// Numbered to match the markers placed on the menu. Each one maps a part
-	// of the menu to the OpenAI mental model or to the "easy" promise.
-	// `{device}` is rendered as "your Mac" or "your computer" (withDevice).
-	// `{machine}` is the word the pictured menu uses ("Mac" or "PC"), so the
-	// title quotes the menu exactly (see the `callouts` snippet). The menu
-	// says "this Mac", not "your Mac": the picks are based on this machine's
-	// hardware, and "your" could read as picked for your taste.
-	const CALLOUTS = [
-		{
-			body: 'Chat with any model in your browser. Like ChatGPT, but on {device}.',
-			title: 'Open chat'
-		},
-		{
-			body: 'Your apps connect here. It speaks the OpenAI API, so coding agents, editors, and scripts just work.',
-			title: 'A local API'
-		},
-		{
-			body: 'Models that fit {device}, one click to install. Llama picks the settings.',
-			title: 'Recommended for this {machine}'
-		}
-	];
 
 	// -- Hero GitHub button ---------------------------------------------------------
 	//
@@ -167,29 +143,6 @@
 
 	// -- Lightweight ---------------------------------------------------------------
 	//
-	// The three "is it heavy?" facts. Not "no windows" or "no Dock icon":
-	// Settings opens a window and shows a Dock icon while it's open. Model
-	// storage is the stronger third point anyway -- models are the heavy
-	// part, and other apps keep their own copies. Each card draws its fact
-	// (see the snippets in the markup), so the copy here stays one line.
-	const LIGHT = [
-		{
-			body: 'A native Mac app, and just a 1 MB download — smaller than a photo.',
-			id: 'size',
-			title: '4 MB app'
-		},
-		{
-			body: 'Kept in the Hugging Face cache, shared with llama.cpp and other tools.',
-			id: 'storage',
-			title: 'Each model stored once'
-		},
-		{
-			body: 'Models load when something asks for one and unload after 5 minutes idle.',
-			id: 'idle',
-			title: 'Nothing loaded when idle'
-		}
-	] as const;
-
 	// The tools shown sharing one model file in the "stored once" drawing.
 	const SHARED_BY = ['Llama', 'llama.cpp', 'Other tools'];
 
@@ -270,7 +223,6 @@ const reply = await client.chat.completions.create({
 	);
 
 	let snippetId = $state('python');
-	let copied = $state(false);
 
 	const snippet = $derived(SNIPPETS.find((s) => s.id === snippetId)!);
 
@@ -279,24 +231,9 @@ const reply = await client.chat.completions.create({
 	// leave some empty space at the bottom.
 	const maxSnippetLines = Math.max(...SNIPPETS.map((s) => s.code.split('\n').length));
 
-	function copySnippet() {
-		navigator.clipboard.writeText(snippet.code);
-		toast.success('Copied to clipboard!');
-		copied = true;
-		setTimeout(() => (copied = false), 2000);
-	}
-
 	// -- Closing CTA ------------------------------------------------------------------
 
 	const BREW_COMMAND = 'brew install --cask llama-app';
-	let brewCopied = $state(false);
-
-	function copyBrewCommand() {
-		navigator.clipboard.writeText(BREW_COMMAND);
-		toast.success('Copied to clipboard!');
-		brewCopied = true;
-		setTimeout(() => (brewCopied = false), 2000);
-	}
 
 	// -- Without / with diagram ----------------------------------------------------
 	//
@@ -332,14 +269,6 @@ const reply = await client.chat.completions.create({
 	{#snippet macOr(other: string)}<span data-os-only="mac">Mac</span><span
 			data-os-only="windows linux other">{other}</span
 		>{/snippet}
-
-	<!-- `text` with each `{device}` in it rendered as "your Mac" or "your
-	     computer", for copy that lives in the script's constants. -->
-	{#snippet withDevice(text: string)}
-		{#each text.split('{device}') as part, i (i)}{#if i > 0}your {@render macOr(
-					'computer'
-				)}{/if}{part}{/each}
-	{/snippet}
 
 	<!-- The download buttons, one per app, each shown on its own OS. Phones
 	     and unrecognized systems get both, so visitors learn what there is
@@ -451,28 +380,51 @@ const reply = await client.chat.completions.create({
 	{/snippet}
 
 	{#snippet callouts(machine: string, extra: string)}
-		<!-- The callouts, shared by the Mac and Windows shots. Written directly
-	     on the wallpaper -- no card, no shadow -- so they read as
+		<!-- The callouts, shared by the Mac and Windows shots. Numbered to
+	     match the markers placed on the menu; each one maps a part of the
+	     menu to the OpenAI mental model or to the "easy" promise. Written
+	     directly on the wallpaper -- no card, no shadow -- so they read as
 	     annotations *about* the menu, not as more UI. On desktop the column
 	     is centered in the space left of the menu, both ways, so the
 	     margins around it are even. `machine` is the word the pictured menu
-	     uses for the computer, and `extra` is each shot's placement. -->
+	     uses for the computer ("Mac" or "PC"), so the third title quotes the
+	     menu exactly, and `extra` is each shot's placement. The menu says
+	     "this Mac", not "your Mac": the picks are based on this machine's
+	     hardware, and "your" could read as picked for your taste. -->
 		<ol
 			class="flex max-w-md flex-col gap-8 px-1 py-2 md:self-center md:justify-self-center {extra}"
 		>
-			{#each CALLOUTS as c, i (c.body)}
-				<li class="flex gap-3">
-					{@render marker(i + 1)}
-					<span>
-						<span class="block text-base leading-6 font-medium"
-							>{c.title.replace('{machine}', machine)}</span
-						>
-						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
-							{@render withDevice(c.body)}
-						</span>
+			<li class="flex gap-3">
+				{@render marker(1)}
+				<span>
+					<span class="block text-base leading-6 font-medium">Open chat</span>
+					<span class="mt-1 block text-base leading-relaxed text-foreground/70">
+						Chat with any model in your browser. Like ChatGPT, but on your {@render macOr(
+							'computer'
+						)}.
 					</span>
-				</li>
-			{/each}
+				</span>
+			</li>
+			<li class="flex gap-3">
+				{@render marker(2)}
+				<span>
+					<span class="block text-base leading-6 font-medium">A local API</span>
+					<span class="mt-1 block text-base leading-relaxed text-foreground/70">
+						Your apps connect here. It speaks the OpenAI API, so coding agents, editors, and scripts
+						just work.
+					</span>
+				</span>
+			</li>
+			<li class="flex gap-3">
+				{@render marker(3)}
+				<span>
+					<span class="block text-base leading-6 font-medium">Recommended for this {machine}</span>
+					<span class="mt-1 block text-base leading-relaxed text-foreground/70">
+						Models that fit your {@render macOr('computer')}, one click to install. Llama picks the
+						settings.
+					</span>
+				</span>
+			</li>
 		</ol>
 	{/snippet}
 
@@ -909,13 +861,10 @@ const reply = await client.chat.completions.create({
 						</div>
 					{/each}
 				</div>
-				<!-- A div, not a p: the global `p code` rule (prism-theme.css) adds
-				     side margins and the accent color, which indents the address
-				     when it wraps onto its own line. -->
-				<div class="text-sm text-muted-foreground">
+				<p class="text-sm text-muted-foreground">
 					Point any app that works with OpenAI at
 					<code class="font-mono text-foreground">localhost:9931/v1</code>
-				</div>
+				</p>
 			</div>
 		</div>
 
@@ -1170,6 +1119,22 @@ const reply = await client.chat.completions.create({
 		</div>
 	{/snippet}
 
+	<!-- One fact's card: text first, drawing pinned to the bottom (mt-auto).
+	     The grid stretches every card to the tallest one, and the slack goes
+	     into the gap between the two -- so the drawings keep their natural
+	     heights instead of being boxed to a common one. -->
+	{#snippet lightCard(title: string, body: string, art: Snippet)}
+		<div class="flex flex-col gap-8 rounded-2xl border border-border bg-foreground/2 p-6">
+			<div>
+				<h3 class="font-semibold">{title}</h3>
+				<p class="mt-1 leading-relaxed text-foreground/70">{body}</p>
+			</div>
+			<div aria-hidden="true" class="mt-auto text-xs">
+				{@render art()}
+			</div>
+		</div>
+	{/snippet}
+
 	<!-- Not shown on Windows: the facts are the Mac app's, and the Windows
 	     app isn't a 1 MB download and keeps models loaded by default. -->
 	<section data-os-only="mac linux other" class="py-20">
@@ -1184,29 +1149,27 @@ const reply = await client.chat.completions.create({
 			</p>
 		</div>
 		<!-- Three across only from lg: below that, the cards are too narrow
-		     for the drawings (the "stored once" chips would truncate). -->
+		     for the drawings (the "stored once" chips would truncate). Not "no
+		     windows" or "no Dock icon": Settings opens a window and shows a
+		     Dock icon while it's open. Model storage is the stronger third
+		     point anyway -- models are the heavy part, and other apps keep
+		     their own copies. -->
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-			{#each LIGHT as l (l.id)}
-				<!-- Text first, drawing pinned to the bottom (mt-auto). The grid
-				     stretches every card to the tallest one, and the slack goes
-				     into the gap between the two -- so the drawings keep their
-				     natural heights instead of being boxed to a common one. -->
-				<div class="flex flex-col gap-8 rounded-2xl border border-border bg-foreground/2 p-6">
-					<div>
-						<h3 class="font-semibold">{l.title}</h3>
-						<p class="mt-1 leading-relaxed text-foreground/70">{l.body}</p>
-					</div>
-					<div aria-hidden="true" class="mt-auto text-xs">
-						{#if l.id === 'size'}
-							{@render sizeArt()}
-						{:else if l.id === 'storage'}
-							{@render storageArt()}
-						{:else}
-							{@render idleArt()}
-						{/if}
-					</div>
-				</div>
-			{/each}
+			{@render lightCard(
+				'4 MB app',
+				'A native Mac app, and just a 1 MB download — smaller than a photo.',
+				sizeArt
+			)}
+			{@render lightCard(
+				'Each model stored once',
+				'Kept in the Hugging Face cache, shared with llama.cpp and other tools.',
+				storageArt
+			)}
+			{@render lightCard(
+				'Nothing loaded when idle',
+				'Models load when something asks for one and unload after 5 minutes idle.',
+				idleArt
+			)}
 		</div>
 	</section>
 	<!-- 6. Models by memory tier. Answers "will it run on my computer?" --
@@ -1317,13 +1280,7 @@ const reply = await client.chat.completions.create({
 							</button>
 						{/each}
 					</div>
-					<button
-						onclick={copySnippet}
-						aria-label="Copy code"
-						class="cursor-pointer p-2 text-white/45 hover:text-white"
-					>
-						{#if copied}<Check class="size-4" />{:else}<Copy class="size-4" />{/if}
-					</button>
+					<CopyButton text={snippet.code} what="code" class="p-2 text-white/45 hover:text-white" />
 				</div>
 
 				<!-- `dark` opts the tokens into the dark Prism palette (prism-theme.css)
@@ -1419,21 +1376,18 @@ const reply = await client.chat.completions.create({
 		<!-- For those who live in the terminal: the install they'd
 		     reach for anyway. The "or" sits on its own line so it reads as a
 		     choice between the button and the command, and the command gets a
-		     subtle chip so it reads as something to copy into a terminal. A
-		     div, not a p: the global `p code` rule (prism-theme.css) would
-		     force the accent color and add side margins. Mac only: the cask
-		     is the Mac app. -->
+		     subtle chip so it reads as something to copy into a terminal. Mac
+		     only: the cask is the Mac app. -->
 		<div data-os-only="mac" class="flex flex-col items-center gap-3 text-sm">
 			<span class="text-muted-foreground">or</span>
 			<div class="flex items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3">
 				<code class="font-mono text-foreground">{BREW_COMMAND}</code>
-				<button
-					onclick={copyBrewCommand}
-					aria-label={brewCopied ? 'Copied command' : 'Copy command'}
-					class="cursor-pointer rounded-md p-1.5 text-muted-foreground hover:text-foreground"
-				>
-					{#if brewCopied}<Check class="size-3.5" />{:else}<Copy class="size-3.5" />{/if}
-				</button>
+				<CopyButton
+					text={BREW_COMMAND}
+					what="command"
+					iconClass="size-3.5"
+					class="rounded-md p-1.5 text-muted-foreground hover:text-foreground"
+				/>
 			</div>
 		</div>
 		{@render linuxInstall()}

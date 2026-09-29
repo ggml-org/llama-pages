@@ -1,25 +1,12 @@
 <script lang="ts">
-	import { Check, Copy } from '@lucide/svelte';
+	import CopyButton from '../misc/CopyButton.svelte';
 	import { deviceInfo } from '$lib/stores/device/index.svelte';
-	import { toast } from 'svelte-sonner';
-
-	let copied = $state(false);
 
 	const installCommand = $derived(
 		deviceInfo.isWindows
 			? 'irm https://llama.app/install.ps1 | iex'
 			: 'curl -LsSf https://llama.app/install.sh | sh'
 	);
-
-	async function handleCopy() {
-		navigator.clipboard.writeText(installCommand);
-		toast.success('Copied to clipboard!');
-		copied = true;
-
-		setTimeout(() => {
-			copied = false;
-		}, 2000);
-	}
 </script>
 
 <div class="w-full max-w-2xl">
@@ -31,17 +18,11 @@
 				{installCommand}
 			</code>
 
-			<button
-				class="flex shrink-0 cursor-pointer items-center border-l border-secondary px-4 text-foreground/70 hover:text-foreground"
-				aria-label={copied ? 'Copied command' : 'Copy command'}
-				onclick={handleCopy}
-			>
-				{#if copied}
-					<Check class="size-4" />
-				{:else}
-					<Copy class="size-4" />
-				{/if}
-			</button>
+			<CopyButton
+				text={installCommand}
+				what="command"
+				class="flex shrink-0 items-center border-l border-secondary px-4 text-foreground/70 hover:text-foreground"
+			/>
 		</div>
 	</div>
 

@@ -251,7 +251,8 @@ pre[class*='language-'] {
 	}
 }
 
-p code {
+/* Inline code in the docs' prose. */
+.prose p code {
 	color: var(--accent) !important;
 	margin-inline: 0.25rem;
 }

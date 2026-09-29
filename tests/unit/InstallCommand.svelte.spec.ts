@@ -1,13 +1,13 @@
-import HomePage from '../../src/routes/+page.svelte';
+import InstallCommand from '../../src/lib/components/app/content/InstallCommand.svelte';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
 
 const INSTALL_COMMAND = 'curl -LsSf https://llama.app/install.sh | sh';
 
-describe('+page.svelte', () => {
+describe('InstallCommand.svelte', () => {
 	it('renders install command and package manager link', async () => {
-		render(HomePage, { data: { windowsDownloadUrl: '' } } as never);
+		render(InstallCommand);
 
 		await expect.element(page.getByText(INSTALL_COMMAND)).toBeInTheDocument();
 
@@ -34,7 +34,7 @@ describe('+page.svelte', () => {
 			});
 		}
 
-		render(HomePage, { data: { windowsDownloadUrl: '' } } as never);
+		render(InstallCommand);
 
 		const copyButton = page.getByRole('button', { name: 'Copy command' });
 
