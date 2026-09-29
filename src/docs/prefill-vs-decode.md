@@ -45,7 +45,7 @@ Decode speed is often reported as **output tokens per second** or **time per out
 
 ## KV Cache
 
-KV cache is a trick to make attention run in linear complexity. Attention is calculated for every token with all tokens before that token, thus having quadratic complexity. When we calculate keys and values and store them for the tokens that came before the token we generate, we can read them all during inference instead of recalculating them. This adds extra memory (and grows with context window) but makes inference fast. In llama.cpp, KV cache is pre-allocated for a given context window. In llama.app you can see the amount of memory a conversation will take including the model and the KV cache.
+KV cache is a trick to make attention run faster. Attention is the basic component of LLMs: each new token generation needs to look at all the previous tokens in the sequence. Therefore, it has quadratic complexity. Attention is composed of _keys_ and _values_ for every token, but once they have been calculated for a previous token in the sequence, we can cache the result and reuse it when generating a new token. This adds extra memory (which grows with context window) but makes inference much faster. In llama.cpp, the KV cache is pre-allocated for a given context window. In llama.app you can see the amount of memory a conversation will take including the model and the KV cache.
 
 ![KV Cache](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/kv-cache.png)
 
