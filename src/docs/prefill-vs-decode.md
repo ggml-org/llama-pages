@@ -49,7 +49,7 @@ KV cache is a trick to make attention run faster. Attention is the basic compone
 
 ![KV Cache](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/kv-cache.png)
 
-KV cache consumes memory approximately in proportion to (depending on architecture):
+The memory consumption of KV cache depends on the model architecture, but we can approximate it with:
 
 ```text
 KV-cache size ∝ layers × context length × KV heads × head dimension × bytes per element
