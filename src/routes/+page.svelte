@@ -378,7 +378,7 @@ const reply = await client.chat.completions.create({
 	     and the menu and reads as an annotation. -->
 	{#snippet marker(n: number)}
 		<span
-			class="flex size-5 shrink-0 items-center justify-center rounded-full bg-foreground text-[11px] font-semibold text-background"
+			class="flex size-6 shrink-0 items-center justify-center rounded-full bg-foreground text-[13px] font-semibold text-background"
 			>{n}</span
 		>
 	{/snippet}
@@ -387,15 +387,15 @@ const reply = await client.chat.completions.create({
 	     so the menu's own layout isn't shifted to make room. It's placed
 	     relative to the labeled text (wrap that text in a relative span):
 	     the menu's padding (12px) + row padding (4px) + border (1px) put the
-	     edge 17px from the text, and backing off by half the marker (10px)
+	     edge 17px from the text, and backing off by half the marker (12px)
 	     centers it on the edge. Left-edge markers face the callouts; "Open
 	     chat" is right-aligned, so its marker sits on the right edge where
 	     it can't be mistaken for the "Llama" title. -->
 	{#snippet edgeMarker(n: number, side: 'left' | 'right')}
 		<span
 			class="absolute top-1/2 -translate-y-1/2 {side === 'left'
-				? 'right-[calc(100%+7px)]'
-				: 'left-[calc(100%+7px)]'} rounded-full ring-2 ring-background"
+				? 'right-[calc(100%+5px)]'
+				: 'left-[calc(100%+5px)]'} rounded-full ring-2 ring-background"
 		>
 			{@render marker(n)}
 		</span>
@@ -447,14 +447,16 @@ const reply = await client.chat.completions.create({
 	     margins around it are even. `machine` is the word the pictured menu
 	     uses for the computer, and `extra` is each shot's placement. -->
 		<ol
-			class="flex max-w-sm flex-col gap-7 px-1 py-2 md:self-center md:justify-self-center {extra}"
+			class="flex max-w-md flex-col gap-8 px-1 py-2 md:self-center md:justify-self-center {extra}"
 		>
 			{#each CALLOUTS as c, i (c.body)}
 				<li class="flex gap-3">
 					{@render marker(i + 1)}
 					<span>
-						<span class="block text-sm font-medium">{c.title.replace('{machine}', machine)}</span>
-						<span class="mt-0.5 block text-sm leading-relaxed text-foreground/70">
+						<span class="block text-base leading-6 font-medium"
+							>{c.title.replace('{machine}', machine)}</span
+						>
+						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
 							{@render withDevice(c.body)}
 						</span>
 					</span>
