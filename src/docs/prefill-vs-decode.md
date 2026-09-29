@@ -15,7 +15,7 @@ So here's how prefill looks like. We do one pass through the model: we read the 
 ![prefill](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/prefill.png)
 
 
-### What makes prefill slower
+### What affects the performance of prefill
 
 Prefill is compute-bound, and is slower when you have: 
 
