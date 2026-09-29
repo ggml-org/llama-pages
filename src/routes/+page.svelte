@@ -318,8 +318,12 @@ const reply = await client.chat.completions.create({
 </svelte:head>
 
 <!-- Two text colors only. Content -- headings and the paragraphs under them --
-     uses the default foreground. `text-muted-foreground` is for asides: small
-     print, captions, labels, and the UI inside mockups. -->
+     uses the default foreground, softened to `text-foreground/70` for the
+     short bodies under a callout's or card's title (never gray: they're
+     still content). `text-muted-foreground` is for asides: small print,
+     captions, labels, and the UI inside mockups. Section intros are
+     `text-lg`, and h2s set their own leading, since the global `leading-7`
+     heading rule (app.css) would otherwise cramp them when they wrap. -->
 <main class="mx-auto w-full max-w-6xl px-6 md:px-12">
 	<!-- "Mac" for Mac visitors and `other` for everyone else, for copy that
 	     addresses the visitor's computer ("your Mac" / "your computer"). -->
@@ -842,10 +846,10 @@ const reply = await client.chat.completions.create({
 	     a menu bar app a platform?". -->
 	<section class="py-20">
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
-			<h2 class="text-3xl font-semibold tracking-tight">
+			<h2 class="text-3xl leading-tight font-semibold tracking-tight">
 				Like OpenAI, but on your {@render macOr('computer')}
 			</h2>
-			<p class="leading-relaxed">
+			<p class="text-lg leading-relaxed text-pretty">
 				OpenAI has ChatGPT to chat with and an API to build on. Llama gives you both, running on
 				your own computer, with models you choose.
 			</p>
@@ -959,8 +963,8 @@ const reply = await client.chat.completions.create({
 	     one model where every setting is already on "Auto". -->
 	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2 md:gap-12">
 		<div class="flex flex-col gap-4">
-			<h2 class="text-3xl font-semibold tracking-tight">Nothing to set up</h2>
-			<p class="leading-relaxed">
+			<h2 class="text-3xl leading-tight font-semibold tracking-tight">Nothing to set up</h2>
+			<p class="text-lg leading-relaxed text-pretty">
 				Running AI locally used to mean reading forum threads about settings. Llama checks your {@render macOr(
 					'computer'
 				)}
@@ -989,9 +993,10 @@ const reply = await client.chat.completions.create({
 					{@render paramsChip(EXAMPLE_MODEL.params)}
 				</span>
 				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
-					<Check class="size-3.5 text-sky-600 dark:text-sky-400" /> Chosen by Llama, for your {@render macOr(
-						'computer'
-					)}
+					<Check class="size-3.5 text-sky-600 dark:text-sky-400" />
+					<!-- One span, so the flex gap doesn't also land between
+					     "your" and "Mac". -->
+					<span>Chosen by Llama, for your {@render macOr('computer')}</span>
 				</span>
 			</div>
 
@@ -1169,8 +1174,10 @@ const reply = await client.chat.completions.create({
 		<!-- The intro names the worry (local AI is heavy) rather than listing
 		     the cards, so it doesn't read as the cards' titles said twice. -->
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
-			<h2 class="text-3xl font-semibold tracking-tight">Light enough to forget it's there</h2>
-			<p class="leading-relaxed">
+			<h2 class="text-3xl leading-tight font-semibold tracking-tight">
+				Light enough to forget it's there
+			</h2>
+			<p class="text-lg leading-relaxed text-pretty">
 				Local AI has a reputation for eating disk space and memory. Llama keeps both to a minimum.
 			</p>
 		</div>
@@ -1184,8 +1191,8 @@ const reply = await client.chat.completions.create({
 				     natural heights instead of being boxed to a common one. -->
 				<div class="flex flex-col gap-8 rounded-2xl border border-border bg-foreground/2 p-6">
 					<div>
-						<h3 class="font-medium">{l.title}</h3>
-						<p class="mt-1 leading-relaxed text-muted-foreground">{l.body}</p>
+						<h3 class="font-semibold">{l.title}</h3>
+						<p class="mt-1 leading-relaxed text-foreground/70">{l.body}</p>
 					</div>
 					<div aria-hidden="true" class="mt-auto text-xs">
 						{#if l.id === 'size'}
@@ -1203,22 +1210,24 @@ const reply = await client.chat.completions.create({
 	<!-- 6. Models by memory tier. Answers "will it run on my computer?" --
 	     the most common newcomer worry -- with the one number they can check. -->
 	<section class="py-20">
-		<div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-			<div class="flex max-w-xl flex-col gap-3">
-				<h2 class="text-3xl font-semibold tracking-tight">
+		<div class="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+			<div class="flex max-w-2xl flex-col gap-4">
+				<h2 class="text-3xl leading-tight font-semibold tracking-tight">
 					A great model for every {@render macOr('computer')}
 				</h2>
-				<p>Llama suggests one that fits when you open it. Here's where to start.</p>
+				<p class="text-lg leading-relaxed text-pretty">
+					Llama suggests one that fits when you open it. Here's where to start.
+				</p>
 			</div>
 			<a
 				href={resolve('/models')}
-				class="inline-flex shrink-0 items-center gap-1.5 text-sm underline underline-offset-4"
+				class="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium underline underline-offset-4"
 			>
 				All models <ArrowRight class="size-3.5" />
 			</a>
 		</div>
 
-		<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 			{#each PICKS as p (p.family)}
 				<a
 					href={resolve(`/models/${slugify(p.f.name)}`)}
@@ -1247,8 +1256,8 @@ const reply = await client.chat.completions.create({
 	     first, so it wasn't clear whether they were peers or parent/child. -->
 	<section id="developers" class="scroll-mt-8 py-20">
 		<div class="mb-12 flex max-w-2xl flex-col gap-4">
-			<h2 class="text-3xl font-semibold tracking-tight">Build on Llama</h2>
-			<p class="leading-relaxed">
+			<h2 class="text-3xl leading-tight font-semibold tracking-tight">Build on Llama</h2>
+			<p class="text-lg leading-relaxed text-pretty">
 				Your apps get a local AI API they can all share, and Llama takes care of the engine and the
 				models.
 			</p>
@@ -1289,7 +1298,7 @@ const reply = await client.chat.completions.create({
 			<!-- Dark in both themes: it reads as
 		     "code" at a glance and gives the page a strong focal point. -->
 			<div
-				class="overflow-hidden rounded-xl border border-border bg-[#111] text-[#e7e7e7] shadow-xl md:col-span-3"
+				class="overflow-hidden rounded-2xl border border-border bg-[#111] text-[#e7e7e7] shadow-xl md:col-span-3"
 			>
 				<div class="flex items-center justify-between border-b border-white/10 px-2">
 					<div class="flex" role="tablist">
@@ -1354,7 +1363,7 @@ const reply = await client.chat.completions.create({
 				</p>
 			</div>
 
-			<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<figure class="rounded-2xl border border-border p-5">
 					<figcaption class="mb-4 text-sm text-muted-foreground">Without Llama</figcaption>
 					<div class="grid grid-cols-3 gap-2 text-center text-xs">
@@ -1398,8 +1407,8 @@ const reply = await client.chat.completions.create({
 
 	<!-- Closing CTA. Back to the newcomer: one button, one sentence. -->
 	<section class="flex flex-col items-center gap-6 py-24 text-center">
-		<h2 class="text-4xl font-semibold tracking-tight">Local AI starts here</h2>
-		<p>Free, open source, and yours to keep.</p>
+		<h2 class="text-4xl leading-tight font-semibold tracking-tight">Local AI starts here</h2>
+		<p class="text-lg leading-relaxed text-pretty">Free, open source, and yours to keep.</p>
 		<!-- Hidden on Linux: there's no app to download or view the source of,
 		     so the CLI install below stands in for the whole row. -->
 		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3 sm:flex-row">
