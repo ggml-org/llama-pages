@@ -87,7 +87,7 @@ The number of runs you pass (three, in this case) increases the accuracy of the 
 
 ### Aggregate throughput
 
-The total tokens served across all active requests per second. Batching may improve this even when it increases latency for an individual request.
+The total tokens served across all active requests per second. Batching may improve this, even when it increases latency for an individual request.
 
 ### End-to-end latency
 
