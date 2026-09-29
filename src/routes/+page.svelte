@@ -339,7 +339,10 @@ const reply = await client.chat.completions.create({
 	     and unrecognized systems get both, so visitors learn what there is
 	     for their computer. Linux has no app yet and gets the CLI instead
 	     (linuxInstall). The Windows link is resolved at build time (see
-	     +page.server.ts). -->
+	     +page.server.ts). The Windows button names Windows 11 because the
+	     app doesn't install on Windows 10: on the button, the requirement
+	     can't be skimmed past, and it goes wherever the button goes (the
+	     closing call to action, and the "other" visitors who get both). -->
 	{#snippet downloadButtons()}
 		<Button
 			data-os-only="mac other"
@@ -359,7 +362,7 @@ const reply = await client.chat.completions.create({
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html windowsIcon}
-			Download for Windows
+			Download for Windows 11
 		</Button>
 	{/snippet}
 
@@ -613,12 +616,11 @@ const reply = await client.chat.completions.create({
 		     offline" rather than "Private": a bare "Private" next to "open
 		     source" reads as a private repo or beta, and "offline" is a fact
 		     that implies privacy without claiming it. (Downloading models
-		     still needs the internet; chat and the API don't.) The size is the Mac app's, so
-		     it's left out elsewhere; Windows states its requirement instead,
-		     since the app doesn't install on Windows 10. -->
+		     still needs the internet; chat and the API don't.) The size is
+		     the Mac app's, so it's left out elsewhere. (Windows' requirement
+		     is on its button; see downloadButtons.) -->
 		<p class="-mt-3 text-sm text-muted-foreground">
 			<span data-os-only="mac">1 MB download ·</span>
-			<span data-os-only="windows">For Windows 11 ·</span>
 			Free · Open source · Works offline
 		</p>
 
