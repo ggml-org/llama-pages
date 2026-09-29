@@ -14,7 +14,6 @@ So here's how prefill looks like. We do one pass through the model: we read the 
 
 ![prefill](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/prefill.png)
 
-
 ### What affects the performance of prefill
 
 Prefill is usually compute-bound, because the whole sequence is processed in parallel. "Compute-bound" is a fancy way to say that the more flops your GPU has, the faster it will do prefill. The following factors affect prefill performance:
