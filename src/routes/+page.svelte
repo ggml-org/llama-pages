@@ -1258,7 +1258,7 @@ const reply = await client.chat.completions.create({
 			<!-- Dark in both themes: it reads as
 		     "code" at a glance and gives the page a strong focal point. -->
 			<div
-				class="overflow-hidden rounded-2xl border border-border bg-[#111] text-[#e7e7e7] shadow-xl md:col-span-3"
+				class="overflow-hidden rounded-2xl border border-border bg-[#111] text-[#e7e7e7] md:col-span-3"
 			>
 				<div class="flex items-center justify-between border-b border-white/10 px-2">
 					<div class="flex" role="tablist">
