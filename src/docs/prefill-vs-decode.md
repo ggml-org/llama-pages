@@ -24,7 +24,7 @@ Prefill is usually compute-bound, because the whole sequence is processed in par
 
 ## Decode: writing the answer
 
-After choosing the first output token, the model enters an autoregressive loop. The model generates a token, then appends that token to the conversation and then regenerates the next token until the end of the generation. For each generated token, the model weights and KV cache are read from memory to GPU, the token is generated and we write the new KV cache for the new token to memory.
+After choosing the first output token, the model enters an autoregressive loop. The model generates a token, then appends that token to the conversation, then it generates a new token. This process repeats until the end of the generation. For each generated token, the model weights and KV cache are read from memory to GPU, the token is generated and we write the new KV cache for the new token to memory.
 
 ![decode](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/decode.png)
 
