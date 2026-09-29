@@ -523,11 +523,15 @@ const reply = await client.chat.completions.create({
 			<ArrowUpRight class="size-3.5 text-foreground/35" />
 		</div>
 
-		<!-- Settings and Quit are small bordered buttons in the app. -->
+		<!-- Settings and Quit are small bordered buttons in the app. The
+		     llama.cpp build is the one the Mac app pins (`floorVersion` in
+		     LlamaBinaries.swift); it's hard-coded, so bump it now and then.
+		     The app's own version, shown first in the real footer, is left
+		     out: the llama.cpp build is the part that says what's inside. -->
 		<div
 			class="mt-2 flex items-center justify-between border-t border-border px-1 pt-2.5 text-[13px] text-muted-foreground"
 		>
-			<span>llama.cpp</span>
+			<span>llama.cpp b9726</span>
 			<span class="flex gap-1.5">
 				<span class="rounded-md border border-foreground/15 px-1.5 leading-5">Settings</span>
 				<span class="rounded-md border border-foreground/15 px-1.5 leading-5">Quit</span>
