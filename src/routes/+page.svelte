@@ -604,7 +604,7 @@ const reply = await client.chat.completions.create({
 		</div>
 
 		<!-- The reassurances sit right under the buttons, where the "should I
-		     click this?" doubts arise: size, cost, and privacy. Size leads
+		     click this?" doubts arise: size, cost, source, and privacy. Size leads
 		     because it annotates the Download button directly above it. The
 		     rest used to end the subline as a sentence; as a list they scan
 		     faster and leave the subline to say what Llama is. "Nothing to
@@ -619,7 +619,7 @@ const reply = await client.chat.completions.create({
 		<p class="-mt-3 text-sm text-muted-foreground">
 			<span data-os-only="mac">1 MB download ·</span>
 			<span data-os-only="windows">For Windows 11 ·</span>
-			Free and open source · Works offline
+			Free · Open source · Works offline
 		</p>
 
 		{@render linuxInstall()}
