@@ -4,7 +4,7 @@ Large language model inference has two distinct phases: **prefill**, when the mo
 
 ## Prefill: reading the prompt
 
-During prefill, the model processes the input tokens in parallel. Each transformer layer computes representations for the prompt and stores the attention **keys and values** in the KV cache.  The model then produces the probability distribution for the first output token. This makes time to first token roughly:
+During prefill, the model processes the input tokens in parallel. Each transformer layer computes representations for the prompt and stores the attention **keys and values** in the KV cache. The model then produces the probability distribution for the first output token. This makes time to first token roughly:
 
 ```text
 time to first token ≈ prompt processing time + first token generation
@@ -27,7 +27,6 @@ Prefill is usually compute-bound, because the whole sequence is processed in par
 After choosing the first output token, the model enters an autoregressive loop. The model generates a token, then appends that token to the conversation and then regenerates the next token until the end of the generation. For each generated token, the model weights and KV cache are read from memory to GPU, the token is generated and we write the new KV cache for the new token to memory.
 
 ![decode](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/decode.png)
-
 
 Due to this repeated read/writes back and forth, decoding is bandwidth-bound. Batching inputs helps with this. When we decode multiple generations together, we read the weight for once for all the items in the batch, which makes decode compute-bound, and we can get better throughput (number of processed tokens increase).
 
@@ -64,7 +63,7 @@ Starting a fresh conversation, summarizing old turns, reducing the context limit
 
 ### Time to first token (TTFT)
 
-From the moment you submit the initial prompt to the moment you see the first token, so it's about prefill. 
+From the moment you submit the initial prompt to the moment you see the first token, so it's about prefill.
 
 ### Time per output token (TPOT)
 
