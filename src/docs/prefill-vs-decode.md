@@ -1,6 +1,6 @@
 # Prefill vs. Decode
 
-Large language model inference has two distinct phases: **prefill**, when the model reads the prompt, and **decode**, when it produces the answer one token at a time. The same model runs in both phases, but the shape of the work changes enough that different hardware limits usually dominate.
+Large language model inference has two distinct phases: **prefill**, when the model reads the prompt, and **decode**, when it produces the answer one token at a time. The same model runs in both phases, but the work changes enough that different hardware limits usually dominate.
 
 ## Prefill: reading the prompt
 
