@@ -86,7 +86,7 @@ llama bench -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 -p 128 -n 64 -r 3
 | gemma3 1B Q4_K | 762.49 MiB |   999.89 M | MTL,BLAS | 5 | tg64 |  115.03 ± 0.19 |
 ```
 
-Number of runs you pass increases the accuracy of the estimate.
+The number of runs you pass (three, in this case) increases the accuracy of the estimate.
 
 ### Aggregate throughput
 
