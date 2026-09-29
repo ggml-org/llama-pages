@@ -23,7 +23,6 @@ Prefill is usually compute-bound, because the whole sequence is processed in par
 - A larger or more computationally expensive model
 - A slower processor or poorly optimized kernels
 
-
 ## Decode: writing the answer
 
 After choosing the first output token, the model enters an autoregressive loop. The model generates a token, then appends that token to the conversation and then regenerates the next token until the end of the generation. For each generated token, the model weights and KV cache are read from memory to GPU, the token is generated and we write the new KV cache for the new token to memory.
