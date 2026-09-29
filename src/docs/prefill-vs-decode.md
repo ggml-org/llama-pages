@@ -33,7 +33,7 @@ Due to these repeated read/writes, decoding is memory-bandwidth-bound: the faste
 ### Factors that affect decoding speed
 
 - A larger model or higher-precision weights
-- Lower memory bandwidth
+- GPU memory bandwidth
 - CPU/GPU offloading across a slow interconnect
 - A long active context, which increases KV-cache reads
 - An implementation without optimized kernels for the model and hardware
