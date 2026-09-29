@@ -86,8 +86,7 @@
 	// One per OS (see the button's comment); `os` is its `data-os-only`.
 	const GITHUB_REPOS = [
 		{ os: 'mac other', url: 'https://github.com/ggml-org/Llama-macOS' },
-		{ os: 'windows', url: 'https://github.com/ggml-org/Llama-Windows' },
-		{ os: 'linux', url: 'https://github.com/ggml-org/llama.cpp' }
+		{ os: 'windows', url: 'https://github.com/ggml-org/Llama-Windows' }
 	];
 
 	// -- "Like OpenAI" clients ----------------------------------------------------
@@ -462,16 +461,18 @@ const reply = await client.chat.completions.create({
 			Chat with them, or use them in your other apps.
 		</p>
 
-		<div class="flex flex-col items-center gap-3 sm:flex-row">
+		<!-- Hidden on Linux: there's no app to download or view the source of,
+		     so the CLI install below stands in for the whole row. -->
+		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3 sm:flex-row">
 			{@render downloadButtons()}
 
 			<!-- The second button is the repo: most users are developers, and
 			     for them the source is the natural next click and a trust signal.
-			     Each OS gets the repo of what it's offered -- the Mac or Windows
-			     app, or llama.cpp for Linux's CLI -- so Windows visitors don't land
-			     on the Mac app's code. Everyone else gets the Mac app's, matching
-			     the header's GitHub link. (It was a demo video before; worth
-			     bringing back if one gets made.) -->
+			     Each OS gets the repo of the app it's offered, so Windows visitors
+			     don't land on the Mac app's code. Everyone else gets the Mac app's,
+			     matching the header's GitHub link. Linux gets none: there's no
+			     Linux app, and linking llama.cpp would suggest there is. (It was
+			     a demo video before; worth bringing back if one gets made.) -->
 			{#each GITHUB_REPOS as r (r.url)}
 				<Button
 					data-os-only={r.os}
@@ -1293,7 +1294,9 @@ const reply = await client.chat.completions.create({
 	<section class="flex flex-col items-center gap-6 py-24 text-center">
 		<h2 class="text-4xl font-semibold tracking-tight">Local AI starts here</h2>
 		<p>Free, open source, and yours to keep.</p>
-		<div class="flex flex-col items-center gap-3 sm:flex-row">
+		<!-- Hidden on Linux: there's no app to download or view the source of,
+		     so the CLI install below stands in for the whole row. -->
+		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3 sm:flex-row">
 			{@render downloadButtons()}
 		</div>
 		<!-- For those who live in the terminal: the install they'd
