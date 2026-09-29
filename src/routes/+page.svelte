@@ -301,7 +301,9 @@ const reply = await client.chat.completions.create({
 	// -- Without / with diagram ----------------------------------------------------
 	//
 	// The per-app model size is a real download (Qwen 3.8 at Q4) rather than a
-	// made-up number, so the waste it illustrates is honest.
+	// made-up number, so the waste it illustrates is honest. Rounded to whole
+	// GB, and also used by the "stored once" drawing, which shows the same
+	// file -- only the menu mock keeps the app's "19.0 GB" format.
 	const DIAGRAM_APPS = ['Chat app', 'Coding agent', 'Your app'];
 	const exampleModelSize = displaySize(
 		families.find((f) => f.name === 'Qwen 3.8')?.sizes[0]?.builds.find((b) => b.quant === 'Q4_K_M')
@@ -1109,7 +1111,7 @@ const reply = await client.chat.completions.create({
 				<span class="min-w-0 flex-1">
 					<span class="flex items-baseline justify-between gap-3">
 						<span class="font-medium">{EXAMPLE_MODEL.name} {EXAMPLE_MODEL.params}</span>
-						<span class="font-mono text-muted-foreground">{EXAMPLE_MODEL.size}</span>
+						<span class="font-mono text-muted-foreground">{exampleModelSize}</span>
 					</span>
 					<span class="block text-[11px] text-muted-foreground">In the Hugging Face cache</span>
 				</span>
