@@ -603,13 +603,17 @@ const reply = await client.chat.completions.create({
 		     rest used to end the subline as a sentence; as a list they scan
 		     faster and leave the subline to say what Llama is. "Nothing to
 		     set up" isn't here: it's a promise rather than a checkable fact,
-		     and section 4 makes it properly. The size is the Mac app's, so
+		     and section 4 makes it properly. Privacy is put as "Works
+		     offline" rather than "Private": a bare "Private" next to "open
+		     source" reads as a private repo or beta, and "offline" is a fact
+		     that implies privacy without claiming it. (Downloading models
+		     still needs the internet; chat and the API don't.) The size is the Mac app's, so
 		     it's left out elsewhere; Windows states its requirement instead,
 		     since the app doesn't install on Windows 10. -->
 		<p class="-mt-3 text-sm text-muted-foreground">
 			<span data-os-only="mac">1 MB download ·</span>
 			<span data-os-only="windows">For Windows 11 ·</span>
-			Free and open source · Private
+			Free and open source · Works offline
 		</p>
 
 		{@render linuxInstall()}
