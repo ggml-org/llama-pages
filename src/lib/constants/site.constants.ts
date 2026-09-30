@@ -1,3 +1,9 @@
+// The GitHub repos the site links to: the two apps', and llama.cpp's, which
+// the docs describe and the Linux (command-line) install gets.
+export const MACOS_REPO_URL = 'https://github.com/ggml-org/Llama-macOS';
+export const WINDOWS_REPO_URL = 'https://github.com/ggml-org/Llama-Windows';
+export const LLAMA_CPP_REPO_URL = 'https://github.com/ggml-org/llama.cpp';
+
 // Direct dmg download for the Llama macOS app (ggml-org/Llama-macOS);
 // `latest` redirects to the newest release so no version is hardcoded.
 export const MACOS_DOWNLOAD_URL =

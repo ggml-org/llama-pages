@@ -61,7 +61,7 @@
 	import { families, minMemGB, slugify } from '$lib/catalog';
 	import { CopyButton, InstallCommand, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
-	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
+	import { MACOS_DOWNLOAD_URL, MACOS_REPO_URL, WINDOWS_REPO_URL } from '$lib/constants';
 	import Prism from '$lib/prism';
 	import type { Snippet } from 'svelte';
 
@@ -71,8 +71,8 @@
 	//
 	// One per OS (see the button's comment); `os` is its `data-os-only`.
 	const GITHUB_REPOS = [
-		{ os: 'mac other', url: 'https://github.com/ggml-org/Llama-macOS' },
-		{ os: 'windows', url: 'https://github.com/ggml-org/Llama-Windows' }
+		{ os: 'mac other', url: MACOS_REPO_URL },
+		{ os: 'windows', url: WINDOWS_REPO_URL }
 	];
 
 	// -- "Like OpenAI" clients ----------------------------------------------------

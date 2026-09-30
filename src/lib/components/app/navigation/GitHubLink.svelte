@@ -1,5 +1,8 @@
 <script lang="ts">
-	let { stars }: { stars: number | null | undefined } = $props();
+	// `os` is passed through as `data-os-only` (see app.css), for the
+	// header's per-OS links.
+	let { href, os, stars }: { href: string; stars: number | null | undefined; os?: string } =
+		$props();
 
 	const formatted = $derived(
 		typeof stars === 'number'
@@ -8,8 +11,11 @@
 	);
 </script>
 
+<!-- External GitHub URLs; resolve() is for the app's own routes. -->
+<!-- eslint-disable svelte/no-navigation-without-resolve -->
 <a
-	href="https://github.com/ggml-org/Llama-macOS"
+	{href}
+	data-os-only={os}
 	target="_blank"
 	rel="noreferrer"
 	class="inline-flex items-center gap-2 text-[15px] text-foreground"

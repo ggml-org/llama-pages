@@ -3,9 +3,11 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { GitHubLink, Logo } from '$lib/components/app';
+	import { LLAMA_CPP_REPO_URL, MACOS_REPO_URL, WINDOWS_REPO_URL } from '$lib/constants';
 	import { setMode, userPrefersMode } from 'mode-watcher';
 
-	const stars = $derived(page.data.stars as number | null | undefined);
+	// Keyed by repo URL (see +layout.server.ts).
+	const stars = $derived(page.data.stars as Record<string, number | null> | undefined);
 
 	// Whether we're anywhere in the Models section (the catalog index or a family
 	// detail page), which highlights the permanent "Models" nav link.
@@ -16,6 +18,20 @@
 	// Whether we're anywhere in the Docs section, which highlights the permanent
 	// "Docs" nav link.
 	const onDocs = $derived(page.url.pathname === '/docs' || page.url.pathname.startsWith('/docs/'));
+
+	// The GitHub link goes to the source of what the page offers. The docs
+	// describe llama.cpp, so there it's llama.cpp's repo. Elsewhere it's the
+	// repo of the app offered to the visitor's OS, matching the homepage's
+	// "View on GitHub" button: the Mac app's for Mac and everyone else
+	// (phones, crawlers), the Windows app's for Windows. Linux has no app and
+	// is offered the command-line install, which is llama.cpp. Switched with
+	// `data-os-only` (see app.css), so the prerendered page never flashes the
+	// wrong link.
+	const APP_REPOS = [
+		{ os: 'mac other', url: MACOS_REPO_URL },
+		{ os: 'windows', url: WINDOWS_REPO_URL },
+		{ os: 'linux', url: LLAMA_CPP_REPO_URL }
+	];
 
 	// Nav links are full-strength text, like the GitHub link on the right --
 	// muted gray read as disabled. The current section gets a solid
@@ -66,7 +82,13 @@
 	</nav>
 
 	<div class="flex items-center gap-4 md:gap-6">
-		<GitHubLink {stars} />
+		{#if onDocs}
+			<GitHubLink href={LLAMA_CPP_REPO_URL} stars={stars?.[LLAMA_CPP_REPO_URL]} />
+		{:else}
+			{#each APP_REPOS as r (r.url)}
+				<GitHubLink href={r.url} stars={stars?.[r.url]} os={r.os} />
+			{/each}
+		{/if}
 
 		<button
 			type="button"
