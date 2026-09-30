@@ -1346,7 +1346,8 @@
 			     rather than a solid bar that outshouts the page.
 
 			     Each caption carries its side's disk use, so the saving is a
-			     number and not just a count of boxes. -->
+			     number and not just a count of boxes. Set like the caption
+			     itself -- sans, muted -- so it doesn't compete with the drawing. -->
 			<div class="grid grid-cols-1 gap-4 text-xs md:grid-cols-2">
 				<!-- Engine and model are peers -- two things the app carries --
 				     so they share one weight and color, split by a rule. -->
@@ -1367,14 +1368,12 @@
 					</div>
 				{/snippet}
 
-				<!-- The cards sit at the bottom of whatever height the right side
-				     adds, so the two sides' engine-and-model blocks line up. -->
-				<figure class="flex flex-col rounded-2xl border border-border bg-foreground/2 p-5">
+				<figure class="rounded-2xl border border-border bg-foreground/2 p-5">
 					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
 						Without Llama
-						<span class="font-mono text-foreground">{3 * exampleModelGB} GB on disk</span>
+						<span>{3 * exampleModelGB} GB on disk</span>
 					</figcaption>
-					<div class="mt-auto grid grid-cols-3 gap-2">
+					<div class="grid grid-cols-3 gap-2">
 						{#each DIAGRAM_APPS as a (a)}
 							<div
 								class="flex flex-col gap-1.5 rounded-lg border border-border bg-background p-1.5"
@@ -1386,38 +1385,52 @@
 					</div>
 				</figure>
 
-				<!-- Sideways, so it's about as tall as the left side: the apps in
-				     the first column, the lines in the second, Llama in the third
-				     -- the same columns as the cards on the left, so the Llama
-				     card is exactly as wide as the app cards it replaces. The
-				     chips are a fixed h-8 with a gap-2, so their centers are 16,
-				     56 and 96px down the 112px column (h-28). The middle line runs
-				     straight across; the outer ones turn at the column's middle
-				     and come in 8px either side of it, like the "stored once"
-				     drawing turned on its side. The line column spans the gaps
-				     (-mx-2), so the lines touch the chips and the card. -->
+				<!-- Sideways, so it's as tall as the left side: the apps and
+				     their lines in the first two columns, Llama in the third --
+				     the same columns as the cards on the left, so the Llama card
+				     is exactly as wide as the app cards it replaces.
+
+				     The Llama card sets the height, and the three rows (gap-1,
+				     tight, so the chips read as one group) stretch to fill it, so
+				     the stack is exactly as tall as the card -- and as the cards
+				     on the left. The card isn't stretched instead, since it has to
+				     match those cards.
+
+				     Each row draws its own piece of the lines, at its own
+				     vertical middle, so nothing depends on the stack's height:
+				     the top row turns down, the bottom row turns up (each
+				     reaching 4px past its row, across the gap), the middle row
+				     joins them and runs on into the card. The line cells span
+				     the gaps (-mx-2), so the lines touch the chips and the card. -->
 				<figure class="rounded-2xl border border-border bg-foreground/2 p-5">
 					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
 						With Llama
-						<span class="font-mono text-sky-700 dark:text-sky-400">{exampleModelSize} on disk</span>
+						<span>{exampleModelSize} on disk</span>
 					</figcaption>
-					<div class="grid grid-cols-3 items-center gap-2">
-						<div class="flex flex-col gap-2 text-center">
-							{#each DIAGRAM_APPS as a (a)}
-								<span
-									class="flex h-8 items-center justify-center rounded-lg border border-border bg-background font-medium"
-									>{a}</span
-								>
+					<div class="grid grid-cols-3 gap-2">
+						<div class="col-span-2 flex flex-col gap-1">
+							{#each DIAGRAM_APPS as a, i (a)}
+								<div class="grid flex-1 grid-cols-2 gap-2">
+									<span
+										class="flex items-center justify-center rounded-lg border border-border bg-background font-medium"
+										>{a}</span
+									>
+									<div aria-hidden="true" class="relative -mx-2">
+										{#if i === 0}
+											<div
+												class="absolute top-1/2 -bottom-1 left-0 w-1/2 border-t border-r border-border"
+											></div>
+										{:else if i === 1}
+											<div class="absolute inset-y-0 right-1/2 w-px bg-border"></div>
+											<div class="absolute inset-x-0 top-1/2 h-px bg-border"></div>
+										{:else}
+											<div
+												class="absolute -top-1 bottom-1/2 left-0 w-1/2 border-r border-b border-border"
+											></div>
+										{/if}
+									</div>
+								</div>
 							{/each}
-						</div>
-						<div aria-hidden="true" class="relative -mx-2 h-28">
-							<div class="absolute top-4 left-0 h-8 w-1/2 border-t border-r border-border"></div>
-							<div class="absolute top-[47px] right-0 left-[calc(50%-1px)] h-px bg-border"></div>
-							<div class="absolute inset-x-0 top-14 h-px bg-border"></div>
-							<div
-								class="absolute top-16 left-0 h-[33px] w-1/2 border-r border-b border-border"
-							></div>
-							<div class="absolute top-16 right-0 left-[calc(50%-1px)] h-px bg-border"></div>
 						</div>
 						<div
 							class="flex flex-col gap-1.5 rounded-lg border border-sky-500/40 bg-sky-500/8 p-1.5"
