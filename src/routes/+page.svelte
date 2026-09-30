@@ -999,31 +999,50 @@
 		</div>
 	{/snippet}
 
-	<!-- Stored once: three tools pointing at a single model file. Each
-	     chip drops a straight line to the file below -- the file spans the
-	     full width, so every chip sits right above it. Straight drops
-	     rather than a bus (chips joined by a horizontal line, one line
-	     down to the file), where the middle drop ran through the bus and
-	     read as a crossing. The lines sit in the same 3-column grid as the
-	     chips, so each one lands on its chip's center, like the connectors
-	     above "Your models". -->
+	<!-- Stored once: three tools pointing at a single model file. The
+	     connectors converge: the middle chip drops straight down, and the
+	     side chips drop, turn inward, and drop again just short of the
+	     middle line -- so all three land together near the file's center,
+	     which reads as "one shared file" rather than three separate slots,
+	     without any line crossing another (a bus joining all three did
+	     cross, where the middle drop ran through it).
+
+	     Drawn with absolutely positioned borders rather than a stretched
+	     SVG, so the lines stay 1px and line up with the chips exactly.
+	     The chips sit in a 3-column grid with a 6px gap (gap-1.5), so the
+	     side chips' centers are (100% - 12px) / 6 in from each edge. The
+	     side lines land 8px either side of center; the turn is 10px down. -->
 	{#snippet storageArt()}
 		<div class="flex flex-col items-center">
 			<div class="grid w-full grid-cols-3 gap-1.5 text-center">
 				{#each SHARED_BY as tool (tool)}
-					<span class="truncate rounded-md border border-border px-1 py-1">{tool}</span>
+					<span class="truncate rounded-md border border-border bg-background px-1 py-1"
+						>{tool}</span
+					>
 				{/each}
 			</div>
-			<div aria-hidden="true" class="grid w-full grid-cols-3 gap-1.5">
-				{#each SHARED_BY as tool (tool)}
-					<div class="mx-auto h-5 w-px bg-foreground/25"></div>
-				{/each}
+			<div aria-hidden="true" class="relative h-7 w-full">
+				<!-- Left chip: down and right (└), then down (the 1px line
+				     starts on the turn's bottom border so the corner joins). -->
+				<div
+					class="absolute top-0 right-[calc(50%+8px)] left-[calc((100%-12px)/6)] h-2.5 border-b border-l border-border"
+				></div>
+				<div class="absolute top-[9px] right-[calc(50%+8px)] bottom-0 w-px bg-border"></div>
+				<!-- Middle chip: straight down. -->
+				<div class="absolute inset-y-0 left-1/2 w-px bg-border"></div>
+				<!-- Right chip: the mirror image of the left one. -->
+				<div
+					class="absolute top-0 right-[calc((100%-12px)/6)] left-[calc(50%+8px)] h-2.5 border-r border-b border-border"
+				></div>
+				<div class="absolute top-[9px] bottom-0 left-[calc(50%+8px)] w-px bg-border"></div>
 			</div>
 			<!-- Full width, spanning the three tools above, and laid out like
 			     the file rows in the size drawing: the model and where it lives
-			     on the left, its size on disk on the right, on the name's line. -->
+			     on the left, its size on disk on the right, on the name's line.
+			     Same border and fill as the chips: the layout and connectors already
+			     say which one is the file. -->
 			<span
-				class="flex w-full items-center gap-2.5 rounded-lg border border-foreground/20 bg-foreground/3 py-1.5 pr-3 pl-2.5"
+				class="flex w-full items-center gap-2.5 rounded-lg border border-border bg-background py-1.5 pr-3 pl-2.5"
 			>
 				<span class="[&_svg]:size-4">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
