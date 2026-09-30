@@ -443,15 +443,16 @@
 		     maintains it now. "llama.cpp" links to its repo, so the proof (the
 		     project itself, its stars) is one click from the claim. Only that
 		     word is the link: the whole badge would promise a page about the
-		     team. -->
-		<span
-			class="rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs text-muted-foreground"
-		>
+		     team. The link is marked by an underline, not color: a brighter or
+		     blue word read as emphasis rather than a link. Sans, not mono as
+		     the shared design notes say: it's prose, and mono reads as
+		     developer tooling to newcomers. -->
+		<span class="rounded-full border border-foreground/10 px-3 py-1 text-xs text-muted-foreground">
 			By the <a
 				href="https://github.com/ggml-org/llama.cpp"
 				target="_blank"
 				rel="noreferrer"
-				class="underline decoration-foreground/30 underline-offset-4">llama.cpp</a
+				class="underline decoration-foreground/30">llama.cpp</a
 			> team at Hugging Face
 		</span>
 
