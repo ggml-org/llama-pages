@@ -4,7 +4,6 @@
 	import 'prismjs/themes/prism-dark.css';
 	import { dev } from '$app/environment';
 	import { DevOsSwitcher, SeoMetadata, SiteHeader } from '$lib/components/app';
-	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import * as deviceStore from '$lib/stores/device/index.svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
@@ -25,8 +24,6 @@
 <SeoMetadata />
 
 <ModeWatcher />
-
-<Toaster />
 
 {@render children()}
 

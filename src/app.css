@@ -165,10 +165,6 @@
 	}
 }
 
-[data-sonner-toaster] {
-	--width: 600px !important;
-}
-
 /* Per-OS content. `<html data-os>` is set before the first paint (see
    app.html), and an element with `data-os-only="mac other"` shows only on
    those. Unlayered, so it wins over any display utility on the same
