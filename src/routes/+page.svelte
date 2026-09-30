@@ -170,70 +170,20 @@
 		return f ? [{ ...p, f, mem: minMemGB(f) }] : [];
 	});
 
-	// -- API snippet ---------------------------------------------------------------
+	// -- API call ------------------------------------------------------------------
 	//
-	// Written so no line is wider than the card on desktop, and with the one
-	// line that differs from plain OpenAI usage highlighted (`changed`).
-	//
-	// Each is highlighted once up front (`html`). The whole snippet is
-	// highlighted rather than line by line because some tokens span lines
-	// (the curl JSON body is one multi-line string), so the changed line is
-	// marked with a separate band behind the text instead of by wrapping
-	// each line.
-	const SNIPPETS = [
-		{
-			changed: 3,
-			code: `from openai import OpenAI
-
-client = OpenAI(
-    base_url="http://localhost:9931/v1",
-    api_key="local",
-)
-
-reply = client.chat.completions.create(
-    model="ggml-org/gpt-oss-20b-GGUF:MXFP4",
-    messages=[{"role": "user", "content": "Hi!"}],
-)`,
-			label: 'Python',
-			lang: 'python'
-		},
-		{
-			changed: 3,
-			code: `import OpenAI from "openai";
-
-const client = new OpenAI({
-  baseURL: "http://localhost:9931/v1",
-  apiKey: "local",
-});
-
-const reply = await client.chat.completions.create({
-  model: "ggml-org/gpt-oss-20b-GGUF:MXFP4",
-  messages: [{ role: "user", content: "Hi!" }],
-});`,
-			label: 'JavaScript',
-			lang: 'javascript'
-		},
-		{
-			changed: 0,
-			code: `curl http://localhost:9931/v1/chat/completions \\
+	// Drawn as a plain terminal command, not as a snippet in a tabbed panel:
+	// it only has to show that the endpoint is OpenAI's, not teach the API in
+	// several languages.
+	// curl because it needs no SDK and reads the same to everyone. The model
+	// is named because Llama serves more than one.
+	const API_CALL = `curl http://localhost:9931/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -d '{
     "model": "ggml-org/gpt-oss-20b-GGUF:MXFP4",
     "messages": [{"role": "user", "content": "Hi!"}]
-  }'`,
-			label: 'curl',
-			lang: 'bash'
-		}
-	].map((s) => ({ ...s, html: Prism.highlight(s.code, Prism.languages[s.lang], s.lang) }));
-
-	// Raw, so it stays the array's own object and the tabs can compare it
-	// with `===` (a deep $state would wrap it in a proxy).
-	let snippet = $state.raw(SNIPPETS[0]);
-
-	// The code area is sized to the longest snippet so switching tabs doesn't
-	// change its height and shift the rest of the page. The shorter ones just
-	// leave some empty space at the bottom.
-	const maxSnippetLines = Math.max(...SNIPPETS.map((s) => s.code.split('\n').length));
+  }'`;
+	const API_CALL_HTML = Prism.highlight(API_CALL, Prism.languages.bash, 'bash');
 
 	// -- Closing CTA ------------------------------------------------------------------
 	//
@@ -1266,10 +1216,9 @@ const reply = await client.chat.completions.create({
 			</p>
 		</div>
 
-		<!-- The API. The highlighted line makes "change one line" shown, not
-		     claimed. -->
-		<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-5">
-			<div class="flex flex-col gap-5 md:col-span-2">
+		<!-- The API. Text and terminal split the content area in half. -->
+		<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+			<div class="flex flex-col gap-5">
 				<h3 class="text-xl font-semibold">OpenAI-compatible API</h3>
 				<p class="leading-relaxed">
 					If your code works with OpenAI, it works with Llama. Change the base URL and keep
@@ -1320,47 +1269,30 @@ const reply = await client.chat.completions.create({
 				</div>
 			</div>
 
-			<!-- Dark in both themes: it reads as
-		     "code" at a glance and gives the page a strong focal point. -->
+			<!-- A terminal window, dark in both themes: it reads as "code" at a
+			     glance and gives the page a strong focal point. -->
 			<div
-				class="overflow-hidden rounded-2xl border border-border bg-[#111] text-[#e7e7e7] md:col-span-3"
+				class="overflow-hidden rounded-xl border border-border bg-[#111] font-mono text-[12px] leading-6 text-[#e7e7e7] sm:text-[13px]"
 			>
-				<div class="flex items-center justify-between border-b border-white/10 px-2">
-					<div class="flex" role="tablist">
-						{#each SNIPPETS as s (s.label)}
-							<button
-								role="tab"
-								aria-selected={snippet === s}
-								onclick={() => (snippet = s)}
-								class="cursor-pointer border-b px-3 py-3 text-xs {snippet === s
-									? 'border-white text-white'
-									: 'border-transparent text-white/45'}"
-							>
-								{s.label}
-							</button>
-						{/each}
-					</div>
-					<CopyButton text={snippet.code} what="code" class="p-2 text-white/45" />
+				<div class="flex h-9.75 items-center justify-between border-b border-white/10 pr-1.5 pl-4">
+					<span aria-hidden="true" class="flex gap-1.5">
+						<span class="size-2.5 rounded-full bg-white/15"></span>
+						<span class="size-2.5 rounded-full bg-white/15"></span>
+						<span class="size-2.5 rounded-full bg-white/15"></span>
+					</span>
+					<CopyButton text={API_CALL} what="code" class="p-2 text-white/45" />
 				</div>
-
-				<!-- `dark` opts the tokens into the dark Prism palette (prism-theme.css)
-			     regardless of the page theme, since this card is dark in both.
-
-			     The changed-line band is a neutral white rather than a color:
-			     red reads as a removed line and green as an added one. It sits
-			     at the line's offset (py-4 = 16px top padding, leading-6 = 24px
-			     per line), and the code is `relative` so it paints above it.
-			     The min-height uses the same numbers to fit the longest snippet.
-
-			     The HTML is Prism's output for our own constant snippets. -->
+				<!-- `terminal-code` gives the tokens a palette made for panels that
+				     are dark in both themes (prism-theme.css).
+				     Kept to its line breaks, and scrolls sideways on phones rather
+				     than wrapping the JSON. The HTML is Prism's output for our own
+				     constant. -->
 				<!-- eslint-disable svelte/no-at-html-tags -->
-				<pre
-					class="dark relative overflow-x-auto py-4 font-mono text-[12px] leading-6 sm:text-[13px]"
-					style="min-height: {32 + maxSnippetLines * 24}px"><div
-						class="absolute inset-x-0 h-6 border-l-2 border-white/60 bg-white/[0.08]"
-						style="top: {16 + snippet.changed * 24}px"
-						aria-hidden="true"></div><code class="relative block px-5">{@html snippet.html}</code
-					></pre>
+				<div class="terminal-code overflow-x-auto p-5">
+					<p class="whitespace-pre">
+						<span class="mr-[1ch] text-accent select-none">$</span>{@html API_CALL_HTML}
+					</p>
+				</div>
 				<!-- eslint-enable svelte/no-at-html-tags -->
 			</div>
 		</div>
