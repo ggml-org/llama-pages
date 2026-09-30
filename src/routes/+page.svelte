@@ -199,6 +199,30 @@
 	];
 	const SERVE_COMMAND = 'llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0';
 
+	// Splits a one-line shell command into words for the command blocks'
+	// highlighting: the program names (the first word, and the first after a
+	// pipe), the flags, and the pipes. Not Prism: its bash grammar only knows
+	// common programs, so it colors `curl` and `sh` but not `brew`, `llama` or
+	// `irm`, and it colors `install` in `brew install` as if it were the
+	// program. Our commands are simple enough that splitting on spaces is
+	// exact. The spaces are kept as their own words so the text stays intact.
+	function commandWords(text: string) {
+		let expectProgram = true;
+
+		return text.split(/( +)/).map((word) => {
+			let kind = 'arg';
+
+			if (word.trim() === '') kind = 'space';
+			else if (word === '|') kind = 'pipe';
+			else if (expectProgram) kind = 'program';
+			else if (word.startsWith('-')) kind = 'flag';
+
+			if (kind !== 'space') expectProgram = kind === 'pipe';
+
+			return { kind, word };
+		});
+	}
+
 	// -- Without / with diagram ----------------------------------------------------
 	//
 	// The per-app model size is the example model's real download, as the
@@ -239,13 +263,16 @@
 	     +page.server.ts). The Windows button names Windows 11 because the
 	     app doesn't install on Windows 10: on the button, the requirement
 	     can't be skimmed past, and it goes wherever the button goes (the
-	     closing call to action, and the "other" visitors who get both). -->
-	{#snippet downloadButtons()}
+	     closing call to action, and the "other" visitors who get both).
+	     `compact` is for the closing call to action, where the button sits
+	     among command blocks: it takes their 40px height, so it doesn't
+	     outweigh them, while the hero keeps the bigger button. -->
+	{#snippet downloadButtons(compact = false)}
 		<Button
 			data-os-only="mac other"
 			href={MACOS_DOWNLOAD_URL}
 			size="lg"
-			class="h-12 px-6 text-[15px]"
+			class={compact ? 'h-10 px-5 text-sm' : 'h-12 px-6 text-[15px]'}
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<span class="mb-0.5">{@html appleIcon}</span>
@@ -255,7 +282,7 @@
 			data-os-only="windows other"
 			href={data.windowsDownloadUrl}
 			size="lg"
-			class="h-12 px-6 text-[15px]"
+			class={compact ? 'h-10 px-5 text-sm' : 'h-12 px-6 text-[15px]'}
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html windowsIcon}
@@ -1404,13 +1431,26 @@
 	     terminal. It wraps at spaces on narrow screens rather than scrolling:
 	     a clipped command hides its end (`| sh`), and the copy button is
 	     there for copying it right. `os` is its `data-os-only`, if it's only
-	     for some systems. -->
+	     for some systems. `min-h-10` matches the closing call to action's
+	     download button, which sits right above the brew command; a minimum
+	     rather than a height, so a wrapped command still grows. -->
 	{#snippet command(text: string, os?: string)}
 		<div
 			data-os-only={os}
-			class="flex min-w-0 items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3 text-[13px]"
+			class="flex min-h-10 min-w-0 items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3 text-[13px]"
 		>
-			<code class="min-w-0 flex-1 font-mono wrap-break-word text-foreground">{text}</code>
+			<!-- Programs in the page's sky highlight, flags and pipes muted, so
+			     the parts you'd change or read -- the package, the URL, the
+			     model -- stay in the plain foreground. No whitespace between the
+			     spans, so the copied selection matches the text. -->
+			<code class="min-w-0 flex-1 font-mono wrap-break-word text-foreground"
+				>{#each commandWords(text) as { kind, word }, i (i)}<span
+						class={{
+							'text-muted-foreground': kind === 'flag' || kind === 'pipe',
+							'text-sky-700 dark:text-sky-400': kind === 'program'
+						}}>{word}</span
+					>{/each}</code
+			>
 			<CopyButton
 				{text}
 				what="command"
@@ -1426,8 +1466,11 @@
 	     so the app is the command line plus the app. The titles say so
 	     ("includes the command line" / "Command line only"), so no one reads
 	     the cards as a choice between two different products. The app is
-	     recommended and comes first; the command line alone is for Linux,
-	     servers, and scripts, and leaves models and settings to you.
+	     recommended and comes first. Since the app gives you everything the
+	     command line does (its settings even take extra server flags), the
+	     command line alone is only for where the app can't go or isn't
+	     wanted: Linux, servers, CI, or anyone who'd rather not run a
+	     background app -- on any OS. It leaves models and settings to you.
 
 	     Linux has no app, so it gets the command-line card alone, centered.
 	     The cards are half-width flex items rather than a two-column grid so
@@ -1446,11 +1489,24 @@
 				data-os-only="mac windows other"
 				class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6 md:w-1/2"
 			>
-				<div>
-					<p class="text-xs tracking-wide text-muted-foreground uppercase">Recommended</p>
-					<h3 class="mt-1 text-xl font-semibold">
+				<!-- "Recommended" is a pill in the page's sky accent -- the same
+				     style as the "Auto" tags in "Nothing to set up" -- next to the
+				     title rather than an eyebrow above it. Neither card has an
+				     eyebrow, so the titles line up, and the other card doesn't need
+				     a label naming who it's for: every attempt ("for Linux", "for
+				     full control") was wrong, since the app does all the command
+				     line does. Its body says what sets it apart. The pill sits in
+				     the card's top-right corner, so it labels the card as a whole
+				     rather than reading as part of the title; it wraps under the
+				     title when the half-width card is too narrow. -->
+				<div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+					<h3 class="text-xl font-semibold">
 						App <span class="font-normal text-muted-foreground">· includes the command line</span>
 					</h3>
+					<span
+						class="rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400"
+						>Recommended</span
+					>
 				</div>
 				<p class="leading-relaxed text-foreground/70">
 					Everything on this page: models picked to fit your {@render macOr('computer')}, chat, and
@@ -1459,14 +1515,17 @@
 				<!-- `mt-auto` keeps the buttons at the bottom when the other card
 				     is taller. The buttons wrap for visitors who get both apps,
 				     since the two don't fit side by side in half the width. -->
-				<div class="mt-auto flex flex-col gap-3">
+				<div class="mt-auto flex flex-col gap-2">
 					<div class="flex flex-wrap gap-3">
-						{@render downloadButtons()}
+						{@render downloadButtons(true)}
 					</div>
 					<!-- For those who live in the terminal: the install they'd
-					     reach for anyway. Mac only: the cask is the Mac app. -->
-					<div data-os-only="mac" class="flex items-center gap-2 text-sm">
-						<span class="text-muted-foreground">or</span>
+					     reach for anyway. Mac only: the cask is the Mac app. A
+					     caption over a full-width command, like the steps in the
+					     other card, so both cards end on the same row in the same
+					     style. -->
+					<div data-os-only="mac" class="mt-2 flex flex-col gap-2">
+						<p class="text-xs text-muted-foreground">Or with Homebrew</p>
 						{@render command(BREW_COMMAND)}
 					</div>
 				</div>
@@ -1476,23 +1535,20 @@
 			     "includes the command line", makes the relationship plain; the
 			     body names llama.cpp so people who came for the engine recognize
 			     it. "OpenAI-compatible" rather than "the same API": the port and
-			     the model names differ from the app's. The two steps are the
+			     the model names differ from the app's. The body is kept to about
+			     the app card's length so the app card isn't left with a gap in
+			     the middle: "without the app" is left to the title's "only", and
+			     the web chat to the serve step's caption. The two steps are the
 			     docs' quickstart. Running a model stays here rather than going
 			     under both cards: app users don't start a server by hand -- the
-			     app runs one for them. -->
-			<div
-				class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6 md:w-1/2"
-			>
-				<div>
-					<p class="text-xs tracking-wide text-muted-foreground uppercase">
-						For Linux, servers, and scripts
-					</p>
-					<h3 class="mt-1 text-xl font-semibold">Command line only</h3>
-				</div>
+			     app runs one for them. No fill, just the border, so the app card
+			     reads as the main option and the "Recommended" pill confirms it
+			     rather than carrying it alone. -->
+			<div class="flex flex-col gap-5 rounded-2xl border border-border p-6 md:w-1/2">
+				<h3 class="text-xl font-semibold">Command line only</h3>
 				<p class="leading-relaxed text-foreground/70">
-					Just llama.cpp's <code class="font-mono text-[0.9em]">llama</code> command, without the app:
-					the same engine, an OpenAI-compatible API, and a web chat, with the models and settings up to
-					you.
+					Just llama.cpp's <code class="font-mono text-[0.9em]">llama</code> command: the same engine
+					and an OpenAI-compatible API, with models and settings up to you.
 				</p>
 				<div class="mt-auto flex flex-col gap-2">
 					<p class="text-xs text-muted-foreground">Install</p>
@@ -1500,7 +1556,7 @@
 						{@render command(c.command, c.os)}
 					{/each}
 					<p class="mt-2 text-xs text-muted-foreground">
-						Run a model, then open <code class="font-mono">localhost:8080</code>
+						Run a model, then chat at <code class="font-mono">localhost:8080</code>
 					</p>
 					{@render command(SERVE_COMMAND)}
 				</div>
