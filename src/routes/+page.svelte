@@ -967,12 +967,15 @@
 	<!-- 4 MB: the two files a user actually handles, which also explains
 	     why the card says 4 MB while the hero and body say 1 MB. The size
 	     shares the file name's line (baseline-aligned), not the row's
-	     vertical center, so it reads as that file's size. -->
+	     vertical center, so it reads as that file's size. The icon tiles
+	     are white with the standard border, like the chips and file in the
+	     "stored once" drawing beside it -- gray tiles on the gray panel
+	     looked muddy. -->
 	{#snippet sizeArt()}
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center gap-3">
 				<span
-					class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-muted-foreground"
+					class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground"
 				>
 					<Package class="size-4" />
 				</span>
@@ -985,7 +988,9 @@
 				</span>
 			</div>
 			<div class="flex items-center gap-3">
-				<span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5">
+				<span
+					class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border bg-background"
+				>
 					<Logo --logo-height="0.875rem" />
 				</span>
 				<span class="min-w-0 flex-1">
