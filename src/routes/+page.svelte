@@ -182,15 +182,12 @@
 	//
 	// The Mac app's cask, and the command-line install: llama.cpp's install
 	// scripts (the same ones InstallCommand shows, one per OS, switched with
-	// `data-os-only` so the prerendered page never shows the wrong one) and
-	// the serve command from the docs' quickstart, so the card and the docs
-	// agree on the first model.
+	// `data-os-only` so the prerendered page never shows the wrong one).
 	const BREW_COMMAND = 'brew install --cask llama-app';
 	const CLI_INSTALL = [
 		{ command: 'curl -LsSf https://llama.app/install.sh | sh', os: 'mac linux other' },
 		{ command: 'irm https://llama.app/install.ps1 | iex', os: 'windows' }
 	];
-	const SERVE_COMMAND = 'llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0';
 
 	// Splits a one-line shell command into words for the command blocks'
 	// highlighting: the program names (the first word, and the first after a
@@ -1482,112 +1479,82 @@
 		</div>
 	{/snippet}
 
-	<!-- 9. Closing CTA: the two ways to get Llama, side by side. They aren't
-	     alternatives but a superset: the app installs the same `llama`
-	     command as the install scripts (the same binary, linked onto PATH),
-	     so the app is the command line plus the app. The titles say so
-	     ("includes the command line" / "Command line only"), so no one reads
-	     the cards as a choice between two different products. The app is
-	     recommended and comes first. Since the app gives you everything the
-	     command line does (its settings even take extra server flags), the
-	     command line alone is only for where the app can't go or isn't
-	     wanted: Linux, servers, CI, or anyone who'd rather not run a
-	     background app -- on any OS. It leaves models and settings to you.
+	<!-- 9. Closing CTA: how to get Llama. The page's ending, so it's
+	     centered like the hero and mirrors it: heading, the download
+	     button, small print. No cards: two cards side by side read as two
+	     equal choices, and needed a "Recommended" label to say which one to
+	     pick. Here the app is first and biggest, so it's plainly the main
+	     way in.
 
-	     Linux has no app, so it gets the command-line card alone, centered.
-	     The cards are half-width flex items rather than a two-column grid so
-	     that a lone card centers instead of sitting in the left column. -->
-	<section class="flex flex-col items-center gap-10 py-24 text-center">
+	     The command line follows as a question, "Just want the command
+	     line?" -- "just" implies the app already includes it (it installs
+	     the same `llama` binary, linked onto PATH, as "Build on Llama"
+	     says), so the button needs no caption saying so. That frees the
+	     small print under the button for Homebrew, the install Mac users in
+	     the terminal would reach for anyway (Mac only: the cask is the Mac
+	     app). The command line gets just its install command: running a
+	     model is the docs' job. Command blocks are as wide as their command,
+	     not a fixed column.
+
+	     Linux has no app, so it gets the command line alone, as a plain
+	     instruction rather than a question.
+
+	     The page has no footer, so this section's bottom padding is the
+	     page's end. `pb-60` leaves a bit more room below than the ~176px
+	     above the heading (the previous section's `py-20` plus this one's
+	     `pt-24`): matching it (`pb-40`) still felt like the page stopped
+	     short. -->
+	<section class="flex flex-col items-center gap-10 pt-24 pb-60 text-center">
 		<!-- Heading and subheading grouped with the same gap-4 as every other
 		     section's header, so they read as a pair rather than the subheading
-		     floating halfway between the heading and the cards. -->
+		     floating halfway between the heading and what follows. -->
 		<div class="flex flex-col gap-4">
 			<h2 class="text-4xl leading-tight font-semibold tracking-tight">Local AI starts here</h2>
 			<p class="text-lg leading-relaxed text-pretty">Free, open source, and yours to keep.</p>
 		</div>
 
-		<!-- Wide enough that the serve command fits on one line in half of
-		     it, on desktop. -->
-		<div class="flex w-full max-w-5xl flex-col gap-4 text-left md:flex-row md:justify-center">
-			<!-- The app. "Everything on this page" ties the card to the rest of
-			     the page, which is all about the app, so the card doesn't need
-			     to repeat it. The title's aside mirrors the other card's "only". -->
-			<div
-				data-os-only="mac windows other"
-				class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6 md:w-1/2"
+		<!-- The hero's buttons, at the hero's size. Homebrew is small print
+		     with a copy button rather than a command block, so it reads as an
+		     aside to the button rather than a second option beside it. The
+		     command sits in a small chip, which also keeps the lead-in "or"
+		     from reading as the command's first word -- as plain text in the
+		     same gray, it did. A lowercase "or" with no colon continues the
+		     button ("Download for Mac, or ..."); the command itself says
+		     Homebrew, so the lead-in doesn't need to. -->
+		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3">
+			<div class="flex flex-col items-center gap-3 sm:flex-row">
+				{@render downloadButtons()}
+			</div>
+			<p
+				data-os-only="mac"
+				class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground"
 			>
-				<!-- "Recommended" is a pill in the page's sky accent -- the same
-				     style as the "Auto" tags in "Nothing to set up" -- next to the
-				     title rather than an eyebrow above it. Neither card has an
-				     eyebrow, so the titles line up, and the other card doesn't need
-				     a label naming who it's for: every attempt ("for Linux", "for
-				     full control") was wrong, since the app does all the command
-				     line does. Its body says what sets it apart. The pill sits in
-				     the card's top-right corner, so it labels the card as a whole
-				     rather than reading as part of the title; it wraps under the
-				     title when the half-width card is too narrow. -->
-				<div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-					<h3 class="text-xl font-semibold">
-						App <span class="font-normal text-muted-foreground">· includes the command line</span>
-					</h3>
-					<span
-						class="rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400"
-						>Recommended</span
-					>
-				</div>
-				<p class="leading-relaxed text-foreground/70">
-					Everything on this page: models picked to fit your {@render macOr('computer')}, chat, and
-					the API, with nothing to set up.
-				</p>
-				<!-- `mt-auto` keeps the buttons at the bottom when the other card
-				     is taller. The buttons wrap for visitors who get both apps,
-				     since the two don't fit side by side in half the width. -->
-				<div class="mt-auto flex flex-col gap-2">
-					<div class="flex flex-wrap gap-3">
-						{@render downloadButtons(true)}
-					</div>
-					<!-- For those who live in the terminal: the install they'd
-					     reach for anyway. Mac only: the cask is the Mac app. A
-					     caption over a full-width command, like the steps in the
-					     other card, so both cards end on the same row in the same
-					     style. -->
-					<div data-os-only="mac" class="mt-2 flex flex-col gap-2">
-						<p class="text-xs text-muted-foreground">Or with Homebrew</p>
-						{@render command(BREW_COMMAND)}
-					</div>
-				</div>
-			</div>
+				or
+				<span
+					class="inline-flex items-center gap-0.5 rounded-md bg-foreground/6 py-0.5 pr-0.5 pl-2"
+				>
+					<code class="font-mono text-[13px] text-foreground/80">{BREW_COMMAND}</code>
+					<CopyButton
+						text={BREW_COMMAND}
+						what="command"
+						iconClass="size-3.5"
+						class="rounded-md p-1 text-muted-foreground"
+					/>
+				</span>
+			</p>
+		</div>
 
-			<!-- The command line alone. "Only" in the title, against the app's
-			     "includes the command line", makes the relationship plain; the
-			     body names llama.cpp so people who came for the engine recognize
-			     it. "OpenAI-compatible" rather than "the same API": the port and
-			     the model names differ from the app's. The body is kept to about
-			     the app card's length so the app card isn't left with a gap in
-			     the middle: "without the app" is left to the title's "only", and
-			     the web chat to the serve step's caption. The two steps are the
-			     docs' quickstart. Running a model stays here rather than going
-			     under both cards: app users don't start a server by hand -- the
-			     app runs one for them. No fill, just the border, so the app card
-			     reads as the main option and the "Recommended" pill confirms it
-			     rather than carrying it alone. -->
-			<div class="flex flex-col gap-5 rounded-2xl border border-border p-6 md:w-1/2">
-				<h3 class="text-xl font-semibold">Command line only</h3>
-				<p class="leading-relaxed text-foreground/70">
-					Just llama.cpp's <code class="font-mono text-[0.9em]">llama</code> command: the same engine
-					and an OpenAI-compatible API, with models and settings up to you.
-				</p>
-				<div class="mt-auto flex flex-col gap-2">
-					<p class="text-xs text-muted-foreground">Install</p>
-					{#each CLI_INSTALL as c (c.command)}
-						{@render command(c.command, c.os)}
-					{/each}
-					<p class="mt-2 text-xs text-muted-foreground">
-						Run a model, then chat at <code class="font-mono">localhost:8080</code>
-					</p>
-					{@render command(SERVE_COMMAND)}
+		<div class="mt-6 flex max-w-full flex-col items-center gap-4">
+			<p class="leading-relaxed text-pretty text-foreground/70">
+				<span data-os-only="mac windows other">Just want the command line?</span><span
+					data-os-only="linux">Install the command line:</span
+				>
+			</p>
+			{#each CLI_INSTALL as c (c.command)}
+				<div data-os-only={c.os} class="w-fit max-w-full text-left">
+					{@render command(c.command)}
 				</div>
-			</div>
+			{/each}
 		</div>
 	</section>
 </main>
