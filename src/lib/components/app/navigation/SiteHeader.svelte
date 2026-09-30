@@ -19,11 +19,12 @@
 
 	// Nav links are full-strength text, like the GitHub link on the right --
 	// muted gray read as disabled. The current section gets a solid
-	// underline; other links (and the GitHub link) show a faint one on hover.
+	// underline. No hover states: the pointer cursor already signals
+	// interactivity, and hover does nothing on touch screens.
 	function navLinkClass(active: boolean) {
 		return active
 			? 'text-foreground underline decoration-foreground decoration-2 underline-offset-[6px]'
-			: 'text-foreground decoration-foreground/30 underline-offset-[6px] hover:underline';
+			: 'text-foreground';
 	}
 
 	const NEXT_MODE = { dark: 'system', light: 'dark', system: 'light' } as const;
@@ -70,7 +71,7 @@
 		<button
 			type="button"
 			onclick={cycleMode}
-			class="-m-1.5 inline-flex cursor-pointer items-center rounded-md p-1.5 text-foreground/70 transition-colors hover:bg-foreground/8 hover:text-foreground"
+			class="-m-1.5 inline-flex cursor-pointer items-center rounded-md p-1.5 text-foreground/70"
 			aria-label="Theme: {userPrefersMode.current} (click to change)"
 			title="Theme: {userPrefersMode.current}"
 		>

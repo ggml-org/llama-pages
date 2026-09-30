@@ -21,7 +21,7 @@
 			<CopyButton
 				text={installCommand}
 				what="command"
-				class="flex shrink-0 items-center border-l border-secondary px-4 text-foreground/70 hover:text-foreground"
+				class="flex shrink-0 items-center border-l border-secondary px-4 text-foreground/70"
 			/>
 		</div>
 	</div>
@@ -35,7 +35,7 @@
 				href="https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md"
 				target="_blank"
 				rel="noreferrer"
-				class="font-medium underline underline-offset-4 hover:text-foreground"
+				class="font-medium underline underline-offset-4"
 			>
 				Package managers
 			</a>
@@ -49,7 +49,7 @@
 				href="https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
 				target="_blank"
 				rel="noreferrer"
-				class="font-medium underline underline-offset-4 hover:text-foreground"
+				class="font-medium underline underline-offset-4"
 			>
 				Follow instructions
 			</a>

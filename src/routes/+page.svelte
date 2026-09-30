@@ -539,8 +539,7 @@ const reply = await client.chat.completions.create({
 				href="https://github.com/ggml-org/llama.cpp"
 				target="_blank"
 				rel="noreferrer"
-				class="underline decoration-foreground/30 underline-offset-4 hover:text-foreground hover:decoration-foreground"
-				>llama.cpp</a
+				class="underline decoration-foreground/30 underline-offset-4">llama.cpp</a
 			> team at Hugging Face
 		</span>
 
@@ -1217,7 +1216,7 @@ const reply = await client.chat.completions.create({
 			{#each PICKS as p (p.family)}
 				<a
 					href={resolve(`/models/${slugify(p.f.name)}`)}
-					class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6 transition-colors hover:border-foreground/25"
+					class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6"
 				>
 					{#if p.mem}
 						<span class="text-sm text-muted-foreground"
@@ -1335,13 +1334,13 @@ const reply = await client.chat.completions.create({
 								onclick={() => (snippet = s)}
 								class="cursor-pointer border-b px-3 py-3 text-xs {snippet === s
 									? 'border-white text-white'
-									: 'border-transparent text-white/45 hover:text-white/80'}"
+									: 'border-transparent text-white/45'}"
 							>
 								{s.label}
 							</button>
 						{/each}
 					</div>
-					<CopyButton text={snippet.code} what="code" class="p-2 text-white/45 hover:text-white" />
+					<CopyButton text={snippet.code} what="code" class="p-2 text-white/45" />
 				</div>
 
 				<!-- `dark` opts the tokens into the dark Prism palette (prism-theme.css)
@@ -1439,7 +1438,7 @@ const reply = await client.chat.completions.create({
 				{text}
 				what="command"
 				iconClass="size-3.5"
-				class="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-foreground"
+				class="shrink-0 rounded-md p-1.5 text-muted-foreground"
 			/>
 		</div>
 	{/snippet}
