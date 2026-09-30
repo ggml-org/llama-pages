@@ -528,11 +528,20 @@ const reply = await client.chat.completions.create({
 		     team. Hugging Face stays, since newcomers are more likely to know
 		     it than llama.cpp. "Team at", not "from the makers of": the app
 		     didn't start with llama.cpp's authors, but that team builds and
-		     maintains it now. -->
+		     maintains it now. "llama.cpp" links to its repo, so the proof (the
+		     project itself, its stars) is one click from the claim. Only that
+		     word is the link: the whole badge would promise a page about the
+		     team. -->
 		<span
 			class="rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs text-muted-foreground"
 		>
-			By the llama.cpp team at Hugging Face
+			By the <a
+				href="https://github.com/ggml-org/llama.cpp"
+				target="_blank"
+				rel="noreferrer"
+				class="underline decoration-foreground/30 underline-offset-4 hover:text-foreground hover:decoration-foreground"
+				>llama.cpp</a
+			> team at Hugging Face
 		</span>
 
 		<h1
@@ -1277,17 +1286,39 @@ const reply = await client.chat.completions.create({
 					<li class="flex gap-2">
 						<Check class="mt-0.5 size-4 shrink-0" /> Already use llama.cpp? Your models show up automatically
 					</li>
+					<!-- The app installs the same `llama` binary as the install
+					     scripts, linked onto PATH, so the command line comes with it.
+					     Said here, among the developer features, so the closing
+					     card's "includes the command line" recalls something the page
+					     has already shown. Not on Linux: there's no app there, and
+					     the command line is all you get. -->
+					<li data-os-only="mac windows other" class="flex gap-2">
+						<Check class="mt-0.5 size-4 shrink-0" />
+						<span
+							>The <code class="font-mono">llama</code> command too:
+							<code class="font-mono">llama cli</code>, <code class="font-mono">llama serve</code>,
+							and more</span
+						>
+					</li>
 					<!-- Mac app only, for now. -->
 					<li data-os-only="mac linux other" class="flex gap-2">
 						<Check class="mt-0.5 size-4 shrink-0" /> Reach it from your other devices over Tailscale
 					</li>
 				</ul>
-				<a
-					href={resolve('/docs/[...page]', { page: 'api' })}
-					class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
-				>
-					API reference <ArrowRight class="size-3.5" />
-				</a>
+				<div class="flex flex-wrap gap-x-6 gap-y-2">
+					<a
+						href={resolve('/docs/[...page]', { page: 'api' })}
+						class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
+					>
+						API reference <ArrowRight class="size-3.5" />
+					</a>
+					<a
+						href={resolve('/docs/[...page]', { page: 'cli' })}
+						class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
+					>
+						Command line <ArrowRight class="size-3.5" />
+					</a>
+				</div>
 			</div>
 
 			<!-- Dark in both themes: it reads as
@@ -1403,7 +1434,7 @@ const reply = await client.chat.completions.create({
 			data-os-only={os}
 			class="flex min-w-0 items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3 text-[13px]"
 		>
-			<code class="min-w-0 flex-1 font-mono break-words text-foreground">{text}</code>
+			<code class="min-w-0 flex-1 font-mono wrap-break-word text-foreground">{text}</code>
 			<CopyButton
 				{text}
 				what="command"
@@ -1470,8 +1501,9 @@ const reply = await client.chat.completions.create({
 			     body names llama.cpp so people who came for the engine recognize
 			     it. "OpenAI-compatible" rather than "the same API": the port and
 			     the model names differ from the app's. The two steps are the
-			     docs' quickstart, and the links go on to the docs and to the
-			     engine's repo. -->
+			     docs' quickstart. Running a model stays here rather than going
+			     under both cards: app users don't start a server by hand -- the
+			     app runs one for them. -->
 			<div
 				class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6 md:w-1/2"
 			>
@@ -1496,22 +1528,6 @@ const reply = await client.chat.completions.create({
 					</p>
 					{@render command(SERVE_COMMAND)}
 				</div>
-				<p class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-					<a
-						href={resolve('/docs/[...page]', { page: 'quickstart' })}
-						class="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
-					>
-						Quickstart <ArrowRight class="size-3.5" />
-					</a>
-					<a
-						href="https://github.com/ggml-org/llama.cpp"
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
-					>
-						llama.cpp on GitHub <ArrowUpRight class="size-3.5" />
-					</a>
-				</p>
 			</div>
 		</div>
 	</section>
