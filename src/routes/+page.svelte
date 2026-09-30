@@ -1064,14 +1064,23 @@
 
 	     Each stretch is labeled inside itself rather than on an axis below,
 	     so there's nothing to match up. "In use" and "idle" hold the same
-	     memory, so they're told apart by style: in use is solid, idle is a
-	     paler fill under a dashed edge -- still loaded, just waiting. No axis
-	     title ("memory used"): the block labels and the card's text already
-	     say what's up and what's down. "Unloaded" is right-aligned rather
-	     than centered in its stretch, which is too narrow for it. The
-	     labels are positioned in % of the width, matching the chart's x
-	     coordinates out of 200 (30 = 15%, 90 = 45%, 150 = 75%), and the
-	     plateau spans y 8-110 of the 112px-tall box (h-28), hence pt-2 on the block labels and bottom-1.5 (2px baseline + 4px) on "Unloaded". -->
+	     memory, so they share one solid edge and are told apart by fill
+	     alone: idle is paler. Not a dashed edge for idle -- in a chart,
+	     dashed reads as projected or not quite real, and the idle memory is
+	     as real as the in-use memory. In use, idle, and unloaded are equally
+	     wide, after a short unloaded lead-in: width is time, and nothing
+	     says any stage is the shorter. Together with the lead-in, the
+	     drawing is 40% unloaded, so it doesn't read as mostly loaded under
+	     a title that promises nothing loaded.
+	     The three stage labels share one color and weight -- they're peers.
+	     "Unloaded" sits down by its line rather than mid-height, since it
+	     has no block to sit in.
+	     No axis title ("memory used"): the block labels and the card's text
+	     already say what's up and what's down. The labels are positioned in
+	     % of the width, matching the chart's x coordinates out of 200 (20 =
+	     10%, 80 = 40%, 140 = 70%), and the plateau spans y 8-110 of the 112px-tall box
+	     (h-28), hence pt-2 on the block labels and bottom-1.5 (2px baseline
+	     + 4px) on "Unloaded". -->
 	{#snippet idleArt()}
 		<div class="relative h-28 text-[11px] whitespace-nowrap">
 			<svg
@@ -1080,31 +1089,23 @@
 				class="absolute inset-0 size-full text-sky-600 dark:text-sky-400"
 				fill="none"
 			>
-				<path d="M30 110V8H90V110Z" fill="currentColor" fill-opacity="0.22" />
-				<path d="M90 110V8H150V110Z" fill="currentColor" fill-opacity="0.07" />
+				<path d="M20 110V8H80V110Z" fill="currentColor" fill-opacity="0.22" />
+				<path d="M80 110V8H140V110Z" fill="currentColor" fill-opacity="0.08" />
 				<path
-					d="M0 110H30V8H90M150 8V110H200"
+					d="M0 110H20V8H140V110H200"
 					stroke="currentColor"
 					stroke-width="1.5"
 					stroke-linejoin="round"
 					vector-effect="non-scaling-stroke"
 				/>
-				<path
-					d="M90 8H150"
-					stroke="currentColor"
-					stroke-width="1.5"
-					stroke-dasharray="4 3"
-					vector-effect="non-scaling-stroke"
-				/>
 			</svg>
-			<span
-				class="absolute inset-y-0 left-[15%] flex w-[30%] items-center justify-center pt-2 font-medium"
+			<span class="absolute inset-y-0 left-[10%] flex w-[30%] items-center justify-center pt-2"
 				>In use</span
 			>
-			<span class="absolute inset-y-0 left-[45%] flex w-[30%] items-center justify-center pt-2"
+			<span class="absolute inset-y-0 left-[40%] flex w-[30%] items-center justify-center pt-2"
 				>5 min idle</span
 			>
-			<span class="absolute right-0 bottom-1.5 text-muted-foreground">Unloaded</span>
+			<span class="absolute bottom-1.5 left-[70%] w-[30%] text-center">Unloaded</span>
 		</div>
 	{/snippet}
 
