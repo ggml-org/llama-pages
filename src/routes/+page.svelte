@@ -1262,15 +1262,21 @@
 					If your code works with OpenAI, it works with Llama. Change the base URL and keep
 					everything else — no API keys, no usage bills.
 				</p>
-				<ul class="flex flex-col gap-2 text-sm text-muted-foreground">
+				<!-- Selling points, not fine print, so the text keeps the normal
+				     color; the smaller size already ranks it below the paragraph.
+				     Only the checks are muted, to keep them from competing. -->
+				<ul class="flex flex-col gap-2 text-sm">
 					<li class="flex gap-2">
-						<Check class="mt-0.5 size-4 shrink-0" /> OpenAI- and Anthropic-compatible endpoints
+						<Check class="mt-0.5 size-4 shrink-0 text-muted-foreground" /> OpenAI- and Anthropic-compatible
+						endpoints
 					</li>
 					<li class="flex gap-2">
-						<Check class="mt-0.5 size-4 shrink-0" /> Streaming, tool calling, structured output, vision
+						<Check class="mt-0.5 size-4 shrink-0 text-muted-foreground" /> Streaming, tool calling, structured
+						output, vision
 					</li>
 					<li class="flex gap-2">
-						<Check class="mt-0.5 size-4 shrink-0" /> Already use llama.cpp? Your models show up automatically
+						<Check class="mt-0.5 size-4 shrink-0 text-muted-foreground" /> Already use llama.cpp? Your
+						models show up automatically
 					</li>
 					<!-- The app installs the same `llama` binary as the install
 					     scripts, linked onto PATH, so the command line comes with it.
@@ -1279,7 +1285,7 @@
 					     has already shown. Not on Linux: there's no app there, and
 					     the command line is all you get. -->
 					<li data-os-only="mac windows other" class="flex gap-2">
-						<Check class="mt-0.5 size-4 shrink-0" />
+						<Check class="mt-0.5 size-4 shrink-0 text-muted-foreground" />
 						<span
 							>The <code class="font-mono">llama</code> command too:
 							<code class="font-mono">llama cli</code>, <code class="font-mono">llama serve</code>,
@@ -1288,7 +1294,8 @@
 					</li>
 					<!-- Mac app only, for now. -->
 					<li data-os-only="mac linux other" class="flex gap-2">
-						<Check class="mt-0.5 size-4 shrink-0" /> Reach it from your other devices over Tailscale
+						<Check class="mt-0.5 size-4 shrink-0 text-muted-foreground" /> Reach it from your other devices
+						over Tailscale
 					</li>
 				</ul>
 				<div class="flex flex-wrap gap-x-6 gap-y-2">
