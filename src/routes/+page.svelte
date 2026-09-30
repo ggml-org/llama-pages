@@ -883,9 +883,14 @@
 	<!-- 4. Nothing to set up. The core promise, and the thing users say
 	     draws them to Llama. The card shows the configuration happening
 	     rather than just claiming it: it's drawn as a settings screen for
-	     one model where every setting is already on "Auto". -->
-	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2 md:gap-12">
-		<div class="flex flex-col gap-4">
+	     one model where every setting is already on "Auto".
+
+	     Same gap as the two-up grid above, so the card is exactly as wide
+	     as the cards there and its edge lines up with theirs (a wider gap
+	     made it slightly narrower, which read as a mistake). The text
+	     column's right padding keeps it clear of the card. -->
+	<section class="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2 md:gap-4">
+		<div class="flex flex-col gap-4 md:pr-8">
 			<h2 class="text-3xl leading-tight font-semibold tracking-tight">Nothing to set up</h2>
 			<p class="text-lg leading-relaxed text-pretty">
 				Running AI locally used to mean reading forum threads about settings. Llama checks your {@render macOr(
@@ -1246,9 +1251,12 @@
 			</p>
 		</div>
 
-		<!-- The API. Text and terminal split the content area in half. -->
-		<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-			<div class="flex flex-col gap-5">
+		<!-- The API. Same gap as the "Nothing to bundle" comparison below,
+		     so the terminal is exactly as wide as the cards there -- see the
+		     "Nothing to set up" section. The text column's right padding
+		     keeps it clear of the terminal. -->
+		<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-4">
+			<div class="flex flex-col gap-5 md:pr-8">
 				<h3 class="text-xl font-semibold">OpenAI-compatible API</h3>
 				<p class="leading-relaxed">
 					If your code works with OpenAI, it works with Llama. Change the base URL and keep
