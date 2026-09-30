@@ -86,13 +86,6 @@
 		{ example: 'Any OpenAI SDK', icon: Braces, label: 'Your own code' }
 	];
 
-	// -- Hero shot wallpaper ------------------------------------------------------
-	//
-	// Shared by the Mac and Windows shots (see the Mac shot's comment for
-	// what it's going for).
-	const WALLPAPER =
-		'bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]';
-
 	// -- Menu frame -----------------------------------------------------------------
 	//
 	// The menu's material and edge, shared by the Mac menu and the Windows
@@ -359,55 +352,6 @@
 		</div>
 	{/snippet}
 
-	{#snippet callouts(machine: string, extra: string)}
-		<!-- The callouts, shared by the Mac and Windows shots. Numbered to
-	     match the markers placed on the menu; each one maps a part of the
-	     menu to the OpenAI mental model or to the "easy" promise. Written
-	     directly on the wallpaper -- no card, no shadow -- so they read as
-	     annotations *about* the menu, not as more UI. On desktop the column
-	     is centered in the space left of the menu, both ways, so the
-	     margins around it are even. `machine` is the word the pictured menu
-	     uses for the computer ("Mac" or "PC"), so the third title quotes the
-	     menu exactly, and `extra` is each shot's placement. The menu says
-	     "this Mac", not "your Mac": the picks are based on this machine's
-	     hardware, and "your" could read as picked for your taste. -->
-		<ol
-			class="flex max-w-md flex-col gap-8 px-1 py-2 md:self-center md:justify-self-center {extra}"
-		>
-			<li class="flex gap-3">
-				{@render marker(1)}
-				<span>
-					<span class="block text-base leading-6 font-medium">Open chat</span>
-					<span class="mt-1 block text-base leading-relaxed text-foreground/70">
-						Chat with any model in your browser. Like ChatGPT, but on your {@render macOr(
-							'computer'
-						)}.
-					</span>
-				</span>
-			</li>
-			<li class="flex gap-3">
-				{@render marker(2)}
-				<span>
-					<span class="block text-base leading-6 font-medium">A local API</span>
-					<span class="mt-1 block text-base leading-relaxed text-foreground/70">
-						Your apps connect here. It speaks the OpenAI API, so coding agents, editors, and scripts
-						just work.
-					</span>
-				</span>
-			</li>
-			<li class="flex gap-3">
-				{@render marker(3)}
-				<span>
-					<span class="block text-base leading-6 font-medium">Recommended for this {machine}</span>
-					<span class="mt-1 block text-base leading-relaxed text-foreground/70">
-						Models that fit your {@render macOr('computer')}, one click to install. Llama picks the
-						settings.
-					</span>
-				</span>
-			</li>
-		</ol>
-	{/snippet}
-
 	<!-- The menu's contents, shared by the Mac menu and the Windows tray
 	     flyout: the two apps show the same things, so the page shows them
 	     the same way, in each OS's own frame. `machine` is the word for the
@@ -591,13 +535,16 @@
 	     and the recommendations (why it's easy). Chat is reached *from* the
 	     menu, which is exactly the relationship we want people to see.
 
-	     Two versions: the Mac menu (for Mac visitors and "other", who were
-	     offered both apps) and the Windows tray flyout. Linux gets neither:
-	     it has no app, just the CLI, and a picture of an app it can't get
-	     would only confuse. The Windows shot is a design target rather
-	     than a copy of the shipping app: the app is to be brought in line
-	     with it, "Open chat" and address included. -->
-	<section data-os-only="mac other" class="pb-24">
+	     Two versions of the picture, in one panel with the same callouts:
+	     the Mac menu (for Mac visitors and "other", who were offered both
+	     apps) and the Windows tray flyout, the same menu contents (see
+	     menuBody) in each OS's own frame. The sky wallpaper is shared so
+	     the two read as one picture, just on different systems. Linux gets
+	     neither: it has no app, just the CLI, and a picture of an app it
+	     can't get would only confuse. The Windows picture is a design
+	     target rather than a copy of the shipping app: the app is to be
+	     brought in line with it, "Open chat" and address included. -->
+	<section data-os-only="mac windows other" class="pb-24">
 		<!-- The wallpaper: a clear daytime sky, blue only -- deeper at the
 		     top, paling toward the bottom right like a sky toward the
 		     horizon. The top-left patch is only slightly brighter (still
@@ -605,12 +552,26 @@
 		     page). No warm tones (they read as a sunset, i.e. sad), and no
 		     pink, purple, or green -- so it reads upbeat without competing
 		     with the menu. Kept pale so the callouts' text stays easy to
-		     read; the dark version is the same sky at night. -->
-		<div class="overflow-hidden rounded-2xl {WALLPAPER}">
+		     read; the dark version is the same sky at night.
+
+		     From md, two columns: the callouts, then the picture (the menu
+		     with its bar or tray, 21rem -- the menu's width). Both are
+		     centered vertically, so the callouts are centered on the whole
+		     picture, bar or tray included (they're part of the screen, like
+		     the wallpaper). The panel's padding (p-12) insets the picture by
+		     the same 48px on every side it has room, as if the picture were a
+		     crop of a larger screen: the menu floats on the wallpaper instead
+		     of being jammed into the corner. On phones it's one column, the
+		     picture first. Only one picture shows (data-os-only), so the
+		     grid only ever holds the two. -->
+		<div
+			class="grid gap-6 overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-4 md:grid-cols-[1fr_21rem] md:items-center md:gap-x-10 md:p-12 dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]"
+		>
 			<!-- macOS menu bar. No background of its own: in current macOS the
 			     bar is transparent, with the icons straight on the wallpaper.
-			     The Llama icon is "pressed", since its menu is open. Sizes follow the real bar: status icons roughly as tall as
-			     the clock's capitals. The Logo component sizes itself from
+			     The Llama icon is "pressed", since its menu is open. Sizes
+			     follow the real bar: status icons roughly as tall as the
+			     clock's capitals. The Logo component sizes itself from
 			     --logo-height (a utility class can't override it). The status
 			     icons are the real SF Symbols -- the Lucide ones are thin
 			     outlines and read as a different OS. Each was exported with
@@ -625,26 +586,15 @@
 			     relative sizes as macOS draws them, with Wi-Fi at 1em.
 
 			     A status item's menu hangs from its icon: the menu's left edge
-			     sits just left of the icon. So the status items span exactly
-			     the menu's width, starting at its left edge (the pl-1 is the
-			     small step in from the edge the real one has). On phones that's
-			     the bar's full padded width (px-4, like the grid's p-4). From md
-			     it's the menu's 21rem (w-84), right-aligned in the bar's 3rem
-			     padding (pr-12), the same as the grid's -- so it lines up with
-			     the menu at both ends. Keep those in sync.
-
-			     From md the bar and the menu are also inset from the panel's
-			     top and right edges (pt-5, pr-12), as if the picture were a
-			     crop of a larger screen: the menu floats on the wallpaper
-			     instead of being jammed into the corner. The icons' natural
-			     widths don't add up to the menu's, so justify-between spreads
-			     the rest evenly; Spotlight, Control Center, and sound are there
-			     so the gaps stay close to macOS's rather than yawning. -->
-			<div
-				aria-hidden="true"
-				class="flex justify-end px-4 py-1 text-xs font-medium text-foreground/85 md:pt-5 md:pr-12"
-			>
-				<div class="flex w-full items-center justify-between pl-1 md:w-84">
+			     sits just left of the icon. So the bar is stacked right over
+			     the menu, and its status items span exactly the menu's width
+			     (the pl-1 is the small step in from the edge the real one
+			     has). The icons' natural widths don't add up to the menu's, so
+			     justify-between spreads the rest evenly; Spotlight, Control
+			     Center, and sound are there so the gaps stay close to macOS's
+			     rather than yawning. -->
+			<div data-os-only="mac other" aria-hidden="true" class="flex flex-col gap-2.5">
+				<div class="flex items-center justify-between pl-1 text-xs font-medium text-foreground/85">
 					<span class="flex h-5 items-center rounded-full bg-foreground/15 px-2">
 						<Logo --logo-height="0.75rem" />
 					</span>
@@ -687,19 +637,6 @@
 					<!-- The date only where there's room for it. -->
 					<span>Wed <span class="max-sm:hidden">Sep 23&nbsp;</span>10:24</span>
 				</div>
-			</div>
-
-			<div
-				class="grid grid-cols-1 gap-6 p-4 pt-1.5 md:grid-cols-[1fr_21rem] md:gap-10 md:p-12 md:pt-1.5"
-			>
-				<!-- After the menu on phones. On desktop, centered on the whole
-				     panel, menu bar included, since the bar is transparent and
-				     reads as part of the wallpaper. The cell it sits in is almost
-				     that: the bar (44px) plus the grid's top padding (6px) is 50px
-				     above it, vs the grid's 48px bottom padding below it.
-				     md:-mt-0.5 shifts the column up by half that 2px difference.
-				     Keep it in sync with the bar's height and the grid's padding. -->
-				{@render callouts('Mac', 'order-2 md:order-1 md:-mt-0.5')}
 
 				<!-- The menu itself. Mirrors the shipping layout: name and
 				     address, "Open chat", installed models, recommendations,
@@ -715,77 +652,106 @@
 				     edge markers' offset counts its 1px) and a dark hairline just
 				     outside it (a 1px spread shadow), on top of the soft drop
 				     shadow. -->
-				<div aria-hidden="true" class="order-1 w-full rounded-xl md:order-2 {MENU_FRAME}">
+				<div class="rounded-xl {MENU_FRAME}">
 					{@render menuBody('Mac')}
 				</div>
 			</div>
-		</div>
-	</section>
 
-	<!-- 2b. The hero shot's Windows version: the same menu contents (see
-	     menuBody) in a Windows 11 tray flyout, over the taskbar's tray, with
-	     the same callouts. The sky wallpaper is kept so the two versions read
-	     as one picture, just on different systems.
+			<!-- The Windows picture: the flyout over the taskbar's tray, the
+			     tray the flyout's width and right under it, as the Mac bar is
+			     over the menu. A full-bleed taskbar under an inset flyout mixed
+			     two framings and looked off. The tray strip is the taskbar's
+			     material but fades in over its left half, so it reads as the
+			     end of a taskbar that carries on off-picture rather than as a
+			     floating card; that's also why only its right corners are
+			     rounded. The fade is a mask, so it takes the border and the
+			     blur along. -->
+			<div data-os-only="windows" aria-hidden="true" class="flex flex-col gap-3">
+				<!-- The Mac menu's edge (shine, dark hairline, drop shadow -- see
+				     there): Windows 11's own flatter edge, a single faint hairline,
+				     was tried and looked weaker against the wallpaper. Only the
+				     corners are Windows' (8px).
+				     Segoe UI for Windows visitors (who are the only ones who see
+				     this), so the flyout's text looks like theirs. -->
+				<div
+					class="rounded-lg font-['Segoe_UI_Variable_Text','Segoe_UI',system-ui,sans-serif] {MENU_FRAME}"
+				>
+					{@render menuBody('PC')}
+				</div>
 
-	     Framed like the Mac shot, as a crop of a larger screen: the flyout
-	     and the tray are both inset from the panel's edges, the tray the
-	     flyout's width and right under it, as the Mac bar is over the menu.
-	     A full-bleed taskbar under an inset flyout mixed two framings and
-	     looked off. The tray strip is the taskbar's material but fades in
-	     over its left half, so it reads as the end of a taskbar that carries
-	     on off-picture rather than as a floating card; that's also why only
-	     its right corners are rounded. The fade is a mask, so it takes the
-	     border and the blur along.
-
-	     Laid out as a grid so phones can reorder: flyout, tray, then the
-	     callouts, so the flyout stays attached to the tray it opens from. On
-	     desktop the callouts span both rows and are centered on the whole
-	     panel, as on the Mac shot. The insets are the grid's padding, as on
-	     the Mac shot, not margins on the flyout -- margins would eat into
-	     the 21rem column and make the flyout narrower than the Mac menu. -->
-	<section data-os-only="windows" class="pb-24">
-		<div
-			class="grid grid-cols-1 gap-3 overflow-hidden rounded-2xl p-4 md:grid-cols-[1fr_21rem] md:gap-x-10 md:p-12 {WALLPAPER}"
-		>
-			<!-- The Mac menu's edge (shine, dark hairline, drop shadow -- see
-			     there): Windows 11's own flatter edge, a single faint hairline,
-			     was tried and looked weaker against the wallpaper. Only the
-			     corners are Windows' (8px).
-			     Segoe UI for Windows visitors (who are the only ones who see
-			     this), so the flyout's text looks like theirs. -->
-			<div
-				aria-hidden="true"
-				class="order-1 rounded-lg font-['Segoe_UI_Variable_Text','Segoe_UI',system-ui,sans-serif] md:col-start-2 md:row-start-1 {MENU_FRAME}"
-			>
-				{@render menuBody('PC')}
+				<!-- The tray: "show hidden icons", then Llama's icon, pressed since
+				     its flyout is open, then the usual network, sound, and battery,
+				     and the two-line clock. Lucide's outline icons are close to
+				     Windows 11's own (Fluent) ones. -->
+				<div
+					class="flex h-12 items-center justify-end rounded-r-lg border border-l-0 border-white/60 bg-white/70 mask-[linear-gradient(to_right,transparent,black_45%)] px-1 text-xs text-foreground/85 backdrop-blur-xl dark:border-white/10 dark:bg-black/45"
+				>
+					<span class="flex items-center gap-1">
+						<ChevronUp class="mx-1 size-4" />
+						<span class="flex h-9 items-center rounded-md bg-foreground/10 px-2">
+							<Logo --logo-height="0.75rem" />
+						</span>
+						<span class="flex h-9 items-center gap-2.5 rounded-md px-2">
+							<Wifi class="size-4" />
+							<Volume2 class="size-4" />
+							<BatteryCharging class="size-4" />
+						</span>
+						<span class="flex flex-col items-end px-1 leading-4">
+							<span>10:24 AM</span>
+							<span>9/23/2026</span>
+						</span>
+					</span>
+				</div>
 			</div>
 
-			<!-- The tray: "show hidden icons", then Llama's icon, pressed since
-			     its flyout is open, then the usual network, sound, and battery,
-			     and the two-line clock. Lucide's outline icons are close to
-			     Windows 11's own (Fluent) ones. -->
-			<div
-				aria-hidden="true"
-				class="order-2 flex h-12 items-center justify-end rounded-r-lg border border-l-0 border-white/60 bg-white/70 mask-[linear-gradient(to_right,transparent,black_45%)] px-1 text-xs text-foreground/85 backdrop-blur-xl md:col-start-2 md:row-start-2 dark:border-white/10 dark:bg-black/45"
-			>
-				<span class="flex items-center gap-1">
-					<ChevronUp class="mx-1 size-4" />
-					<span class="flex h-9 items-center rounded-md bg-foreground/10 px-2">
-						<Logo --logo-height="0.75rem" />
+			<!-- The callouts. Numbered to match the markers placed on the
+			     menu; each one maps a part of the menu to the OpenAI mental
+			     model or to the "easy" promise. Written directly on the
+			     wallpaper -- no card, no shadow -- so they read as annotations
+			     *about* the menu, not as more UI. After the picture on phones;
+			     on desktop, left of it, centered in the space left of the
+			     menu, both ways, so the margins around it are even. The third
+			     title quotes the pictured menu exactly ("Mac" or "PC"). The
+			     menu says "this Mac", not "your Mac": the picks are based on
+			     this machine's hardware, and "your" could read as picked for
+			     your taste. -->
+			<ol class="flex max-w-md flex-col gap-8 md:order-first md:justify-self-center">
+				<li class="flex gap-3">
+					{@render marker(1)}
+					<span>
+						<span class="block text-base leading-6 font-medium">Open chat</span>
+						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
+							Chat with any model in your browser. Like ChatGPT, but on your {@render macOr(
+								'computer'
+							)}.
+						</span>
 					</span>
-					<span class="flex h-9 items-center gap-2.5 rounded-md px-2">
-						<Wifi class="size-4" />
-						<Volume2 class="size-4" />
-						<BatteryCharging class="size-4" />
+				</li>
+				<li class="flex gap-3">
+					{@render marker(2)}
+					<span>
+						<span class="block text-base leading-6 font-medium">A local API</span>
+						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
+							Your apps connect here. It speaks the OpenAI API, so coding agents, editors, and
+							scripts just work.
+						</span>
 					</span>
-					<span class="flex flex-col items-end px-1 leading-4">
-						<span>10:24 AM</span>
-						<span>9/23/2026</span>
+				</li>
+				<li class="flex gap-3">
+					{@render marker(3)}
+					<span>
+						<span class="block text-base leading-6 font-medium">
+							Recommended for this
+							<span data-os-only="mac other">Mac</span>
+							<span data-os-only="windows">PC</span>
+						</span>
+						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
+							Models that fit your {@render macOr('computer')}, one click to install. Llama picks
+							the settings.
+						</span>
 					</span>
-				</span>
-			</div>
-
-			{@render callouts('PC', 'order-3 mt-3 md:col-start-1 md:row-span-2 md:row-start-1 md:mt-0')}
+				</li>
+			</ol>
 		</div>
 	</section>
 
