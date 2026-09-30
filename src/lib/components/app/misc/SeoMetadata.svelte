@@ -37,9 +37,8 @@
 <svelte:head>
 	<link rel="icon" href={iconLight} />
 
-	<title>{SITE_TITLE}</title>
-	<meta name="description" content={SITE_DESCRIPTION} />
-
+	<!-- No `<title>` or description here: each page sets its own (see
+	     site.constants.ts). -->
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={SITE_TITLE} />
 	<meta property="og:description" content={SITE_DESCRIPTION} />

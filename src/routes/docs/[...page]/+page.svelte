@@ -7,7 +7,7 @@
 		DocsSidebar,
 		DocsToc
 	} from '$lib/components/app';
-	import { SITE_TITLE, SITE_URL } from '$lib/constants';
+	import { SITE_URL } from '$lib/constants';
 	import { mount, unmount } from 'svelte';
 
 	let { data } = $props();
@@ -49,7 +49,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.title} - {SITE_TITLE}</title>
+	<title>{data.title} — llama.app</title>
 	<link rel="canonical" href="{SITE_URL}/docs/{data.local}" />
 	<link rel="alternate" type="text/markdown" href={mdPath} />
 </svelte:head>

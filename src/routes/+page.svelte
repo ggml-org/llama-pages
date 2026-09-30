@@ -61,7 +61,13 @@
 	import { families, minMemGB, slugify } from '$lib/catalog';
 	import { CopyButton, InstallCommand, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
-	import { MACOS_DOWNLOAD_URL, MACOS_REPO_URL, WINDOWS_REPO_URL } from '$lib/constants';
+	import {
+		MACOS_DOWNLOAD_URL,
+		MACOS_REPO_URL,
+		SITE_DESCRIPTION,
+		SITE_TITLE,
+		WINDOWS_REPO_URL
+	} from '$lib/constants';
 	import Prism from '$lib/prism';
 	import type { Snippet } from 'svelte';
 
@@ -226,11 +232,8 @@
 </script>
 
 <svelte:head>
-	<title>Llama · Your AI, on your computer</title>
-	<meta
-		name="description"
-		content="Run the latest open models on your computer. Chat with them, or connect them to your coding agents, editors, and apps. Free, private, and nothing to configure."
-	/>
+	<title>{SITE_TITLE}</title>
+	<meta name="description" content={SITE_DESCRIPTION} />
 </svelte:head>
 
 <!-- Two text colors only. Content -- headings and the paragraphs under them --
