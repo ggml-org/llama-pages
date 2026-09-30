@@ -15,7 +15,7 @@
 	//   2. What does it look like?  -- the real menu, with numbered callouts
 	//   3. How is it a platform?    -- "Like OpenAI": chat for you, API for apps
 	//   4. Is it hard?              -- "Nothing to set up": what Llama tunes
-	//   5. Is it heavy?             -- 4 MB, menu bar, unloads when idle
+	//   5. Is it heavy?             -- 4 MB, models stored once, unloads when idle
 	//   6. Will it run on my Mac?   -- models by memory tier
 	//   7. Can I build on it?       -- the API, one changed line
 	//   8. Why not bundle my own?   -- without/with diagram
@@ -257,16 +257,13 @@
 	     +page.server.ts). The Windows button names Windows 11 because the
 	     app doesn't install on Windows 10: on the button, the requirement
 	     can't be skimmed past, and it goes wherever the button goes (the
-	     closing call to action, and the "other" visitors who get both).
-	     `compact` is for the closing call to action, where the button sits
-	     among command blocks: it takes their 40px height, so it doesn't
-	     outweigh them, while the hero keeps the bigger button. -->
-	{#snippet downloadButtons(compact = false)}
+	     closing call to action, and the "other" visitors who get both). -->
+	{#snippet downloadButtons()}
 		<Button
 			data-os-only="mac other"
 			href={MACOS_DOWNLOAD_URL}
 			size="lg"
-			class={compact ? 'h-10 px-5 text-sm' : 'h-12 px-6 text-[15px]'}
+			class="h-12 px-6 text-[15px]"
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<span class="mb-0.5">{@html appleIcon}</span>
@@ -276,7 +273,7 @@
 			data-os-only="windows other"
 			href={data.windowsDownloadUrl}
 			size="lg"
-			class={compact ? 'h-10 px-5 text-sm' : 'h-12 px-6 text-[15px]'}
+			class="h-12 px-6 text-[15px]"
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html windowsIcon}
@@ -1453,13 +1450,10 @@
 	<!-- A command to copy: a subtle chip, so it reads as something for a
 	     terminal. It wraps at spaces on narrow screens rather than scrolling:
 	     a clipped command hides its end (`| sh`), and the copy button is
-	     there for copying it right. `os` is its `data-os-only`, if it's only
-	     for some systems. `min-h-10` matches the closing call to action's
-	     download button, which sits right above the brew command; a minimum
-	     rather than a height, so a wrapped command still grows. -->
-	{#snippet command(text: string, os?: string)}
+	     there for copying it right. `min-h-10` is a minimum rather than a
+	     height, so a wrapped command still grows. -->
+	{#snippet command(text: string)}
 		<div
-			data-os-only={os}
 			class="flex min-h-10 min-w-0 items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3 text-[13px]"
 		>
 			<!-- Programs in the page's sky highlight, flags and pipes muted, so
@@ -1504,9 +1498,9 @@
 	     instruction rather than a question.
 
 	     The page has no footer, so this section's bottom padding is the
-	     page's end. `pb-60` leaves a bit more room below than the ~176px
+	     page's end. `pb-60` (240px) leaves more room below than the 176px
 	     above the heading (the previous section's `py-20` plus this one's
-	     `pt-24`): matching it (`pb-40`) still felt like the page stopped
+	     `pt-24`): about as much as above still felt like the page stopped
 	     short. -->
 	<section class="flex flex-col items-center gap-10 pt-24 pb-60 text-center">
 		<!-- Heading and subheading grouped with the same gap-4 as every other
