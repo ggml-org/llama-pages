@@ -1131,9 +1131,11 @@
 		</div>
 	{/snippet}
 
-	<!-- Not shown on Windows: the facts are the Mac app's, and the Windows
-	     app isn't a 1 MB download and keeps models loaded by default. -->
-	<section data-os-only="mac linux other" class="py-20">
+	<!-- Mac and "other" only: the facts are the Mac app's. The Windows app
+	     isn't a 1 MB download and keeps models loaded by default. Linux has
+	     no app, and like the hero shot, a section about the Mac app's files
+	     (Llama.dmg, Llama.app) would only confuse there. -->
+	<section data-os-only="mac other" class="py-20">
 		<!-- The intro names the worry (local AI is heavy) rather than listing
 		     the cards, so it doesn't read as the cards' titles said twice. -->
 		<div class="mb-10 flex max-w-2xl flex-col gap-4">
