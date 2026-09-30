@@ -1273,8 +1273,9 @@
 							and more</span
 						>
 					</li>
-					<!-- Mac app only, for now. -->
-					<li data-os-only="mac linux other" class="flex gap-2">
+					<!-- Mac app only, for now, so not on Windows, and not on
+					     Linux, where there's no app. -->
+					<li data-os-only="mac other" class="flex gap-2">
 						<Check class="mt-0.5 size-4 shrink-0 text-muted-foreground" /> Reach it from your other devices
 						over Tailscale
 					</li>
