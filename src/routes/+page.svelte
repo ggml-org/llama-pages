@@ -1424,13 +1424,18 @@
 	     Linux has no app, so it gets the command-line card alone, centered.
 	     The cards are half-width flex items rather than a two-column grid so
 	     that a lone card centers instead of sitting in the left column. -->
-	<section class="flex flex-col items-center gap-6 py-24 text-center">
-		<h2 class="text-4xl leading-tight font-semibold tracking-tight">Local AI starts here</h2>
-		<p class="text-lg leading-relaxed text-pretty">Free, open source, and yours to keep.</p>
+	<section class="flex flex-col items-center gap-10 py-24 text-center">
+		<!-- Heading and subheading grouped with the same gap-4 as every other
+		     section's header, so they read as a pair rather than the subheading
+		     floating halfway between the heading and the cards. -->
+		<div class="flex flex-col gap-4">
+			<h2 class="text-4xl leading-tight font-semibold tracking-tight">Local AI starts here</h2>
+			<p class="text-lg leading-relaxed text-pretty">Free, open source, and yours to keep.</p>
+		</div>
 
 		<!-- Wide enough that the serve command fits on one line in half of
 		     it, on desktop. -->
-		<div class="mt-6 flex w-full max-w-5xl flex-col gap-4 text-left md:flex-row md:justify-center">
+		<div class="flex w-full max-w-5xl flex-col gap-4 text-left md:flex-row md:justify-center">
 			<!-- The app. "Everything on this page" ties the card to the rest of
 			     the page, which is all about the app, so the card doesn't need
 			     to repeat it. The title's aside mirrors the other card's "only". -->
