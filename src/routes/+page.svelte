@@ -224,7 +224,8 @@
 	// "stored once" drawing, which shows the same file -- only the menu mock
 	// keeps the app's "19.0 GB" format.
 	const DIAGRAM_APPS = ['Chat app', 'Coding agent', 'Your app'];
-	const exampleModelSize = `${Math.round(parseFloat(EXAMPLE_MODEL.size))} GB`;
+	const exampleModelGB = Math.round(parseFloat(EXAMPLE_MODEL.size));
+	const exampleModelSize = `${exampleModelGB} GB`;
 </script>
 
 <svelte:head>
@@ -1335,41 +1336,96 @@
 				</p>
 			</div>
 
-			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-				<figure class="rounded-2xl border border-border p-5">
-					<figcaption class="mb-4 text-sm text-muted-foreground">Without Llama</figcaption>
-					<div class="grid grid-cols-3 gap-2 text-center text-xs">
+			<!-- Inside vs. outside. Bundling puts the engine and model inside
+			     each app, so on the left they're drawn inside the app cards,
+			     three times over. With Llama, the apps are just their names, and
+			     the same engine-and-model block sits once, in Llama, connected to
+			     all three -- it reads as the block moving out of the apps. Lines
+			     only on the right, since a line means "talks to", which is what
+			     the apps do with Llama. The Llama card is the one touch of sky,
+			     rather than a solid bar that outshouts the page.
+
+			     Each caption carries its side's disk use, so the saving is a
+			     number and not just a count of boxes. -->
+			<div class="grid grid-cols-1 gap-4 text-xs md:grid-cols-2">
+				<!-- Engine and model are peers -- two things the app carries --
+				     so they share one weight and color, split by a rule. -->
+				{#snippet bundle(sky = false)}
+					<div
+						class={[
+							'flex flex-col divide-y rounded-md border px-2',
+							sky
+								? 'divide-sky-500/25 border-sky-500/30 bg-background'
+								: 'divide-border border-border bg-foreground/3'
+						]}
+					>
+						<span class="py-1.5">Engine</span>
+						<!-- Wraps the size under the name on phones rather than overflowing. -->
+						<span class="flex flex-wrap justify-between gap-x-2 py-1.5">
+							Model <span class="font-mono whitespace-nowrap">{exampleModelSize}</span>
+						</span>
+					</div>
+				{/snippet}
+
+				<!-- The cards sit at the bottom of whatever height the right side
+				     adds, so the two sides' engine-and-model blocks line up. -->
+				<figure class="flex flex-col rounded-2xl border border-border bg-foreground/2 p-5">
+					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
+						Without Llama
+						<span class="font-mono text-foreground">{3 * exampleModelGB} GB on disk</span>
+					</figcaption>
+					<div class="mt-auto grid grid-cols-3 gap-2">
 						{#each DIAGRAM_APPS as a (a)}
-							<div class="flex flex-col gap-1.5">
-								<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
-								<div
-									class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
-								>
-									own engine
-								</div>
-								<div
-									class="rounded-lg border border-dashed border-foreground/20 px-2 py-2 text-muted-foreground"
-								>
-									own {exampleModelSize} copy
-								</div>
+							<div
+								class="flex flex-col gap-1.5 rounded-lg border border-border bg-background p-1.5"
+							>
+								<span class="py-0.5 text-center font-medium">{a}</span>
+								{@render bundle()}
 							</div>
 						{/each}
 					</div>
 				</figure>
 
-				<figure class="rounded-2xl border border-sky-500/40 bg-sky-500/5 p-5">
-					<figcaption class="mb-4 text-sm text-muted-foreground">With Llama</figcaption>
-					<div class="flex flex-col gap-1.5 text-center text-xs">
-						<div class="grid grid-cols-3 gap-2">
+				<!-- Sideways, so it's about as tall as the left side: the apps in
+				     the first column, the lines in the second, Llama in the third
+				     -- the same columns as the cards on the left, so the Llama
+				     card is exactly as wide as the app cards it replaces. The
+				     chips are a fixed h-8 with a gap-2, so their centers are 16,
+				     56 and 96px down the 112px column (h-28). The middle line runs
+				     straight across; the outer ones turn at the column's middle
+				     and come in 8px either side of it, like the "stored once"
+				     drawing turned on its side. The line column spans the gaps
+				     (-mx-2), so the lines touch the chips and the card. -->
+				<figure class="rounded-2xl border border-border bg-foreground/2 p-5">
+					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
+						With Llama
+						<span class="font-mono text-sky-700 dark:text-sky-400">{exampleModelSize} on disk</span>
+					</figcaption>
+					<div class="grid grid-cols-3 items-center gap-2">
+						<div class="flex flex-col gap-2 text-center">
 							{#each DIAGRAM_APPS as a (a)}
-								<div class="rounded-lg bg-foreground/6 px-2 py-2.5 font-medium">{a}</div>
+								<span
+									class="flex h-8 items-center justify-center rounded-lg border border-border bg-background font-medium"
+									>{a}</span
+								>
 							{/each}
 						</div>
-						<div class="rounded-lg bg-foreground px-2 py-2.5 font-medium text-background">
-							Llama · one engine, kept up to date
+						<div aria-hidden="true" class="relative -mx-2 h-28">
+							<div class="absolute top-4 left-0 h-8 w-1/2 border-t border-r border-border"></div>
+							<div class="absolute top-[47px] right-0 left-[calc(50%-1px)] h-px bg-border"></div>
+							<div class="absolute inset-x-0 top-14 h-px bg-border"></div>
+							<div
+								class="absolute top-16 left-0 h-[33px] w-1/2 border-r border-b border-border"
+							></div>
+							<div class="absolute top-16 right-0 left-[calc(50%-1px)] h-px bg-border"></div>
 						</div>
-						<div class="rounded-lg border border-foreground/20 px-2 py-2 text-muted-foreground">
-							one {exampleModelSize} copy, in the Hugging Face cache
+						<div
+							class="flex flex-col gap-1.5 rounded-lg border border-sky-500/40 bg-sky-500/8 p-1.5"
+						>
+							<span class="flex items-center justify-center gap-1.5 py-0.5 font-medium">
+								<Logo --logo-height="0.625rem" /> Llama
+							</span>
+							{@render bundle(true)}
 						</div>
 					</div>
 				</figure>
