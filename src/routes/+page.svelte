@@ -999,11 +999,14 @@
 		</div>
 	{/snippet}
 
-	<!-- Stored once: three tools converging on a single model file. The
-	     chips sit in a 3-column grid so their centers land near 1/6, 1/2,
-	     and 5/6 of the width, where the connectors start. The connectors are right-angled, like a bus: each chip drops to a shared horizontal line, and one line drops from its middle to the file. The SVG stretches
-	     to the panel's width (preserveAspectRatio="none"); non-scaling
-	     strokes keep the lines 1px regardless. -->
+	<!-- Stored once: three tools pointing at a single model file. Each
+	     chip drops a straight line to the file below -- the file spans the
+	     full width, so every chip sits right above it. Straight drops
+	     rather than a bus (chips joined by a horizontal line, one line
+	     down to the file), where the middle drop ran through the bus and
+	     read as a crossing. The lines sit in the same 3-column grid as the
+	     chips, so each one lands on its chip's center, like the connectors
+	     above "Your models". -->
 	{#snippet storageArt()}
 		<div class="flex flex-col items-center">
 			<div class="grid w-full grid-cols-3 gap-1.5 text-center">
@@ -1011,14 +1014,11 @@
 					<span class="truncate rounded-md border border-border px-1 py-1">{tool}</span>
 				{/each}
 			</div>
-			<svg
-				viewBox="0 0 120 28"
-				preserveAspectRatio="none"
-				class="h-7 w-full text-foreground/25"
-				fill="none"
-			>
-				<path d="M20 0V14H100V0M60 0V28" stroke="currentColor" vector-effect="non-scaling-stroke" />
-			</svg>
+			<div aria-hidden="true" class="grid w-full grid-cols-3 gap-1.5">
+				{#each SHARED_BY as tool (tool)}
+					<div class="mx-auto h-5 w-px bg-foreground/25"></div>
+				{/each}
+			</div>
 			<!-- Full width, spanning the three tools above, and laid out like
 			     the file rows in the size drawing: the model and where it lives
 			     on the left, its size on disk on the right, on the name's line. -->
