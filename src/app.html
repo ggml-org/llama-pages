@@ -18,18 +18,25 @@
 		     the pages are prerendered, so anything decided after hydration
 		     would first flash the prerendered default. `other` covers phones,
 		     ChromeOS, and crawlers. iPads report themselves as Macintosh, so a
-		     touch screen rules out a Mac. -->
+		     touch screen rules out a Mac.
+
+		     `?os=windows` (or `mac`, `linux`, `other`) overrides the detected
+		     OS, so a link can show another OS's version of a page -- e.g. for
+		     reviewers, who'd otherwise only see their own. -->
 		<script>
 			(function () {
 				var ua = navigator.userAgent;
+				var param = new URLSearchParams(location.search).get('os');
 
-				document.documentElement.dataset.os = /Windows/.test(ua)
-					? 'windows'
-					: /Macintosh/.test(ua) && navigator.maxTouchPoints < 2
-						? 'mac'
-						: /Linux/.test(ua) && !/Android/.test(ua)
-							? 'linux'
-							: 'other';
+				document.documentElement.dataset.os = ['mac', 'windows', 'linux', 'other'].includes(param)
+					? param
+					: /Windows/.test(ua)
+						? 'windows'
+						: /Macintosh/.test(ua) && navigator.maxTouchPoints < 2
+							? 'mac'
+							: /Linux/.test(ua) && !/Android/.test(ua)
+								? 'linux'
+								: 'other';
 			})();
 		</script>
 		<!-- Privacy-friendly analytics by Plausible -->
