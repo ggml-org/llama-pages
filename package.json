@@ -8,7 +8,6 @@
 		"dev": "npm run docs:prepare && vite dev --host 0.0.0.0",
 		"build": "npm run docs:prepare && vite build",
 		"preview": "vite preview",
-		"deploy": "npm run build && wrangler pages deploy build --project-name=llama-app --branch=master",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
