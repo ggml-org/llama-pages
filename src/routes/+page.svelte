@@ -448,9 +448,9 @@
 		     its stars) is one click from the claim. Only that word is the link:
 		     the whole badge would promise a page about the team. The link is
 		     marked by an underline, not color: a brighter or blue word read
-		     as emphasis rather than a link. Sans, not mono as the shared
-		     design notes say: it's prose, and mono reads as developer tooling
-		     to newcomers. -->
+		     as emphasis rather than a link. Sans, not mono as on
+		     llamacpp.org: it's prose, and mono reads as developer tooling to
+		     newcomers. -->
 		<span class="rounded-full border border-foreground/10 px-3 py-1 text-sm text-muted-foreground">
 			By the <a
 				href="https://github.com/ggml-org/llama.cpp"
