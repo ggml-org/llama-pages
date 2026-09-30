@@ -439,22 +439,25 @@
 		<!-- Who makes it, not what it's built on: any local AI app can say
 		     "built on llama.cpp", only Llama can say it's by the llama.cpp
 		     team. Hugging Face stays, since newcomers are more likely to know
-		     it than llama.cpp. "Team at", not "from the makers of": the app
-		     didn't start with llama.cpp's authors, but that team builds and
-		     maintains it now. "llama.cpp" links to its repo, so the proof (the
-		     project itself, its stars) is one click from the claim. Only that
-		     word is the link: the whole badge would promise a page about the
-		     team. The link is marked by an underline, not color: a brighter or
-		     blue word read as emphasis rather than a link. Sans, not mono as
-		     the shared design notes say: it's prose, and mono reads as
-		     developer tooling to newcomers. -->
+		     it than llama.cpp. "Now part of", not "at": "the llama.cpp team at
+		     Hugging Face" can read as Hugging Face's own team that works on
+		     llama.cpp, apart from the main one -- "now" says the team itself
+		     joined. "Team", not "the makers of": the app didn't start with
+		     llama.cpp's authors, but that team builds and maintains it now.
+		     "llama.cpp" links to its repo, so the proof (the project itself,
+		     its stars) is one click from the claim. Only that word is the link:
+		     the whole badge would promise a page about the team. The link is
+		     marked by an underline, not color: a brighter or blue word read
+		     as emphasis rather than a link. Sans, not mono as the shared
+		     design notes say: it's prose, and mono reads as developer tooling
+		     to newcomers. -->
 		<span class="rounded-full border border-foreground/10 px-3 py-1 text-sm text-muted-foreground">
 			By the <a
 				href="https://github.com/ggml-org/llama.cpp"
 				target="_blank"
 				rel="noreferrer"
 				class="underline decoration-foreground/30">llama.cpp</a
-			> team at Hugging Face
+			> team, now part of Hugging Face
 		</span>
 
 		<h1
