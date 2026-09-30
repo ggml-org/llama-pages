@@ -259,7 +259,7 @@
 	<!-- The download buttons, one per app, each shown on its own OS. Phones
 	     and unrecognized systems get both, so visitors learn what there is
 	     for their computer. Linux has no app yet and gets the CLI instead
-	     (linuxInstall). The Windows link is resolved at build time (see
+	     (see the hero). The Windows link is resolved at build time (see
 	     +page.server.ts). The Windows button names Windows 11 because the
 	     app doesn't install on Windows 10: on the button, the requirement
 	     can't be skimmed past, and it goes wherever the button goes (the
@@ -288,15 +288,6 @@
 			{@html windowsIcon}
 			Download for Windows 11
 		</Button>
-	{/snippet}
-
-	<!-- Linux's stand-in for the download buttons: the CLI, which is the
-	     honest next step rather than a dead end until there's an app. -->
-	{#snippet linuxInstall()}
-		<div data-os-only="linux" class="flex w-full max-w-2xl flex-col items-center gap-3">
-			<p class="text-sm text-muted-foreground">On Linux? Install the command-line version:</p>
-			<InstallCommand />
-		</div>
 	{/snippet}
 
 	<!-- A numbered marker, shared by the menu and the callouts so the two
@@ -585,7 +576,12 @@
 			Free · Open source · Works offline
 		</p>
 
-		{@render linuxInstall()}
+		<!-- Linux's stand-in for the download buttons: the CLI, which is the
+		     honest next step rather than a dead end until there's an app. -->
+		<div data-os-only="linux" class="flex w-full max-w-2xl flex-col items-center gap-3">
+			<p class="text-sm text-muted-foreground">On Linux? Install the command-line version:</p>
+			<InstallCommand />
+		</div>
 	</section>
 
 	<!-- 2. Hero shot: the actual product. What you download is a menu bar
