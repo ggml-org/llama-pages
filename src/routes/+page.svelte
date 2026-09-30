@@ -1078,9 +1078,15 @@
 	     No axis title ("memory used"): the block labels and the card's text
 	     already say what's up and what's down. The labels are positioned in
 	     % of the width, matching the chart's x coordinates out of 200 (20 =
-	     10%, 80 = 40%, 140 = 70%), and the plateau spans y 8-110 of the 112px-tall box
-	     (h-28), hence pt-2 on the block labels and bottom-1.5 (2px baseline
-	     + 4px) on "Unloaded". -->
+	     10%, 80 = 40%, 140 = 70%), and the chart is 112 units tall to match
+	     its 112px box (h-28), so y units are pixels. The line is 1px, like
+	     the page's other drawings, and sits on half-pixels (top 8.5,
+	     baseline 111.5) so it covers exactly one pixel row instead of
+	     blurring across two. The fills run to the box's bottom edge, under
+	     the baseline -- stopping at the line's center left them a
+	     half-line short of the baseline beside them. The plateau spans
+	     y 8-112, hence pt-2 on the block labels to center them in it, and
+	     bottom-1.5 on "Unloaded" (1px baseline + 5px gap). -->
 	{#snippet idleArt()}
 		<div class="relative h-28 text-[11px] whitespace-nowrap">
 			<svg
@@ -1089,12 +1095,11 @@
 				class="absolute inset-0 size-full text-sky-600 dark:text-sky-400"
 				fill="none"
 			>
-				<path d="M20 110V8H80V110Z" fill="currentColor" fill-opacity="0.22" />
-				<path d="M80 110V8H140V110Z" fill="currentColor" fill-opacity="0.08" />
+				<path d="M20 112V8.5H80V112Z" fill="currentColor" fill-opacity="0.22" />
+				<path d="M80 112V8.5H140V112Z" fill="currentColor" fill-opacity="0.08" />
 				<path
-					d="M0 110H20V8H140V110H200"
+					d="M0 111.5H20V8.5H140V111.5H200"
 					stroke="currentColor"
-					stroke-width="1.5"
 					stroke-linejoin="round"
 					vector-effect="non-scaling-stroke"
 				/>
