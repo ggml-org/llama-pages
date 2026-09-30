@@ -453,7 +453,7 @@
 				href="https://github.com/ggml-org/llama.cpp"
 				target="_blank"
 				rel="noreferrer"
-				class="underline decoration-foreground/30">llama.cpp</a
+				class="underline">llama.cpp</a
 			> team, now part of Hugging Face
 		</span>
 
