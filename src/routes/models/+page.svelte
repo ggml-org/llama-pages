@@ -84,7 +84,11 @@
 
 	<!-- Closing escape hatch: the catalog is curated, not exhaustive, so after
 	     the list ends we point at the full GGUF ecosystem for anything we
-	     don't carry. -->
+	     don't carry. On a Mac it also says how to install one: Llama is
+	     listed under "Use this model" on a model's page (as `llama-app` in
+	     huggingface.js's local-apps.ts, which opens the app's
+	     `llama://install` deep link). Mac only: the HF entry is macOS-only,
+	     and the Windows app doesn't handle the deep link yet. -->
 	<p class="mt-10 text-[15px] text-muted-foreground">
 		Find thousands more GGUF models on
 		<!-- whitespace-nowrap so the link never breaks across lines ("Hugging /
@@ -95,7 +99,7 @@
 			rel="noopener"
 			class="whitespace-nowrap underline underline-offset-4 hover:text-foreground"
 		>
-			Hugging Face ↗
-		</a>
+			Hugging Face ↗</a
+		><span data-os-only="mac">, then choose Llama under “Use this model” on a model’s page</span>.
 	</p>
 </main>

@@ -1169,21 +1169,13 @@
 	<!-- 6. Models by memory tier. Answers "will it run on my computer?" --
 	     the most common newcomer worry -- with the one number they can check. -->
 	<section class="py-20">
-		<div class="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-			<div class="flex max-w-2xl flex-col gap-4">
-				<h2 class="text-3xl leading-tight font-semibold tracking-tight">
-					A great model for every {@render macOr('computer')}
-				</h2>
-				<p class="text-lg leading-relaxed text-pretty">
-					Llama suggests one that fits when you open it. Here's where to start.
-				</p>
-			</div>
-			<a
-				href={resolve('/models')}
-				class="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium underline underline-offset-4"
-			>
-				All models <ArrowRight class="size-3.5" />
-			</a>
+		<div class="mb-10 flex max-w-2xl flex-col gap-4">
+			<h2 class="text-3xl leading-tight font-semibold tracking-tight">
+				A great model for every {@render macOr('computer')}
+			</h2>
+			<p class="text-lg leading-relaxed text-pretty">
+				Llama suggests one that fits when you open it. Here's where to start.
+			</p>
 		</div>
 
 		<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -1207,23 +1199,18 @@
 			{/each}
 		</div>
 
-		<!-- The breadth behind the picks, in plain words: any GGUF model on
-		     Hugging Face installs in one click, through the "Use this model"
-		     menu on its page (Llama is listed there as `llama-app` in
-		     huggingface.js's local-apps.ts, which opens the app's
-		     `llama://install` deep link). "GGUF" isn't named -- it's the kind
-		     of term the page promises you don't need; the link lands on
-		     GGUF models anyway. Mac only: the HF entry is macOS-only, and the
-		     Windows app doesn't handle the deep link yet. -->
-		<p data-os-only="mac" class="mt-6 text-sm text-muted-foreground">
-			Or install any of
-			<a
-				href="https://huggingface.co/models?library=gguf&sort=trending"
-				target="_blank"
-				rel="noreferrer"
-				class="text-foreground underline underline-offset-4">thousands of models on Hugging Face</a
-			>: choose Llama under “Use this model” on a model’s page.
-		</p>
+		<!-- The way onward, placed where the eye lands after the cards. It used
+		     to sit small at the header's right, while the line under the cards
+		     linked to Hugging Face -- so the most visible next step left the
+		     site. The Hugging Face route ("Use this model") now lives at the
+		     end of the models page, for people who didn't find what they
+		     wanted in the catalog. -->
+		<a
+			href={resolve('/models')}
+			class="mt-8 inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
+		>
+			Browse models <ArrowRight class="size-4" />
+		</a>
 	</section>
 
 	<!-- 7. Developers. One chapter with a single h2, like every other
