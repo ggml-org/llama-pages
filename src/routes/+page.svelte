@@ -448,7 +448,7 @@
 		     blue word read as emphasis rather than a link. Sans, not mono as
 		     the shared design notes say: it's prose, and mono reads as
 		     developer tooling to newcomers. -->
-		<span class="rounded-full border border-foreground/10 px-3 py-1 text-xs text-muted-foreground">
+		<span class="rounded-full border border-foreground/10 px-3 py-1 text-sm text-muted-foreground">
 			By the <a
 				href="https://github.com/ggml-org/llama.cpp"
 				target="_blank"
