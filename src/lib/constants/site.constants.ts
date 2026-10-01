@@ -25,4 +25,4 @@ export const SITE_DESCRIPTION =
 export const SITE_URL = 'https://llama.app';
 export const OG_IMAGE_PATH = '/og-image.png';
 export const OG_IMAGE_ALT =
-	'Llama: Your AI. On your computer. By the llama.cpp team and Hugging Face.';
+	'Llama: Your AI. On your computer. Llama’s menu in the Mac menu bar, listing installed models.';
