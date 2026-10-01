@@ -1,4 +1,3 @@
-export { default as InstallCommand } from './content/InstallCommand.svelte';
 export { default as DocsCodeCopyButton } from './docs/DocsCodeCopyButton.svelte';
 export { default as DocsCopyPage } from './docs/DocsCopyPage.svelte';
 export { default as DocsFooterNav } from './docs/DocsFooterNav.svelte';

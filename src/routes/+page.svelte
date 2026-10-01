@@ -17,9 +17,8 @@
 	//   4. Is it hard?              -- "Nothing to set up": what Llama tunes
 	//   5. Is it heavy?             -- 4 MB, models stored once, unloads when idle
 	//   6. Will it run on my Mac?   -- models by memory tier
-	//   7. Can I build on it?       -- the API, one changed line
-	//   8. Why not bundle my own?   -- without/with diagram
-	//   9. How do I get it?         -- the app, or the engine on its own
+	//   7. Can I build on it?       -- the API, and why not bundle your own
+	//   8. How do I get it?         -- the app, or the engine on its own
 	//
 	// The page adapts to the visitor's OS: Mac visitors get the Mac app,
 	// Windows visitors the Windows app, Linux visitors the CLI, and everyone
@@ -59,7 +58,7 @@
 	import { logoFor } from '$lib/assets/logos';
 	import windowsIcon from '$lib/assets/windows-icon.svg?raw';
 	import { families, minMemGB, slugify } from '$lib/catalog';
-	import { CopyButton, InstallCommand, Logo } from '$lib/components/app';
+	import { CopyButton, Logo } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import {
 		MACOS_DOWNLOAD_URL,
@@ -184,14 +183,16 @@
   }'`;
 	const API_CALL_HTML = Prism.highlight(API_CALL, Prism.languages.bash, 'bash');
 
-	// -- Closing CTA ------------------------------------------------------------------
+	// -- Install commands ---------------------------------------------------------------
 	//
 	// The Mac app's cask, and the command-line install: llama.cpp's install
-	// scripts (the same ones InstallCommand shows, one per OS, switched with
-	// `data-os-only` so the prerendered page never shows the wrong one).
+	// scripts, one per OS, switched with `data-os-only` so the prerendered
+	// page never shows the wrong one. The shell script is also Linux's
+	// stand-in for the download buttons in the hero.
 	const BREW_COMMAND = 'brew install --cask llama-app';
+	const SH_INSTALL = 'curl -LsSf https://llama.app/install.sh | sh';
 	const CLI_INSTALL = [
-		{ command: 'curl -LsSf https://llama.app/install.sh | sh', os: 'mac linux other' },
+		{ command: SH_INSTALL, os: 'mac linux other' },
 		{ command: 'irm https://llama.app/install.ps1 | iex', os: 'windows' }
 	];
 
@@ -242,7 +243,27 @@
      still content). `text-muted-foreground` is for asides: small print,
      captions, labels, and the UI inside mockups. Section intros are
      `text-lg`, and h2s set their own leading, since the global `leading-7`
-     heading rule (app.css) would otherwise cramp them when they wrap. -->
+     heading rule (app.css) would otherwise cramp them when they wrap.
+
+     The rest of the page's primitives, so new parts can reuse them:
+     - Type: `text-xs`, `text-sm`, `text-base`, `text-lg`/`text-xl` for
+       intros, `text-3xl` for h2s. 15px is for controls (buttons, the
+       header's nav); 11px and 13px only in the app mockups, the params
+       chip, and code (the terminal, command chips). Titles are
+       `font-semibold`.
+     - Grays: `bg-foreground/2` for cards. Chips and tiles contrast with
+       what they sit on: on a gray card, white (`bg-background`) with a
+       border; on white, a borderless `bg-foreground/6` tint. Borders are
+       `border-border`. The exceptions copy the app: the params chip (see
+       there), and the menu's `bg-foreground/6` logo circles, reused
+       as-is wherever a model logo has one.
+     - Shapes: cards are `rounded-2xl p-6`, panels inside them
+       `rounded-xl`, chips and tiles `rounded-lg` (`rounded-md` for the
+       smallest), pills `rounded-full`.
+     - Spacing: sections `py-20`, a section's header `mb-10` above its
+       content, an h2 or h3 `gap-4` above its text, cards `gap-4` apart.
+     - Highlight: `highlight` (app.css), the one sky blue, at `/10` for
+       fills. Other blues are the app's own UI, inside the mockups. -->
 <main class="mx-auto w-full max-w-6xl px-6 md:px-12">
 	<!-- "Mac" for Mac visitors and `other` for everyone else, for copy that
 	     addresses the visitor's computer ("your Mac" / "your computer"). -->
@@ -259,22 +280,12 @@
 	     can't be skimmed past, and it goes wherever the button goes (the
 	     closing call to action, and the "other" visitors who get both). -->
 	{#snippet downloadButtons()}
-		<Button
-			data-os-only="mac other"
-			href={MACOS_DOWNLOAD_URL}
-			size="lg"
-			class="h-12 px-6 text-[15px]"
-		>
+		<Button data-os-only="mac other" href={MACOS_DOWNLOAD_URL} size="lg">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<span class="mb-0.5">{@html appleIcon}</span>
 			Download for Mac
 		</Button>
-		<Button
-			data-os-only="windows other"
-			href={data.windowsDownloadUrl}
-			size="lg"
-			class="h-12 px-6 text-[15px]"
-		>
+		<Button data-os-only="windows other" href={data.windowsDownloadUrl} size="lg">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html windowsIcon}
 			Download for Windows 11
@@ -312,11 +323,50 @@
 		</span>
 	{/snippet}
 
+	<!-- A command to copy: a subtle chip, so it reads as something for a
+	     terminal. It wraps at spaces on narrow screens rather than scrolling:
+	     a clipped command hides its end (`| sh`), and the copy button is
+	     there for copying it right. `min-h-10` is a minimum rather than a
+	     height, so a wrapped command still grows. `compact` is for a command
+	     that's an aside in small print (Homebrew, under the download
+	     buttons): the same chip, only tighter, so it doesn't read as a
+	     second option beside the buttons. -->
+	{#snippet command(text: string, compact = false)}
+		<div
+			class="flex min-w-0 items-center gap-1 rounded-lg bg-foreground/6 text-[13px] {compact
+				? 'py-0.5 pr-0.5 pl-2'
+				: 'min-h-10 py-1 pr-1 pl-3'}"
+		>
+			<!-- Programs in the page's sky highlight, flags and pipes muted, so
+			     the parts you'd change or read -- the package, the URL, the
+			     model -- stay in the plain foreground. No whitespace between the
+			     spans, so the copied selection matches the text. -->
+			<code class="min-w-0 flex-1 font-mono wrap-break-word text-foreground"
+				>{#each commandWords(text) as { kind, word }, i (i)}<span
+						class={{
+							'text-highlight': kind === 'program',
+							'text-muted-foreground': kind === 'flag' || kind === 'pipe'
+						}}>{word}</span
+					>{/each}</code
+			>
+			<CopyButton
+				{text}
+				what="command"
+				iconClass="size-3.5"
+				class="shrink-0 rounded-md text-muted-foreground {compact ? 'p-1' : 'p-1.5'}"
+			/>
+		</div>
+	{/snippet}
+
 	<!-- The parameter-count chip next to a model's name, styled like the
-	     app's: a tinted, bordered capsule. -->
+	     app's: a tinted, bordered capsule. Used wherever the page shows a
+	     model with its size, so the same model looks the same everywhere.
+	     Normal weight even next to a medium-weight name, as in the app.
+	     The app's faint tint and edge too, rather than the page's chip
+	     colors: with `border-border` it read heavier than the app's. -->
 	{#snippet paramsChip(params: string)}
 		<span
-			class="rounded-[5px] border border-foreground/10 bg-foreground/4 px-1.5 text-[11px] leading-4 text-muted-foreground"
+			class="rounded-[5px] border border-foreground/10 bg-foreground/4 px-1.5 text-[11px] leading-4 font-normal text-muted-foreground"
 			>{params}</span
 		>
 	{/snippet}
@@ -445,11 +495,13 @@
 		     "llama.cpp" links to its repo, so the proof (the project itself,
 		     its stars) is one click from the claim. Only that word is the link:
 		     the whole badge would promise a page about the team. The link is
-		     marked by an underline, not color: a brighter or blue word read
-		     as emphasis rather than a link. Sans, not mono as on
+		     marked by an underline, not color (a brighter or blue word read
+		     as emphasis rather than a link), at the default offset: it sits
+		     inside a sentence, unlike the page's standalone links, so the
+		     underline stays tight to the word. Sans, not mono as on
 		     llamacpp.org: it's prose, and mono reads as developer tooling to
 		     newcomers. -->
-		<span class="rounded-full border border-foreground/10 px-3 py-1 text-sm text-muted-foreground">
+		<span class="rounded-full border border-border px-3 py-1 text-sm text-muted-foreground">
 			By the <a
 				href="https://github.com/ggml-org/llama.cpp"
 				target="_blank"
@@ -497,7 +549,6 @@
 					rel="noreferrer"
 					size="lg"
 					variant="outline"
-					class="h-12 px-6 text-[15px]"
 				>
 					View on GitHub
 					<ArrowUpRight class="size-4" />
@@ -524,10 +575,37 @@
 		</p>
 
 		<!-- Linux's stand-in for the download buttons: the CLI, which is the
-		     honest next step rather than a dead end until there's an app. -->
-		<div data-os-only="linux" class="flex w-full max-w-2xl flex-col items-center gap-3">
+		     honest next step rather than a dead end until there's an app. The
+		     same command chip as the closing section's, so the one command
+		     looks the same both times a Linux visitor sees it. -->
+		<div data-os-only="linux" class="flex max-w-full flex-col items-center gap-3">
 			<p class="text-sm text-muted-foreground">On Linux? Install the command-line version:</p>
-			<InstallCommand />
+			<div class="w-fit max-w-full text-left">
+				{@render command(SH_INSTALL)}
+			</div>
+			<p
+				class="flex flex-col items-center gap-1 text-sm text-muted-foreground sm:flex-row sm:gap-2"
+			>
+				<span>
+					Prefer Brew or Winget?
+					<a
+						href="https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md"
+						target="_blank"
+						rel="noreferrer"
+						class="font-medium underline underline-offset-4">Package managers</a
+					>
+				</span>
+				<span aria-hidden="true" class="max-sm:hidden">·</span>
+				<span>
+					Rather build from source?
+					<a
+						href="https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
+						target="_blank"
+						rel="noreferrer"
+						class="font-medium underline underline-offset-4">Follow instructions</a
+					>
+				</span>
+			</p>
 		</div>
 	</section>
 
@@ -722,7 +800,7 @@
 				<li class="flex gap-3">
 					{@render marker(1)}
 					<span>
-						<span class="block text-base leading-6 font-medium">Open chat</span>
+						<span class="block text-base leading-6 font-semibold">Open chat</span>
 						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
 							Chat with any model in your browser. Like ChatGPT, but on your {@render macOr(
 								'computer'
@@ -733,7 +811,7 @@
 				<li class="flex gap-3">
 					{@render marker(2)}
 					<span>
-						<span class="block text-base leading-6 font-medium">A local API</span>
+						<span class="block text-base leading-6 font-semibold">A local API</span>
 						<span class="mt-1 block text-base leading-relaxed text-foreground/70">
 							Your apps connect here. It speaks the OpenAI API, so coding agents, editors, and
 							scripts just work.
@@ -743,7 +821,7 @@
 				<li class="flex gap-3">
 					{@render marker(3)}
 					<span>
-						<span class="block text-base leading-6 font-medium">
+						<span class="block text-base leading-6 font-semibold">
 							Recommended for this
 							<span data-os-only="mac other">Mac</span>
 							<span data-os-only="windows">PC</span>
@@ -865,7 +943,7 @@
 							{@html logoFor(m.brand)}
 						</span>
 						{m.name}
-						<span class="text-xs text-muted-foreground">{m.params}</span>
+						{@render paramsChip(m.params)}
 					</span>
 				{/each}
 			</div>
@@ -898,7 +976,7 @@
 			</p>
 		</div>
 
-		<div class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-5">
+		<div class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6">
 			<!-- Header: which model, and that the work is done. -->
 			<div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-1">
 				<span class="flex items-center gap-2 text-sm font-medium">
@@ -913,7 +991,7 @@
 					{@render paramsChip(EXAMPLE_MODEL.params)}
 				</span>
 				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
-					<Check class="size-3.5 text-sky-600 dark:text-sky-400" />
+					<Check class="size-3.5 text-highlight" />
 					<!-- One span, so the flex gap doesn't also land between
 					     "your" and "Mac". -->
 					<span>Chosen by Llama, for your {@render macOr('computer')}</span>
@@ -929,7 +1007,7 @@
 					<li class="flex items-center gap-3 px-4 py-3">
 						<span
 							aria-hidden="true"
-							class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5"
+							class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/6"
 						>
 							<t.icon class="size-4 text-muted-foreground" />
 						</span>
@@ -942,7 +1020,7 @@
 						     just noise when read aloud. -->
 						<span
 							aria-hidden="true"
-							class="shrink-0 rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400"
+							class="shrink-0 rounded-full bg-highlight/10 px-2 py-0.5 text-[11px] font-medium text-highlight"
 							>Auto</span
 						>
 					</li>
@@ -1039,10 +1117,10 @@
 				<div class="absolute top-[9px] bottom-0 left-[calc(50%+8px)] w-px bg-border"></div>
 			</div>
 			<!-- Full width, spanning the three tools above, and laid out like
-			     the file rows in the size drawing: the model and where it lives
-			     on the left, its size on disk on the right, on the name's line.
-			     Same border and fill as the chips: the layout and connectors already
-			     say which one is the file. -->
+			     the file rows in the size drawing, down to the type: the model
+			     and where it lives on the left, its size on disk on the right,
+			     on the name's line. Same border and fill as the chips: the
+			     layout and connectors already say which one is the file. -->
 			<span
 				class="flex w-full items-center gap-2.5 rounded-lg border border-border bg-background py-1.5 pr-3 pl-2.5"
 			>
@@ -1051,11 +1129,14 @@
 					{@html logoFor(EXAMPLE_MODEL.brand)}
 				</span>
 				<span class="min-w-0 flex-1">
-					<span class="flex items-baseline justify-between gap-3">
-						<span class="font-medium">{EXAMPLE_MODEL.name} {EXAMPLE_MODEL.params}</span>
-						<span class="font-mono text-muted-foreground">{exampleModelSize}</span>
+					<span class="flex items-baseline justify-between gap-3 text-sm">
+						<span class="flex items-center gap-1.5 font-medium">
+							{EXAMPLE_MODEL.name}
+							{@render paramsChip(EXAMPLE_MODEL.params)}
+						</span>
+						<span class="font-mono">{exampleModelSize}</span>
 					</span>
-					<span class="block text-[11px] text-muted-foreground">In the Hugging Face cache</span>
+					<span class="block text-muted-foreground">In the Hugging Face cache</span>
 				</span>
 			</span>
 		</div>
@@ -1090,11 +1171,11 @@
 	     y 8-112, hence pt-2 on the block labels to center them in it, and
 	     bottom-1.5 on "Unloaded" (1px baseline + 5px gap). -->
 	{#snippet idleArt()}
-		<div class="relative h-28 text-[11px] whitespace-nowrap">
+		<div class="relative h-28 whitespace-nowrap">
 			<svg
 				viewBox="0 0 200 112"
 				preserveAspectRatio="none"
-				class="absolute inset-0 size-full text-sky-600 dark:text-sky-400"
+				class="absolute inset-0 size-full text-highlight"
 				fill="none"
 			>
 				<path d="M20 112V8.5H80V112Z" fill="currentColor" fill-opacity="0.22" />
@@ -1194,12 +1275,12 @@
 							>{p.mem} GB {@render macOr('of memory')} or more</span
 						>
 					{/if}
-					<span class="flex items-center gap-2 text-xl font-medium [&>span>svg]:size-5">
+					<span class="flex items-center gap-2 text-xl font-semibold [&>span>svg]:size-5">
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						<span aria-hidden="true">{@html logoFor(p.f.brand)}</span>
 						{p.f.name}
 					</span>
-					<span class="text-sm text-muted-foreground">{p.note}</span>
+					<span class="leading-relaxed text-foreground/70">{p.note}</span>
 				</a>
 			{/each}
 		</div>
@@ -1224,7 +1305,7 @@
 	     sections with mismatched heading sizes and an eyebrow on only the
 	     first, so it wasn't clear whether they were peers or parent/child. -->
 	<section id="developers" class="scroll-mt-8 py-20">
-		<div class="mb-12 flex max-w-2xl flex-col gap-4">
+		<div class="mb-10 flex max-w-2xl flex-col gap-4">
 			<h2 class="text-3xl leading-tight font-semibold tracking-tight">Build on Llama</h2>
 			<p class="text-lg leading-relaxed text-pretty">
 				Your apps get a local AI API they can all share, and Llama takes care of the engine and the
@@ -1236,8 +1317,8 @@
 		     so the terminal is exactly as wide as the cards there -- see the
 		     "Nothing to set up" section. The text column's right padding
 		     keeps it clear of the terminal. -->
-		<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-4">
-			<div class="flex flex-col gap-5 md:pr-8">
+		<div class="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-4">
+			<div class="flex flex-col gap-4 md:pr-8">
 				<h3 class="text-xl font-semibold">OpenAI-compatible API</h3>
 				<p class="leading-relaxed">
 					If your code works with OpenAI, it works with Llama. Change the base URL and keep
@@ -1299,7 +1380,7 @@
 			<!-- A terminal window, dark in both themes: it reads as "code" at a
 			     glance and gives the page a strong focal point. -->
 			<div
-				class="overflow-hidden rounded-xl border border-border bg-[#111] font-mono text-[12px] leading-6 text-[#e7e7e7] sm:text-[13px]"
+				class="overflow-hidden rounded-2xl border border-border bg-[#111] font-mono text-xs leading-6 text-[#e7e7e7] sm:text-[13px]"
 			>
 				<div class="flex h-9.75 items-center justify-between border-b border-white/10 pr-1.5 pl-4">
 					<span aria-hidden="true" class="flex gap-1.5">
@@ -1331,7 +1412,7 @@
 		     can sit side by side and read as a before/after. Beside the text
 		     they'd only get ~290px each, too narrow for the chips. -->
 		<div class="mt-20 flex flex-col gap-8">
-			<div class="flex max-w-2xl flex-col gap-5">
+			<div class="flex max-w-2xl flex-col gap-4">
 				<h3 class="text-xl font-semibold">Nothing to bundle</h3>
 				<p class="leading-relaxed">
 					Your app talks to Llama over the API, and a one-click link installs the model it needs. No
@@ -1366,7 +1447,7 @@
 				</span>
 			{/snippet}
 			<div class="grid grid-cols-1 gap-4 text-xs md:grid-cols-2">
-				<figure class="rounded-2xl border border-border bg-foreground/2 p-5">
+				<figure class="rounded-2xl border border-border bg-foreground/2 p-6">
 					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
 						Without Llama
 						<span>{3 * exampleModelGB} GB on disk</span>
@@ -1387,7 +1468,7 @@
 						{/each}
 					</div>
 				</figure>
-				<figure class="rounded-2xl border border-border bg-foreground/2 p-5">
+				<figure class="rounded-2xl border border-border bg-foreground/2 p-6">
 					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
 						With Llama
 						<span>{exampleModelSize} on disk</span>
@@ -1401,13 +1482,13 @@
 								>
 							{/each}
 						</div>
-						<div class="flex rounded-lg border border-sky-500/40 bg-sky-500/8">
+						<div class="flex rounded-lg border border-highlight/40 bg-highlight/10">
 							<span
-								class="my-3 flex items-center gap-1.5 border-r border-sky-500/25 px-4 font-medium"
+								class="my-3 flex items-center gap-1.5 border-r border-highlight/25 px-4 font-medium"
 							>
 								<Logo --logo-height="0.625rem" /> Llama
 							</span>
-							<div class="flex flex-1 flex-col divide-y divide-sky-500/25 px-3">
+							<div class="flex flex-1 flex-col divide-y divide-highlight/25 px-3">
 								{@render layerRows()}
 							</div>
 						</div>
@@ -1417,37 +1498,7 @@
 		</div>
 	</section>
 
-	<!-- A command to copy: a subtle chip, so it reads as something for a
-	     terminal. It wraps at spaces on narrow screens rather than scrolling:
-	     a clipped command hides its end (`| sh`), and the copy button is
-	     there for copying it right. `min-h-10` is a minimum rather than a
-	     height, so a wrapped command still grows. -->
-	{#snippet command(text: string)}
-		<div
-			class="flex min-h-10 min-w-0 items-center gap-1 rounded-lg bg-foreground/6 py-1 pr-1 pl-3 text-[13px]"
-		>
-			<!-- Programs in the page's sky highlight, flags and pipes muted, so
-			     the parts you'd change or read -- the package, the URL, the
-			     model -- stay in the plain foreground. No whitespace between the
-			     spans, so the copied selection matches the text. -->
-			<code class="min-w-0 flex-1 font-mono wrap-break-word text-foreground"
-				>{#each commandWords(text) as { kind, word }, i (i)}<span
-						class={{
-							'text-muted-foreground': kind === 'flag' || kind === 'pipe',
-							'text-sky-700 dark:text-sky-400': kind === 'program'
-						}}>{word}</span
-					>{/each}</code
-			>
-			<CopyButton
-				{text}
-				what="command"
-				iconClass="size-3.5"
-				class="shrink-0 rounded-md p-1.5 text-muted-foreground"
-			/>
-		</div>
-	{/snippet}
-
-	<!-- 9. Closing CTA: how to get Llama. The page's ending, so it's
+	<!-- 8. Closing CTA: how to get Llama. The page's ending, so it's
 	     centered like the hero and mirrors it: heading, the download
 	     button, small print. No cards: two cards side by side read as two
 	     equal choices, and needed a "Recommended" label to say which one to
@@ -1482,34 +1533,24 @@
 		</div>
 
 		<!-- The hero's buttons, at the hero's size. Homebrew is small print
-		     with a copy button rather than a command block, so it reads as an
-		     aside to the button rather than a second option beside it. The
-		     command sits in a small chip, which also keeps the lead-in "or"
-		     from reading as the command's first word -- as plain text in the
-		     same gray, it did. A lowercase "or" with no colon continues the
-		     button ("Download for Mac, or ..."); the command itself says
-		     Homebrew, so the lead-in doesn't need to. -->
+		     with the compact command chip rather than a full one, so it reads
+		     as an aside to the button rather than a second option beside it.
+		     The chip also keeps the lead-in "or" from reading as the
+		     command's first word -- as plain text in the same gray, it did. A
+		     lowercase "or" with no colon continues the button ("Download for
+		     Mac, or ..."); the command itself says Homebrew, so the lead-in
+		     doesn't need to. A div rather than a <p>, since the chip is one. -->
 		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3">
 			<div class="flex flex-col items-center gap-3 sm:flex-row">
 				{@render downloadButtons()}
 			</div>
-			<p
+			<div
 				data-os-only="mac"
 				class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground"
 			>
 				or
-				<span
-					class="inline-flex items-center gap-0.5 rounded-md bg-foreground/6 py-0.5 pr-0.5 pl-2"
-				>
-					<code class="font-mono text-[13px] text-foreground/80">{BREW_COMMAND}</code>
-					<CopyButton
-						text={BREW_COMMAND}
-						what="command"
-						iconClass="size-3.5"
-						class="rounded-md p-1 text-muted-foreground"
-					/>
-				</span>
-			</p>
+				{@render command(BREW_COMMAND, true)}
+			</div>
 		</div>
 
 		<div class="mt-6 flex max-w-full flex-col items-center gap-4">
