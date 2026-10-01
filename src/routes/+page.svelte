@@ -436,10 +436,11 @@
 		<!-- Who makes it, not what it's built on: any local AI app can say
 		     "built on llama.cpp", only Llama can say it's by the llama.cpp
 		     team. Hugging Face stays, since newcomers are more likely to know
-		     it than llama.cpp. "Now part of", not "at": "the llama.cpp team at
-		     Hugging Face" can read as Hugging Face's own team that works on
-		     llama.cpp, apart from the main one -- "now" says the team itself
-		     joined. "Team", not "the makers of": the app didn't start with
+		     it than llama.cpp. "And Hugging Face", not "at": "the llama.cpp
+		     team at Hugging Face" can read as Hugging Face's own team that
+		     works on llama.cpp, apart from the main one. "And" names both as
+		     makers, without the longer "now part of Hugging Face".
+		     "Team", not "the makers of": the app didn't start with
 		     llama.cpp's authors, but that team builds and maintains it now.
 		     "llama.cpp" links to its repo, so the proof (the project itself,
 		     its stars) is one click from the claim. Only that word is the link:
@@ -454,7 +455,7 @@
 				target="_blank"
 				rel="noreferrer"
 				class="underline">llama.cpp</a
-			> team, now part of Hugging Face
+			> team and Hugging Face
 		</span>
 
 		<h1
