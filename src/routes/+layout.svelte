@@ -2,8 +2,8 @@
 	import '../app.css';
 	import 'prismjs/themes/prism.css';
 	import 'prismjs/themes/prism-dark.css';
-	import { SeoMetadata, SiteHeader } from '$lib/components/app';
-	import { Toaster } from '$lib/components/ui/sonner/index.js';
+	import { dev } from '$app/environment';
+	import { DevOsSwitcher, SeoMetadata, SiteHeader } from '$lib/components/app';
 	import * as deviceStore from '$lib/stores/device/index.svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
@@ -25,6 +25,8 @@
 
 <ModeWatcher />
 
-<Toaster />
-
 {@render children()}
+
+{#if dev}
+	<DevOsSwitcher />
+{/if}

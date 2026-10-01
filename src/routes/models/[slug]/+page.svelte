@@ -26,7 +26,7 @@
 <!-- Same outer container as the rest of the site so the pages share margins and
      left edge. The per-size download table spans the full width, followed by
      the family prose. -->
-<main class="mx-auto w-full max-w-5xl px-6 pt-8 pb-24 md:px-12">
+<main class="mx-auto w-full max-w-6xl px-6 pt-8 pb-24 md:px-12">
 	<!-- Header, title-first: the family name leads at full size, with the
 	     release date as a byline under it and the one-line summary last --
 	     headline / byline / standfirst. The brand isn't repeated here: the

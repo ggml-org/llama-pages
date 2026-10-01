@@ -7,6 +7,9 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	test: {
 		expect: { requireAssertions: true },
+		// There are no unit tests at the moment (the homepage is covered by
+		// the e2e test), and vitest fails a run that finds no test files.
+		passWithNoTests: true,
 		projects: [
 			{
 				extends: './vite.config.ts',

@@ -1,5 +1,8 @@
 <!doctype html>
-<html lang="en">
+<!-- `data-os` is the fallback for visitors without JS; the script below
+     replaces it with the visitor's actual OS (see `[data-os-only]` in
+     app.css). -->
+<html lang="en" data-os="other">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,6 +13,32 @@
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap"
 		/>
+		<!-- The visitor's OS, for per-OS content like the homepage's download
+		     buttons. Set here, before the first paint, rather than from Svelte:
+		     the pages are prerendered, so anything decided after hydration
+		     would first flash the prerendered default. `other` covers phones,
+		     ChromeOS, and crawlers. iPads report themselves as Macintosh, so a
+		     touch screen rules out a Mac.
+
+		     `?os=windows` (or `mac`, `linux`, `other`) overrides the detected
+		     OS, so a link can show another OS's version of a page -- e.g. for
+		     reviewers, who'd otherwise only see their own. -->
+		<script>
+			(function () {
+				var ua = navigator.userAgent;
+				var param = new URLSearchParams(location.search).get('os');
+
+				document.documentElement.dataset.os = ['mac', 'windows', 'linux', 'other'].includes(param)
+					? param
+					: /Windows/.test(ua)
+						? 'windows'
+						: /Macintosh/.test(ua) && navigator.maxTouchPoints < 2
+							? 'mac'
+							: /Linux/.test(ua) && !/Android/.test(ua)
+								? 'linux'
+								: 'other';
+			})();
+		</script>
 		<!-- Privacy-friendly analytics by Plausible -->
 		<script async src="https://plausible.io/js/pa-YE0Tz1s09if09L7MI7nXR.js"></script>
 		<script>

@@ -14,6 +14,14 @@ code[class*='language-'] {
 	font-family: var(--font-mono);
 }
 
+/* The stock prism.css theme puts a translucent white box behind these, which
+   shows up as grey blocks on dark code */
+.token.operator,
+.token.entity,
+.token.url {
+	background: none !important;
+}
+
 /* Dark mode Prism color overrides */
 .dark .token.comment,
 .dark .token.prolog,
@@ -243,7 +251,57 @@ pre[class*='language-'] {
 	}
 }
 
-p code {
+/* Inline code in the docs' prose. */
+.prose p code {
 	color: var(--accent) !important;
 	margin-inline: 0.25rem;
+}
+
+/* The homepage's API terminal: a palette for a panel that's dark in both
+   themes. Kept muted -- the orange is saved for strings, so the
+   snippet's "payload" (the URL, the model, the prompt) stands out. Scoped to
+   `.terminal-code` so the docs' code blocks keep their GitHub colors, and
+   `!important` so it wins over the page-wide `.dark` rules above in dark
+   mode. */
+.terminal-code .token.comment,
+.terminal-code .token.prolog,
+.terminal-code .token.doctype,
+.terminal-code .token.cdata {
+	color: #6b6b75 !important;
+}
+
+.terminal-code .token.punctuation,
+.terminal-code .token.operator {
+	color: #a1a1aa !important;
+}
+
+.terminal-code .token.keyword,
+.terminal-code .token.boolean,
+.terminal-code .token.important {
+	color: #c4b5fd !important;
+}
+
+.terminal-code .token.function,
+.terminal-code .token.class-name,
+.terminal-code .token.builtin {
+	color: #93c5fd !important;
+}
+
+.terminal-code .token.string,
+.terminal-code .token.char,
+.terminal-code .token.attr-value,
+.terminal-code .token.url {
+	color: #fdba74 !important;
+}
+
+.terminal-code .token.number,
+.terminal-code .token.constant,
+.terminal-code .token.property,
+.terminal-code .token.symbol {
+	color: #86efac !important;
+}
+
+.terminal-code .token.parameter,
+.terminal-code .token.variable {
+	color: #e6e6e9 !important;
 }

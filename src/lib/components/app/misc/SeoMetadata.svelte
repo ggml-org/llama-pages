@@ -37,18 +37,19 @@
 <svelte:head>
 	<link rel="icon" href={iconLight} />
 
-	<title>{SITE_TITLE}</title>
-	<meta name="description" content={SITE_DESCRIPTION} />
-
+	<!-- No `<title>` or description here: each page sets its own (see
+	     site.constants.ts). -->
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={SITE_TITLE} />
 	<meta property="og:description" content={SITE_DESCRIPTION} />
 	<meta property="og:url" content={SITE_URL} />
-	<meta property="og:image" content={OG_IMAGE_PATH} />
+	<!-- Absolute: Open Graph requires it, and some scrapers (X's) don't
+	     resolve a relative path, so the preview would show no image. -->
+	<meta property="og:image" content={SITE_URL + OG_IMAGE_PATH} />
 	<meta property="og:image:alt" content={OG_IMAGE_ALT} />
 
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={SITE_TITLE} />
 	<meta name="twitter:description" content={SITE_DESCRIPTION} />
-	<meta name="twitter:image" content={OG_IMAGE_PATH} />
+	<meta name="twitter:image" content={SITE_URL + OG_IMAGE_PATH} />
 </svelte:head>

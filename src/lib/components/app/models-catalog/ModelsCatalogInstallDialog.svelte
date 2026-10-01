@@ -132,7 +132,7 @@
 				</a>
 
 				<p class="mt-5 text-[13px] text-muted-foreground">
-					Or use the <code class="rounded bg-muted px-1 py-0.5">llama</code> CLI:
+					Or use the <code class="mx-1 rounded bg-muted px-1 py-0.5 text-accent">llama</code> CLI:
 				</p>
 			{:else}
 				<p class="mt-5 text-[13px] text-muted-foreground">In your terminal:</p>
