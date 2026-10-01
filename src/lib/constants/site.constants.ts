@@ -23,5 +23,6 @@ export const SITE_TITLE = 'Llama · Your AI, on your computer';
 export const SITE_DESCRIPTION =
 	'Run the latest open models on your computer. Chat with them, or connect them to your coding agents, editors, and apps. Free, private, and nothing to configure.';
 export const SITE_URL = 'https://llama.app';
-export const OG_IMAGE_PATH = '/og-image-llama-cpp.png';
-export const OG_IMAGE_ALT = 'llama.cpp - AI that lives on your computer';
+export const OG_IMAGE_PATH = '/og-image.png';
+export const OG_IMAGE_ALT =
+	'Llama: Your AI. On your computer. By the llama.cpp team and Hugging Face.';
