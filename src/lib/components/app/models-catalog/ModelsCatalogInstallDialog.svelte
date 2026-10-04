@@ -169,9 +169,7 @@
 				     is already the answer and a second install link only competes. -->
 				<p class="mt-1 text-[13px] text-muted-foreground">
 					Don’t have the CLI?
-					<a href={resolve('/')} class="text-foreground underline underline-offset-4"
-						>Install it first</a
-					>.
+					<a href={resolve('/')} class="text-foreground underline">Install it first</a>.
 				</p>
 			{/if}
 		</div>

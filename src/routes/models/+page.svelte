@@ -97,7 +97,7 @@
 			href="https://huggingface.co/models?library=gguf"
 			target="_blank"
 			rel="noopener"
-			class="whitespace-nowrap underline underline-offset-4 hover:text-foreground"
+			class="whitespace-nowrap underline hover:text-foreground"
 		>
 			Hugging Face ↗</a
 		><span data-os-only="mac">, then choose Llama under “Use this model” on a model’s page</span>.

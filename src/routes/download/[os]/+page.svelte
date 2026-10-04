@@ -266,7 +266,7 @@
 		     copy the download's address. -->
 		<p class="text-sm text-muted-foreground">
 			Didn’t start?
-			<a href={data.downloadUrl} rel="external" class="text-foreground underline underline-offset-4"
+			<a href={data.downloadUrl} rel="external" class="text-foreground underline"
 				>Download it directly</a
 			>
 		</p>

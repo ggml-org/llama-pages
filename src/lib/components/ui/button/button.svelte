@@ -28,7 +28,7 @@
 				destructive:
 					'bg-destructive/10 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40',
 				ghost: 'aria-expanded:bg-muted aria-expanded:text-foreground',
-				link: 'text-primary underline underline-offset-4',
+				link: 'text-primary underline',
 				outline:
 					'border-border bg-background dark:bg-input/30 dark:border-input aria-expanded:bg-muted aria-expanded:text-foreground',
 				secondary:

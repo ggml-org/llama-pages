@@ -589,7 +589,7 @@
 						href="https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md"
 						target="_blank"
 						rel="noreferrer"
-						class="font-medium underline underline-offset-4">Package managers</a
+						class="font-medium underline">Package managers</a
 					>
 				</span>
 				<span aria-hidden="true" class="max-sm:hidden">·</span>
@@ -599,7 +599,7 @@
 						href="https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
 						target="_blank"
 						rel="noreferrer"
-						class="font-medium underline underline-offset-4">Follow instructions</a
+						class="font-medium underline">Follow instructions</a
 					>
 				</span>
 			</p>
@@ -1251,7 +1251,7 @@
 		     wanted in the catalog. -->
 		<a
 			href={resolve('/models')}
-			class="mt-8 inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
+			class="mt-8 inline-flex items-center gap-1.5 font-medium underline"
 		>
 			Browse models <ArrowRight class="size-4" />
 		</a>
@@ -1322,13 +1322,13 @@
 				<div class="flex flex-wrap gap-x-6 gap-y-2">
 					<a
 						href={resolve('/docs/[...page]', { page: 'api' })}
-						class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
+						class="inline-flex items-center gap-1.5 text-sm font-medium underline"
 					>
 						API reference <ArrowRight class="size-3.5" />
 					</a>
 					<a
 						href={resolve('/docs/[...page]', { page: 'cli' })}
-						class="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
+						class="inline-flex items-center gap-1.5 text-sm font-medium underline"
 					>
 						Command line <ArrowRight class="size-3.5" />
 					</a>
