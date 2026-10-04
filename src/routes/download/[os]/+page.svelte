@@ -14,7 +14,8 @@
 	// steps.
 	import { ArrowRight, BatteryCharging, ChevronUp, Folder, Volume2, Wifi } from '@lucide/svelte';
 	import { dev } from '$app/environment';
-	import { Logo, NewsletterSignup } from '$lib/components/app';
+	import macAppIcon from '$lib/assets/brand/app-icon-mac.png';
+	import { Logo, MacStatusIcon, NewsletterSignup } from '$lib/components/app';
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 
@@ -66,11 +67,18 @@
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<!-- A step: a picture on top, then the numbered title and its text. Cards
-     and type are the homepage's (see its primitives comment). -->
+<!-- A step: the picture on top, then the numbered title and its text.
+     Picture first, unlike the homepage's cards (text first, see its
+     lightCard): here the pictures carry the steps -- you can follow them
+     from the pictures alone -- and the text is the detail. Cards and type
+     are the homepage's (see its primitives comment).
+
+     The pictures share one height (h-48), each filling it, so the two
+     side by side read as a pair; it's about the install window's natural
+     height. -->
 {#snippet step(picture: Snippet, title: string, body: Snippet)}
 	<div class="flex flex-col gap-6 rounded-2xl bg-foreground/2 p-6">
-		<div aria-hidden="true">{@render picture()}</div>
+		<div aria-hidden="true" class="h-48">{@render picture()}</div>
 
 		<div class="flex flex-col gap-2">
 			<h2 class="font-semibold">{title}</h2>
@@ -82,16 +90,20 @@
 <!-- The pictures' wallpaper: the homepage hero shot's sky, simplified. -->
 {#snippet wallpaper(children: Snippet, cls: string)}
 	<div
-		class="flex min-h-44 flex-col rounded-xl bg-[linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-4 dark:bg-[linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)] {cls}"
+		class="flex h-full flex-col rounded-xl bg-[linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-4 dark:bg-[linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)] {cls}"
 	>
 		{@render children()}
 	</div>
 {/snippet}
 
 <!-- Mac, step 1: the dmg's window, Llama's icon and an arrow to the
-     Applications folder, as the real dmg lays them out. -->
+     Applications folder, as the real dmg lays them out. The icon is the
+     app's own artwork (copied from the Llama repo's AppIcon.appiconset, the
+     256px one, for 2x screens), so it's what people will see in Finder;
+     it includes macOS's standard margin around the tile, as the folder
+     icon has its own. -->
 {#snippet macInstallPicture()}
-	<div class="overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+	<div class="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background">
 		<div class="flex items-center gap-1.5 border-b border-border px-3 py-2">
 			<span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
 			<span class="size-2.5 rounded-full bg-[#febc2e]"></span>
@@ -101,13 +113,10 @@
 			<span class="w-[42px]"></span>
 		</div>
 
-		<div class="flex items-center justify-center gap-6 px-6 py-8">
+		<div class="flex flex-1 items-center justify-center gap-6 px-6">
 			<div class="flex flex-col items-center gap-2">
-				<span
-					class="flex size-16 items-center justify-center rounded-[22%] border border-border bg-background shadow"
-				>
-					<Logo --logo-height="1.75rem" />
-				</span>
+				<!-- The app's real icon, as Finder shows it in the dmg -->
+				<img src={macAppIcon} alt="" class="size-16" />
 				<span class="text-[11px] text-muted-foreground">Llama</span>
 			</div>
 
@@ -122,33 +131,62 @@
 {/snippet}
 
 <!-- Mac, step 2: the menu bar with Llama's icon and the "Hello, I'm Llama"
-     hint the app shows under it on first launch (MenuController). -->
+     hint the app shows under it on first launch (MenuController).
+
+     Llama's icon sits in the middle of the picture, with the hint hanging
+     under it, and the system's status icons and the clock to its right, as
+     in a real bar, where apps' icons come before the system's. Status icons
+     and type are the homepage hero shot's (see its menu bar). The grid's
+     equal outer columns center the icon (minmax(0,1fr), so a crowded right
+     column can't push it off center); the right one spreads the system
+     items across its width (justify-between), with an empty first item so
+     the gap after Llama's icon matches the others.
+
+     Half the picture leaves little room for the system items, and how
+     little depends on the picture's width, so the set follows it (container
+     queries on the wallpaper), keeping the gaps close to macOS's: Wi-Fi,
+     battery and the time in narrow pictures (phones, and two columns on
+     small tablets); Spotlight and Control Center added in the two columns
+     on wider screens; sound and the day too in the wide single-column
+     pictures on large phones and small tablets. -->
 {#snippet macBar()}
-	<div class="flex items-center gap-4 text-xs font-medium text-foreground/85">
+	<div
+		class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center text-xs font-medium text-foreground/85"
+	>
+		<span></span>
+
 		<span class="relative flex h-5 items-center rounded-full bg-foreground/15 px-2">
 			<Logo --logo-height="0.75rem" />
 
 			<span
-				class="absolute top-full left-1/2 mt-3 -translate-x-1/2 rounded-xl bg-background px-4 py-2.5 text-sm font-normal whitespace-nowrap text-foreground shadow-md"
+				class="absolute top-full left-1/2 mt-3 -translate-x-1/2 rounded-xl bg-background px-4 py-2.5 text-sm font-normal whitespace-nowrap text-foreground"
 			>
 				<span class="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 bg-background"
 				></span>
 				<span class="relative">Hello, I’m Llama</span>
 			</span>
 		</span>
-		<span>Wed 10:24</span>
+		<span class="flex items-center justify-between">
+			<span></span>
+			<MacStatusIcon name="sound" class="@max-[28rem]:hidden" />
+			<MacStatusIcon name="wifi" />
+			<MacStatusIcon name="battery" />
+			<MacStatusIcon name="spotlight" class="@max-[20rem]:hidden" />
+			<MacStatusIcon name="controlCenter" class="@max-[20rem]:hidden" />
+			<span><span class="@max-[28rem]:hidden">Wed&nbsp;</span>10:24</span>
+		</span>
 	</div>
 {/snippet}
 
 {#snippet macFindPicture()}
-	{@render wallpaper(macBar, 'items-end')}
+	{@render wallpaper(macBar, '@container')}
 {/snippet}
 
 <!-- Windows, step 1: App Installer's prompt, reduced to the app and its
      Install button. -->
 {#snippet windowsInstallPicture()}
 	<div
-		class="overflow-hidden rounded-lg border border-border bg-background font-['Segoe_UI_Variable_Text','Segoe_UI',system-ui,sans-serif] shadow-sm"
+		class="flex h-full flex-col overflow-hidden rounded-lg border border-border bg-background font-['Segoe_UI_Variable_Text','Segoe_UI',system-ui,sans-serif]"
 	>
 		<div
 			class="flex items-center border-b border-border px-3 py-2 text-[11px] text-muted-foreground"
@@ -157,7 +195,7 @@
 			<span class="tracking-[0.5em]">– ☐ ✕</span>
 		</div>
 
-		<div class="flex items-center gap-4 px-6 py-8">
+		<div class="flex flex-1 items-center gap-4 px-6">
 			<span
 				class="flex size-14 shrink-0 items-center justify-center rounded-lg border border-border bg-background"
 			>

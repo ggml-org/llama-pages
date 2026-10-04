@@ -8,9 +8,10 @@
      page's picture cards it was easy to miss entirely. The sky tint is the
      site's one highlight, at /10 as the homepage uses it for fills, so the
      band stands out from the gray cards without reading as a third step.
-     Text left and form right from md up; stacked on phones. -->
+     Text left and form right from md up; stacked on phones. Padding is the
+     step cards' (p-6), so the band lines up with them. -->
 <section
-	class="flex flex-col gap-6 rounded-2xl bg-highlight/10 p-6 md:flex-row md:items-center md:justify-between md:gap-10 md:p-8"
+	class="flex flex-col gap-6 rounded-2xl bg-highlight/10 p-6 md:flex-row md:items-center md:justify-between md:gap-10"
 >
 	<div class="flex items-start gap-4">
 		<span
