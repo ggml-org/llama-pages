@@ -80,7 +80,7 @@
 	<div class="flex flex-col gap-6 rounded-2xl bg-foreground/2 p-6">
 		<div aria-hidden="true" class="h-48">{@render picture()}</div>
 
-		<div class="flex flex-col gap-2">
+		<div class="flex flex-col">
 			<h2 class="font-semibold">{title}</h2>
 			<p class="leading-relaxed text-pretty text-foreground/70">{@render body()}</p>
 		</div>
@@ -113,19 +113,21 @@
 			<span class="w-[42px]"></span>
 		</div>
 
-		<div class="flex flex-1 items-center justify-center gap-6 px-6">
-			<div class="flex flex-col items-center gap-2">
-				<!-- The app's real icon, as Finder shows it in the dmg -->
-				<img src={macAppIcon} alt="" class="size-16" />
-				<span class="text-[11px] text-muted-foreground">Llama</span>
-			</div>
-
+		<!-- A grid rather than three columns of icon-over-label, so the arrow
+		     centers on the icons' row instead of on icon and label together,
+		     which put it below the icons' middle -->
+		<div
+			class="grid flex-1 grid-cols-[auto_auto_auto] content-center items-center justify-center justify-items-center gap-x-6 gap-y-2 px-6"
+		>
+			<!-- The app's real icon, as Finder shows it in the dmg -->
+			<img src={macAppIcon} alt="" class="size-16" />
 			<ArrowRight class="size-6 text-highlight" />
+			<Folder class="size-16 fill-sky-300 stroke-sky-500" strokeWidth={1} />
 
-			<div class="flex flex-col items-center gap-2">
-				<Folder class="size-16 fill-sky-300 stroke-sky-500" strokeWidth={1} />
-				<span class="text-[11px] text-muted-foreground">Applications</span>
-			</div>
+			<!-- Finder's labels are full-strength text, not dimmed -->
+			<span class="text-[11px] text-foreground">Llama</span>
+			<span></span>
+			<span class="text-[11px] text-foreground">Applications</span>
 		</div>
 	</div>
 {/snippet}
@@ -158,11 +160,28 @@
 		<span class="relative flex h-5 items-center rounded-full bg-foreground/15 px-2">
 			<Logo --logo-height="0.75rem" />
 
+			<!-- The app's hint is a plain NSPopover, which macOS draws translucent
+			     white in light mode and translucent dark gray (not black) in dark
+			     mode, with a hairline edge that keeps it apart from the wallpaper.
+
+			     The arrow is a rotated square with the same edge on its two outer
+			     sides, drawn over the bubble's edge where they meet. Both are solid
+			     and the layer holding them is made translucent as a whole
+			     (opacity), so where the arrow overlaps the bubble doesn't show as
+			     a darker patch. The text sits outside that layer, so it stays
+			     opaque. No backdrop blur: the wallpaper is near-flat, so it would
+			     have nothing to blur. -->
 			<span
-				class="absolute top-full left-1/2 mt-3 -translate-x-1/2 rounded-xl bg-background px-4 py-2.5 text-sm font-normal whitespace-nowrap text-foreground"
+				class="absolute top-full left-1/2 mt-3 -translate-x-1/2 px-4 py-2.5 text-sm font-normal whitespace-nowrap text-foreground"
 			>
-				<span class="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 bg-background"
-				></span>
+				<span class="absolute inset-0 opacity-80">
+					<span
+						class="absolute inset-0 rounded-xl bg-white dark:border dark:border-white/15 dark:bg-neutral-700"
+					></span>
+					<span
+						class="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 bg-white dark:border-t dark:border-l dark:border-white/15 dark:bg-neutral-700"
+					></span>
+				</span>
 				<span class="relative">Hello, I’m Llama</span>
 			</span>
 		</span>
@@ -242,8 +261,8 @@
 {/snippet}
 
 {#snippet macFindBody()}
-	Open Llama from Applications. It has no window. Click its icon at the top of your screen and pick
-	a model. Llama suggests one that fits your Mac.
+	Open Llama from Applications. It has no window, so click its icon in the menu bar and pick a
+	model.
 {/snippet}
 
 {#snippet windowsInstallBody()}
@@ -263,10 +282,12 @@
 		<!-- For when the browser blocked or dropped the automatic download,
 		     and for downloading again (the automatic one runs once per tab).
 		     A plain link to the file, so it's also what to right-click to
-		     copy the download's address. -->
+		     copy the download's address. Muted, as a fallback most won't
+		     need; the link is marked by its underline alone, in the line's
+		     color, as links in text are on the homepage. -->
 		<p class="text-sm text-muted-foreground">
 			Didn’t start?
-			<a href={data.downloadUrl} rel="external" class="text-foreground underline"
+			<a href={data.downloadUrl} rel="external" class="underline"
 				>Download it directly</a
 			>
 		</p>
