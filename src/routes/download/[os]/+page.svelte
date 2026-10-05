@@ -287,9 +287,7 @@
 		     color, as links in text are on the homepage. -->
 		<p class="text-sm text-muted-foreground">
 			Didn’t start?
-			<a href={data.downloadUrl} rel="external" class="underline"
-				>Download it directly</a
-			>
+			<a href={data.downloadUrl} rel="external" class="underline">Download it directly</a>
 		</p>
 	</section>
 
