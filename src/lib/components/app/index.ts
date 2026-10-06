@@ -1,3 +1,4 @@
+export { default as NewsletterSignup } from './content/NewsletterSignup.svelte';
 export { default as DocsCodeCopyButton } from './docs/DocsCodeCopyButton.svelte';
 export { default as DocsCopyPage } from './docs/DocsCopyPage.svelte';
 export { default as DocsFooterNav } from './docs/DocsFooterNav.svelte';
@@ -7,6 +8,7 @@ export { default as DocsSidebar } from './docs/DocsSidebar.svelte';
 export { default as DocsToc } from './docs/DocsToc.svelte';
 export { default as CopyButton } from './misc/CopyButton.svelte';
 export { default as DevOsSwitcher } from './misc/DevOsSwitcher.svelte';
+export { default as MacStatusIcon } from './misc/MacStatusIcon.svelte';
 export { default as Logo } from './misc/Logo.svelte';
 export { default as SeoMetadata } from './misc/SeoMetadata.svelte';
 export { default as ModelsCatalogInstallDialog } from './models-catalog/ModelsCatalogInstallDialog.svelte';

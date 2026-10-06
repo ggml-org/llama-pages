@@ -26,3 +26,8 @@ export const SITE_URL = 'https://llama.app';
 export const OG_IMAGE_PATH = '/og-image.png';
 export const OG_IMAGE_ALT =
 	'Llama: Your AI. On your computer. Llama’s menu in the Mac menu bar, listing installed models.';
+
+// Mailcoach list endpoint for the newsletter signup form; posting here is
+// enabled by the list's "Allow POST from an external form" setting.
+export const NEWSLETTER_SUBSCRIBE_URL =
+	'https://er.mailcoach.app/subscribe/dd20e9a6-2a1d-47a4-8b91-2fbffdbf29e2';
