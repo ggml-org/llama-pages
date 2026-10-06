@@ -77,7 +77,9 @@
      side by side read as a pair; it's about the install window's natural
      height. -->
 {#snippet step(picture: Snippet, title: string, body: Snippet)}
-	<div class="flex flex-col gap-6 rounded-2xl bg-foreground/2 p-6">
+	<div
+		class="flex flex-col gap-6 rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
+	>
 		<div aria-hidden="true" class="h-48">{@render picture()}</div>
 
 		<div class="flex flex-col">
@@ -90,7 +92,7 @@
 <!-- The pictures' wallpaper: the homepage hero shot's sky, simplified. -->
 {#snippet wallpaper(children: Snippet, cls: string)}
 	<div
-		class="flex h-full flex-col rounded-xl bg-[linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-4 dark:bg-[linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)] {cls}"
+		class="flex h-full flex-col rounded-lg bg-[linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-4 dark:bg-[linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)] {cls}"
 	>
 		{@render children()}
 	</div>

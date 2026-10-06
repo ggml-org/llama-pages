@@ -14,7 +14,7 @@
 	<span class="mark text-foreground">{@html logoSvg}</span>
 
 	{#if showName}
-		<span class="font-mono font-medium">llama<span class="text-accent">.cpp</span></span>
+		<span class="font-mono font-medium">llama<span class="text-brand">.cpp</span></span>
 	{/if}
 </span>
 

@@ -61,7 +61,7 @@
 			<a
 				href="#{heading.id}"
 				class="transition-colors {heading.level === 3 ? 'pl-4' : ''} {activeId === heading.id
-					? 'font-medium text-accent'
+					? 'font-medium text-brand'
 					: 'text-foreground/60 hover:text-foreground'}"
 			>
 				{heading.text}

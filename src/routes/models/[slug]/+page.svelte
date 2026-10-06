@@ -49,7 +49,11 @@
 			{#if hasQuantized}
 				<div class="flex items-center gap-1.5">
 					<label class="flex cursor-pointer items-baseline gap-2 text-[13px] text-muted-foreground">
-						<input type="checkbox" bind:checked={showQuantized} class="accent-sky-500" />
+						<input
+							type="checkbox"
+							bind:checked={showQuantized}
+							class="size-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+						/>
 						<span>Show smaller quantizations</span>
 					</label>
 					<!-- Info icon carrying the quantization explainer. A native title

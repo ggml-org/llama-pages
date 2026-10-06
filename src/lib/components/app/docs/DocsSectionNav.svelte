@@ -52,7 +52,7 @@
 	>
 		{item.title}
 		{#if item.new}
-			<span class="ml-1 text-xs font-medium text-accent">New</span>
+			<span class="ml-1 text-xs font-medium text-brand">New</span>
 		{/if}
 	</a>
 {/if}

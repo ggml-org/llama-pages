@@ -17,29 +17,53 @@
 
 	let article = $state<HTMLElement>();
 
-	// Give every code block a hover copy button. The markdown HTML is rendered
-	// by <Content />, so the buttons are mounted imperatively onto each <pre>.
+	// Wrap every markdown code block in llama-ui's code-block chrome: a rounded,
+	// soft-bordered box with a floating header that names the language and holds
+	// the copy button. The markdown HTML is rendered by <Content />, so the
+	// wrapper and header are built imperatively around each <pre>.
 	$effect(() => {
 		void data.local;
 
 		if (!article) return;
 
-		const buttons = [...article.querySelectorAll('pre')].map((pre) => {
+		const blocks = [...article.querySelectorAll('pre')].map((pre) => {
 			const wrapper = document.createElement('div');
 
-			wrapper.className = 'group relative';
+			wrapper.className = 'code-block-wrapper';
+
+			const header = document.createElement('div');
+
+			header.className = 'code-block-header';
+
+			const language = /language-([\w-]+)/.exec(pre.className)?.[1];
+
+			if (language) {
+				const label = document.createElement('span');
+
+				label.className = 'code-language';
+				label.textContent = language;
+				header.appendChild(label);
+			}
+
+			const actions = document.createElement('div');
+
+			actions.className = 'code-block-actions';
+			header.appendChild(actions);
+
 			pre.replaceWith(wrapper);
+			wrapper.appendChild(header);
 			wrapper.appendChild(pre);
+
 			const button = mount(DocsCodeCopyButton, {
 				props: { getText: () => pre.innerText },
-				target: wrapper
+				target: actions
 			});
 
 			return { button, pre, wrapper };
 		});
 
 		return () => {
-			for (const { button, pre, wrapper } of buttons) {
+			for (const { button, pre, wrapper } of blocks) {
 				unmount(button);
 
 				if (wrapper.isConnected) wrapper.replaceWith(pre);
@@ -97,14 +121,58 @@
 		scroll-margin-top: 6rem;
 	}
 
-	/* The global prism theme strips pre box styling with !important (the
-	   homepage install widget provides its own container), so docs code
-	   blocks restore it here with higher specificity. */
+	/* Code blocks mirror llama-ui's markdown renderer: a rounded, soft-bordered
+	   box (border/30, dark border/20) with a small shadow, a floating header
+	   that names the language, and a transparent <pre> the box provides the
+	   chrome for. The global prism theme strips pre box styling with !important
+	   (the homepage install widget provides its own container), so the box rules
+	   live on the wrapper and only the pre's padding is restored here. */
+	article :global(.code-block-wrapper) {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid color-mix(in oklch, var(--border) 30%, transparent);
+		border-radius: 0.75rem;
+		background: var(--code-background);
+		box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	}
+
+	:global(.dark) article :global(.code-block-wrapper) {
+		border-color: color-mix(in oklch, var(--border) 20%, transparent);
+	}
+
+	article :global(.code-block-header) {
+		position: absolute;
+		inset-inline: 0;
+		top: 0;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 1rem 0;
+	}
+
+	article :global(.code-language) {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--foreground);
+	}
+
+	article :global(.code-block-actions) {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
 	article :global(pre) {
-		background: var(--code-background) !important;
+		margin: 0 !important;
+		padding: 3rem 1rem 1rem !important;
+		border: none !important;
+		border-radius: 0 !important;
+		background: transparent !important;
 		color: var(--code-foreground);
-		border: 1px solid var(--border) !important;
-		border-radius: calc(var(--radius) + 2px) !important;
-		padding: 1rem !important;
+		line-height: 1.3;
 	}
 </style>

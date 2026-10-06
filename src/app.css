@@ -4,6 +4,8 @@
 
 @import 'shadcn-svelte/tailwind.css';
 
+@plugin '@tailwindcss/forms';
+
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
@@ -27,8 +29,8 @@
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.671967 0.201986 42.2057);
-	--accent-foreground: oklch(0.671967 0.201986 42.2057);
+	--accent: oklch(0.95 0 0);
+	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.577 0.245 27.325);
 	--border: oklch(0.875 0 0);
 	--input: oklch(0.92 0 0);
@@ -48,10 +50,16 @@
 	--sidebar-ring: oklch(0.708 0 0);
 	--code-background: oklch(0.985 0 0);
 	--code-foreground: oklch(0.145 0 0);
-	/* The site's one highlight color, sky blue (see llama-design): Tailwind's
-	   sky-600. Tints are opacity modifiers (`bg-highlight/10`), so dark mode
-	   needs only this one value swapped. sky-700 would give small text AA
-	   contrast, but its tints turn a dull gray-blue. */
+	/* The site's primary accent: orange. Brand and code accents -- the `.cpp`
+	   wordmark, "New" badges, the active docs TOC entry, search match marks,
+	   and command program names. */
+	--brand: oklch(0.671967 0.201986 42.2057);
+	--brand-foreground: oklch(0.985 0 0);
+	/* Secondary accent, sky blue (see llama-design): Tailwind's sky-600.
+	   Reserved mainly for diagrams -- charts, the hero mockup. Tints are
+	   opacity modifiers (`bg-highlight/10`), so dark mode needs only this
+	   one value swapped. sky-700 would give small text AA contrast, but its
+	   tints turn a dull gray-blue. */
 	--highlight: oklch(58.8% 0.158 241.966);
 	--layer-popover: 1000000;
 
@@ -80,10 +88,10 @@
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.269 0 0);
 	--muted-foreground: oklch(0.708 0 0);
-	/*--accent: oklch(0.269 0 0);
-	--accent-foreground: oklch(0.985 0 0);*/
+	--accent: oklch(0.269 0 0);
+	--accent-foreground: oklch(0.985 0 0);
 	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 15%);
+	--border: oklch(1 0 0 / 30%);
 	--input: oklch(1 0 0 / 30%);
 	--ring: oklch(0.556 0 0);
 	--chart-1: oklch(0.488 0.243 264.376);
@@ -140,6 +148,8 @@
 	--color-accent-foreground: var(--accent-foreground);
 	--color-accent: var(--accent);
 	--color-highlight: var(--highlight);
+	--color-brand: var(--brand);
+	--color-brand-foreground: var(--brand-foreground);
 	--color-muted-foreground: var(--muted-foreground);
 	--color-muted: var(--muted);
 	--color-secondary-foreground: var(--secondary-foreground);

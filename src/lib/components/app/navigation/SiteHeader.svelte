@@ -34,13 +34,13 @@
 	];
 
 	// Nav links are full-strength text, like the GitHub link on the right --
-	// muted gray read as disabled. The current section gets a solid
-	// underline. No hover states: the pointer cursor already signals
-	// interactivity, and hover does nothing on touch screens.
+	// muted gray read as disabled. Each is a llama-ui sidebar-style item:
+	// `rounded-md` with a subtle `bg-muted-foreground/10` hover, and the current
+	// section filled with `bg-accent` like llama-ui's active nav item.
 	function navLinkClass(active: boolean) {
-		return active
-			? 'text-foreground underline decoration-foreground decoration-2 underline-offset-[6px]'
-			: 'text-foreground';
+		return `rounded-md px-2 py-1 text-foreground transition-colors hover:bg-muted-foreground/10${
+			active ? ' bg-accent text-accent-foreground' : ''
+		}`;
 	}
 
 	const NEXT_MODE = { dark: 'system', light: 'dark', system: 'light' } as const;
@@ -57,12 +57,12 @@
 	     you're anywhere in the section; the page itself names where you are
 	     (each page leads with its own h1). Gaps widen from md up; phones keep
 	     the tighter gap so both sides still fit on one row. -->
-	<nav class="flex items-center gap-4 text-[15px] md:gap-6">
+	<nav class="flex items-center gap-1.5 text-[15px] md:gap-3">
 		<a href={resolve('/')}>
-			<Logo --logo-height="1.5rem" />
+			<Logo --logo-height="1.25rem" />
 		</a>
 
-		<span aria-hidden="true" class="h-5 w-px bg-border"></span>
+		<span aria-hidden="true" class="mr-1 ml-1.5 h-5 w-px bg-border"></span>
 
 		<a
 			href={resolve('/models')}
@@ -93,7 +93,7 @@
 		<button
 			type="button"
 			onclick={cycleMode}
-			class="-m-1.5 inline-flex cursor-pointer items-center rounded-md p-1.5 text-foreground/70"
+			class="-m-1.5 inline-flex cursor-pointer items-center rounded-md p-1.5 text-foreground/70 transition-colors hover:bg-muted-foreground/10 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 			aria-label="Theme: {userPrefersMode.current} (click to change)"
 			title="Theme: {userPrefersMode.current}"
 		>
