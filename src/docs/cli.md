@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD033 -->
+
 # Using the CLI
 
 `llama cli` is the terminal front end of llama.cpp: an interactive chat and a playground for experimenting with models, sampling settings, grammars, and multimodal input.
@@ -16,7 +18,7 @@ llama cli -m my-model.gguf
 
 You will see available commands as well as inputs for your model.
 
-![llama cli output](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-cli.png)
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-cli.png" alt="llama CLI output" />
 
 A few tips:
 

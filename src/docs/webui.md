@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD033 -->
+
 # Web UI
 
 llama.cpp ships a modern chat interface built right into `llama serve`, with support for multimodal input, MCPs and more.
@@ -27,7 +29,7 @@ The chat interface streams responses in real time and renders rich output:
 - **Reasoning:** thinking models show their reasoning in a collapsible block, separate from the answer. You can toggle the visibility of this in settings.
 - **HTML/JS preview:** generated web code can be rendered inline for immediate visualization.
 
-![Rich HTML output](https://huggingface.co/buckets/ggml-org/docs-media/resolve/llama-html.mp4)
+<video src="https://huggingface.co/buckets/ggml-org/docs-media/resolve/llama-html.mp4" aria-label="Rich HTML output" controls></video>
 
 ## Attachments
 
@@ -38,7 +40,7 @@ Add files to the conversation with media dropdown or drag-and-drop:
 
 The UI knows each model's capabilities and prevents sending e.g. an image to a text-only model.
 
-![MM Input](https://huggingface.co/buckets/ggml-org/docs-media/resolve/llama-mm.mp4)
+<video src="https://huggingface.co/buckets/ggml-org/docs-media/resolve/llama-mm.mp4" aria-label="MM Input" controls></video>
 
 ## Managing conversations
 
@@ -78,6 +80,6 @@ Default UI preferences can be set at launch with `--ui-config` (below will turn 
 llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --ui-config '{"theme": "dark", "pasteLongTextToFileLen": 0, "renderUserContentAsMarkdown": true}'
 ```
 
-![UI-flag](https://huggingface.co/buckets/ggml-org/docs-media/resolve/ui_setting.png)
+<img src="https://huggingface.co/buckets/ggml-org/docs-media/resolve/ui_setting.png" alt="UI flag" />
 
 For the story behind the interface and more usage examples, see the [WebUI guide discussion](https://github.com/ggml-org/llama.cpp/discussions/16938) on GitHub.

@@ -4,7 +4,22 @@ This guide takes you from a fresh [installation](installation) to chatting with 
 
 ## Download your first model
 
-Pass a Hugging Face repository with the `-hf` flag. The model is downloaded automatically:
+### Llama app
+
+On the Llama app, click downwards arrow next to one of the models recommended for your platform.
+
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app.png" alt="UI after installation" />
+
+Once downloaded, you can click on the model, which opens chat options. Depending on your memory and the length of the conversation you want to have, select the context window > Chat with the model.
+
+<div style="display: flex; gap: 1rem;">
+  <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app-start.png" alt="Llama app start screen" style="width: 50%; min-width: 0;" />
+  <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/ctx-windows.png" alt="Context windows" style="width: 50%; min-width: 0;" />
+</div>
+
+### Llama CLI
+
+If you want to use CLI to chat with models, pass a Hugging Face repository with the `-hf` flag. The model is downloaded automatically:
 
 ```sh
 llama cli -hf unsloth/gemma-4-E4B-it-GGUF:Q4_K_M

@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD033 -->
+
 # Running a server
 
 `llama serve` is a single command to launch fast, lightweight HTTP server for LLM inference. It gives you:
@@ -181,6 +183,6 @@ You can list the available model names as follows.
 
 Server will automatically load it for inference.
 
-![router](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/router.png)
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/router.png" alt="Router" />
 
 For the complete flag reference, see [the server README](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md). Continue to the [API documentation](api) for the endpoints, or the [web UI guide](webui) for the browser interface.

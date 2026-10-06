@@ -2,7 +2,9 @@
 
 llama.cpp lets you run large language models locally on your laptop, desktop, or server with minimal setup and state-of-the-art performance.
 
-With a single command you can chat with a model in your terminal, or spin up an OpenAI-compatible server with a built-in web interface:
+Llama app is built on llama.cpp, allowing you to download and run models and chat with them only with few clicks. Llama app is currently only on Mac and Windows. 
+
+Instead of using Llama app, if you want to chat with a model in your terminal, or spin up an OpenAI-compatible server with a built-in web interface, you can use `llama cli` or `llama serve`:
 
 ```sh
 # Chat in your terminal
@@ -22,7 +24,7 @@ On top of this core, the project ships user-facing tools: `llama cli` for the te
 
 ## Next steps
 
-- [Installation](installation) — install prebuilt binaries, use a package manager, Docker, or build from source
+- [Installation](installation) — install desktop app, prebuilt binaries, use a package manager, Docker, or build from source
 - [Quickstart](quickstart) — download a model and run it in minutes
 - [Using the CLI](cli) — chat and experiment from the terminal with `llama cli`
 - [Running a server](serve) — serve models over HTTP with `llama server`
