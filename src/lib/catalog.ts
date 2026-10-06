@@ -62,6 +62,12 @@ export type Family = {
 	// on machines with more RAM than this. Marks a family as a low-memory pick
 	// (e.g. Gemma 3 for 8 GB Macs). Absent means no cap.
 	maxMemGb?: number;
+	// Whether this is a decision model: it answers typed questions with a
+	// probability per option through llama.cpp's `/v1/systemone` endpoint,
+	// rather than chatting. The website lists these in their own section and
+	// says how to use them; the apps detect the kind from the GGUF itself, so
+	// they don't depend on this flag. Absent means false (a chat model).
+	decision?: boolean;
 	sizes: Size[];
 };
 
