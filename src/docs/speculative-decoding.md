@@ -40,7 +40,7 @@ When a token is rejected, the correction is sampled from the normalized positive
 correction distribution = normalize(max(0, p(x) - q(x)))
 ```
 
-This formula basically penalizes the tokens that target model doesn't like but drafter does, and favors the tokens that target model likes but drafter model doesn't like. You can see this visually below.
+This basically penalizes the tokens that target model doesn't like but drafter does, and favors the tokens that target model likes but drafter model doesn't like. You can see this visually below.
 
 [https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/speculative_decoding/correction-pool.png]
 
@@ -72,9 +72,7 @@ Some techniques reuse parts of the target model and add trainable modules (like 
 
 Longer drafts give the target model more tokens to accept, but they also increase the chance that later work is discarded.
 
-Rejection is sequential. If the third draft token is rejected, every token after it is discarded even if it would otherwise have been correct.
-
-If each token has a 70% conditional chance of being accepted, the probability of accepting an entire prefix falls quickly:
+Rejection is sequential. If the third draft token is rejected, every token after that token is discarded even if those tokens were correct. Let's say if each token has a 70% conditional chance of being accepted, the probability of accepting an entire prefix falls quickly:
 
 ```text
 first token:     0.70
@@ -83,104 +81,95 @@ first 5 tokens:  0.70⁵ = 0.17
 first 8 tokens:  0.70⁸ = 0.06
 ```
 
-This is why more draft tokens do not automatically mean more speed. The best draft length depends on the drafter, target model, workload, hardware, and cost of verification.
-
-Start with a short draft and benchmark end-to-end output throughput. Increase the length only while the number of accepted tokens grows enough to pay for the extra draft and verification work.
+This is why more draft tokens do not automatically mean more speed. Start with a short draft and benchmark end-to-end output throughput. Increase the length only while the number of accepted tokens grows enough to pay for the extra draft and verification work.
 
 ## Drafting approaches
 
-### Draft model
+We will go through each drafting approach. How you can use drafter models in Llama.cpp or Llama app is given in the next section.
 
-Classical speculative decoding uses a smaller autoregressive model. It generates candidate tokens one at a time, then the target model verifies them as a batch.
+### Initial speculative decoding
+
+Classical speculative decoding uses a smaller language model. It generates candidate tokens one at a time, then the target model verifies them as a batch.
 
 The two models must use a compatible tokenizer, and the draft model should be trained or selected for the target model. Model authors often publish a matching drafter next to the main model.
 
-This is the most general approach, but sequential drafting can become the new bottleneck when the target model or GPU is very fast.
+### EAGLE
 
-### EAGLE-3
+EAGLE series of speculative decoding is one of the most popular methods today. EAGLE is based on the idea that the full passes on target model to generate the next token are too expensive. Let's say we have the token "sat", "sat" is passed through LLM embeddings → all transformer layers → we get features for sat (f(sat)), this is passed to LM head, we get "on". After transformer layers we get exact feature for the next token, which we pass to LM head to decode. 
 
-EAGLE-3 uses a small draft model that reads hidden states from the target model. These hidden states contain more information than token IDs alone, which can improve the acceptance rate for a drafter of the same size.
+EAGLE drafter consists of a module that consists of three parts: 
+1. Target model's embedding layer
+2. Trainable EAGLE autoregression head
+3. Target model's language modelling head
 
-The drafter builds a tree of possible continuations. The target model verifies the tree in parallel with a tree attention mask, then accepts one valid path. Unused branches are discarded.
+With EAGLE drafter, above process becomes: f(cat) + embedding("sat") → small EAGLE autoregression head → EAGLE's features for "sat" (f̂(sat)) → target model LM head → "on". EAGLE simply tries to estimate the features and tries to make it as similar as possible to target LLM's features, so it can discard the transformer layers from the generation process. 
 
-An EAGLE-3 drafter is trained for a specific target model, so use a drafter released for the exact model family and checkpoint.
+EAGLE uses features from previous token and embedding from current token to predict features for the current token to pass to LM head. The second trick with the drafter model is that it actually predicts a tree of multiple generations, and target model evaluates the tree in one forward pass and discards paths.
 
-### Multi Token Prediction
+![EAGLE pass](https://huggingface.co/datasets/huggingface/documentation-images/blob/main/speculative_decoding/eagle-pass.png)
 
-With Multi Token Prediction, or MTP, model authors train additional heads that predict future tokens from the model's hidden states.
+![EAGLE verification](https://huggingface.co/datasets/huggingface/documentation-images/blob/main/speculative_decoding/eagle-verification.png)
 
-The first head predicts the next token, another predicts one token further ahead, and so on. These predictions become the draft candidates, which are still verified before they are returned.
+Latest update to EAGLE is EAGLE-3. Compared to EAGLE, EAGLE-3 no longer has to reproduce target's hidden features. Let's take the token "cat", it takes multiple hidden states for the word "cat" from target model, combines them into `g(cat)`. This `g(cat)`, combined with embedding for the word "sat", is passed to EAGLE-3 drafter to produce another hidden vector (`a(sat)`), passed to LM head to predict "on". So pipeline is `g(cat) + embedding(sat) → EAGLE-3 drafter → a(sat) → LM head → proposed token "on"`. 
+These hidden states contain more information than token IDs alone, which can improve the acceptance rate for a drafter of the same size. EAGLE-3 drafter still creates a tree, similarly to EAGLE.
 
-The maximum useful draft length is limited by the number of MTP heads in the model. Since the heads are part of the model design, MTP must be supported by the checkpoint; it cannot be added to an arbitrary model at inference time.
+EAGLE/EAGLE-3 drafters are trained for a specific target model, so use a drafter released for the exact model checkpoint and quant.
 
 ### DFlash
 
-DFlash replaces sequential autoregressive drafting with a small block-diffusion model. It predicts a block of draft tokens in one forward pass and uses hidden states from the target model to improve those predictions.
+DFlash replaces sequential autoregressive drafting with a small block-diffusion model which is much faster compared to other techniques that use autoregressive generation like EAGLE-3.
 
-This removes much of the sequential work from the drafting stage and makes the drafter more GPU-friendly. The maximum draft length is limited by the block size the draft model was trained with.
+It is very similar to EAGLE-3, it uses target model's embeddings and LM head. Given an input text, let's say "The answer is", the target model generates the token "42", which the authors call "anchor". This is concatenated with mask tokens as many as the number of draft tokens to be generated: `[42, MASK, MASK, MASK, ...]` as a placeholder.  At the same time, hidden states from several layers of the target model are concatenated, converted into K/V and injected to drafter layers. This gives rich representations draft model can work with. Then input is passed through the target embedding → drafter → target LM head, outputting tokens. You can see the entire process visualized below.
+
+![DFlash](https://huggingface.co/datasets/huggingface/documentation-images/blob/main/speculative_decoding/dflash.png) 
+
+The maximum draft length is limited by the block size the draft model was trained with.
 
 Like EAGLE-3, a DFlash drafter is trained for a specific target model.
 
-### Reusing tokens from the context
+### n-gram 
 
-Some workloads contain long repeated sequences, especially code editing, summarization, and rewriting. An n-gram drafter can search the existing context for a matching token sequence and propose the tokens that followed it previously.
+Some workloads contain long repeated sequences, especially code editing, summarization, and rewriting. An n-gram drafter can search the existing context for a matching token sequence and propose the tokens that followed it previously. 
 
-This does not require another neural model. It has low overhead, but it only helps when the continuation can be found or predicted from repeated patterns in the context.
+This does not require another model. It has low overhead, but it only helps when the continuation can be found or predicted from repeated patterns in the context. It is especially useful for cases like repetitive code, JSON etc.
 
 ## Speculative decoding with llama.cpp
 
-llama.app supports several speculative decoding implementations. It also downloads drafters automatically if the model drafter exists in the model repository, you can see Gemma-4 E2B with MTP below. It will also take care of serving when you click on the model to chat.
+Llama app (and llama.cpp) supports several speculative decoding implementations. It also downloads drafters automatically if the model drafter exists in the model repository, you can see Gemma-4 E2B with MTP below. It will also take care of serving when you click on the model to chat.
 
 ![Llama App Drafter](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/speculative_decoding/llama-app-drafter.png)
 
-
-The exact model files and best draft length depend on the target checkpoint, so use a drafter published for that model and benchmark it on your own prompts.
-
-Most drafter models are inside target model GGUF repositories. On the GGUF hardware compatibility tab there's drafter types and the memory they require.
+Most drafter models are inside target model GGUF repositories, they are also trained by model authors. On the GGUF hardware compatibility tab there's drafter types and the memory they require.
 
 ![Speculator GGUFs](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/speculative_decoding/gguf-drafter.png)
 
-If you want to serve models with drafters you can either do it on llama.app easily.
 
-To use `llama serve` to serve models with drafters, you 
+To use `llama serve` to serve models with drafters, you can pass in speculative decoding specific parameters: 
+- `--spec-type` is drafter type, `draft-eagle3`, `draft-dflash`, `draft-dspark`, `draft-mtp`. You can access the full list of the supported methods [here](https://github.com/ggml-org/llama.cpp/blob/master/docs/speculative.md#general-speculative-parameters)
+- `--spec-draft-n-max` number of tokens drafter can generate. For DFlash and DSpark it is clamped to the draft model's trained block size. 
+- `hfd` if the drafter is separately stored in another repository, pass repo ID with this parameter.
 
 For DFlash, load the target and draft repositories, select the DFlash implementation, and set the maximum number of draft tokens:
 
 ```bash
-llama-server \
+llama serve \
   -hf ggml-org/Qwen3.8-27B-GGUF:Q4_K_M \
   -hfd z-lab/Qwen3.8-27B-DFlash2-GGUF:Q4_K_M \
   --spec-type draft-dflash \
   --spec-draft-n-max 7
 ```
 
-For a model with MTP heads:
+For a model with MTP drafter, this is how it looks like when the model and drafter are in the same repository.
 
 ```bash
-llama-server \
+llama serve \
   -hf ggml-org/Qwen3.8-27B-GGUF:Q8_0 \
   --spec-type draft-mtp \
   --spec-draft-n-max 3
 ```
 
-For EAGLE-3, pass a compatible draft model with `-md` or `-hfd`:
-
-```bash
-llama-server \
-  -m Qwen3-4B.gguf \
-  -md Qwen3-4B-eagle3.gguf \
-  --spec-type draft-eagle3
-```
-
-The server prints speculative decoding statistics, including generated and accepted draft tokens. Compare the speculative run against the same workload without speculation. Acceptance rate alone is not enough: the metric that matters is end-to-end output tokens per second at an acceptable latency.
-
 ## Improving performance
 
 - Use a drafter built for the exact target model. A mismatched drafter will have a low acceptance rate or may be incompatible.
-- Keep the drafter small enough that drafting is substantially cheaper than running the target model.
-- Do not maximize draft length blindly. Longer drafts increase discarded work after a rejection.
-- Keep the draft model on a fast device when possible. Moving draft work over a slow CPU/GPU interconnect can remove the speed-up.
-- Benchmark realistic prompts and sampling settings. Acceptance can change with the task, temperature, and output style.
-- Watch both acceptance rate and output throughput. A higher acceptance rate does not guarantee a faster system.
-
-Speculative decoding is not a fixed multiplier. It is a trade between cheap predictions and expensive verification. When the drafter is fast, its guesses match the target model, and decoding is limited by memory bandwidth, several output tokens can be produced for each target-model pass.
+- Do not maximize for number of drafted tokens. Longer drafts increase discarded tokens.
+- Watch both acceptance rate and throughput.
