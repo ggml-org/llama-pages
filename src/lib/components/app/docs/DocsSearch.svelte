@@ -142,10 +142,10 @@
 	bind:this={dialog}
 	onclose={() => (searchState.open = false)}
 	onclick={onDialogClick}
-	class="mx-auto mt-[12vh] w-full max-w-lg rounded-xl border border-border bg-background p-0 text-foreground shadow-2xl backdrop:bg-black/40 backdrop:backdrop-blur-xs"
+	class="mx-auto mt-[12vh] w-full max-w-lg rounded-lg border border-border/30 bg-background p-0 text-foreground shadow-lg backdrop:bg-black/50 dark:border-border/20"
 >
 	<div class="flex flex-col">
-		<div class="flex items-center gap-2 border-b border-border px-4">
+		<div class="flex items-center gap-2 border-b border-border/30 px-4 dark:border-border/20">
 			<Search class="size-4 shrink-0 text-foreground/40" />
 			<input
 				bind:this={input}
@@ -158,7 +158,7 @@
 				aria-expanded={results.length > 0}
 				aria-controls="docs-search-results"
 				aria-activedescendant={results[active]?.id}
-				class="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-foreground/40"
+				class="w-full border-0 bg-transparent py-3.5 text-sm outline-none placeholder:text-foreground/40 focus:ring-0"
 			/>
 			<kbd
 				class="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-foreground/40"
@@ -201,7 +201,7 @@
 					<span class="truncate text-xs text-foreground/50">
 						{#each result.fragment as part, j (j)}
 							{#if part.match}
-								<mark class="rounded-xs bg-transparent font-medium text-accent">{part.text}</mark>
+								<mark class="rounded-xs bg-transparent font-medium text-brand">{part.text}</mark>
 							{:else}
 								{part.text}
 							{/if}
@@ -213,7 +213,7 @@
 		</div>
 
 		<div
-			class="flex items-center gap-3 border-t border-border px-4 py-2 text-xs text-foreground/40"
+			class="flex items-center gap-3 border-t border-border/30 px-4 py-2 text-xs text-foreground/40 dark:border-border/20"
 		>
 			<span><kbd class="font-mono">↑↓</kbd> navigate</span>
 			<span><kbd class="font-mono">↵</kbd> open</span>

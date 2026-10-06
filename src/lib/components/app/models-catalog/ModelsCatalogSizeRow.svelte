@@ -73,7 +73,7 @@
 					rel="noopener noreferrer"
 					aria-label="Open on Hugging Face"
 					title="Open on Hugging Face"
-					class="flex cursor-pointer items-center gap-1 rounded-lg bg-muted px-2.5 py-1.5 text-foreground"
+					class="flex cursor-pointer items-center gap-1 rounded-md border border-border/30 bg-muted/60 px-2.5 py-1.5 text-foreground shadow-sm transition-colors hover:bg-muted/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:border-border/20 dark:bg-muted/75 dark:hover:bg-muted"
 				>
 					<span aria-hidden="true">🤗</span>
 					<svg
@@ -100,7 +100,7 @@
 				<button
 					type="button"
 					onclick={() => install(build)}
-					class="flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-center text-primary-foreground hover:bg-primary/80"
+					class="flex cursor-pointer items-center gap-1.5 rounded-md bg-primary px-3.5 py-1.5 text-center text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 				>
 					{#if deviceInfo.isMac}
 						<svg

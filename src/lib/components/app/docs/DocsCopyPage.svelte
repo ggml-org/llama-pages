@@ -150,7 +150,7 @@
 	<button
 		type="button"
 		onclick={copyMarkdown}
-		class="inline-flex cursor-pointer items-center gap-1.5 rounded-l-md border border-border px-2.5 py-1.5 transition-colors hover:bg-foreground/5"
+		class="inline-flex cursor-pointer items-center gap-1.5 rounded-l-md border border-border/30 bg-muted/60 px-2.5 py-1.5 shadow-sm transition-colors hover:bg-muted/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:border-border/20 dark:bg-muted/75 dark:hover:bg-muted"
 	>
 		{#if copied}
 			<Check class="size-3.5 text-green-500" />
@@ -165,19 +165,19 @@
 		onclick={toggleMenu}
 		aria-label="More page actions"
 		aria-expanded={open}
-		class="inline-flex cursor-pointer items-center rounded-r-md border border-l-0 border-border px-1.5 py-1.5 transition-colors hover:bg-foreground/5"
+		class="inline-flex cursor-pointer items-center rounded-r-md border border-l-0 border-border/30 bg-muted/60 px-1.5 py-1.5 shadow-sm transition-colors hover:bg-muted/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:border-border/20 dark:bg-muted/75 dark:hover:bg-muted"
 	>
 		<ChevronDown class="size-3.5 transition-transform {open ? 'rotate-180' : ''}" />
 	</button>
 
 	{#if open}
 		<div
-			class="absolute top-full right-0 z-50 mt-1 flex w-56 flex-col rounded-md border border-border bg-background p-1 shadow-md"
+			class="absolute top-full right-0 z-50 mt-1 flex w-56 flex-col rounded-md border border-border bg-popover p-1.5 shadow-md dark:border-border/20"
 		>
 			<button
 				type="button"
 				onclick={copyMarkdown}
-				class="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left transition-colors hover:bg-foreground/5"
+				class="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-left transition-colors hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
 			>
 				<Copy class="size-3.5 shrink-0" />
 				Copy page as Markdown
@@ -188,13 +188,13 @@
 				target="_blank"
 				rel="noopener"
 				onclick={() => (open = false)}
-				class="flex items-center gap-2 rounded px-2 py-1.5 transition-colors hover:bg-foreground/5"
+				class="flex items-center gap-2 rounded-sm px-2 py-1.5 transition-colors hover:bg-accent"
 			>
 				<FileText class="size-3.5 shrink-0" />
 				View as Markdown
 			</a>
 
-			<div class="flex items-center rounded transition-colors hover:bg-foreground/5">
+			<div class="flex items-center rounded-sm transition-colors hover:bg-accent">
 				<a
 					href={llamaHref}
 					target="_blank"
@@ -224,7 +224,7 @@
 					onclick={() => editLlamaServer()}
 					aria-label="Set Llama server port or URL"
 					title="Set Llama server port or URL"
-					class="cursor-pointer py-1.5 pr-2 pl-1 text-foreground/40 transition-colors hover:text-foreground"
+					class="cursor-pointer py-1.5 pr-2 pl-1 text-foreground/40 transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
 				>
 					<Pencil class="size-3" />
 				</button>
