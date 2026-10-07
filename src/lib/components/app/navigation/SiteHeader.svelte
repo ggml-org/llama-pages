@@ -34,13 +34,14 @@
 	];
 
 	// Nav links are full-strength text, like the GitHub link on the right --
-	// muted gray read as disabled. Each is a llama-ui sidebar-style item:
-	// `rounded-md` with a subtle `bg-muted-foreground/10` hover, and the current
-	// section filled with `bg-accent` like llama-ui's active nav item.
+	// muted gray read as disabled. The current section sits on a soft gray
+	// pill, the site's `bg-foreground/6` chip tint. Every link carries the
+	// pill's padding, cancelled by equal negative margins, so the pill draws
+	// around the text without moving it or the header's height. No hover
+	// states: the pointer cursor already signals interactivity, and hover
+	// does nothing on touch screens.
 	function navLinkClass(active: boolean) {
-		return `rounded-md px-2 py-1 text-foreground transition-colors hover:bg-muted-foreground/10${
-			active ? ' bg-accent text-accent-foreground' : ''
-		}`;
+		return `-mx-2 -my-1 rounded-md px-2 py-1 text-foreground${active ? ' bg-foreground/6' : ''}`;
 	}
 
 	const NEXT_MODE = { dark: 'system', light: 'dark', system: 'light' } as const;
@@ -53,16 +54,16 @@
 <header class="mx-auto flex w-full max-w-6xl items-center justify-between p-6 md:px-12">
 	<!-- Left: the logo (home) plus permanent site nav. A vertical hairline after
 	     the logo separates brand from nav, so the link doesn't read as part of
-	     the wordmark. "Models" always links to the catalog and is underlined while
+	     the wordmark. "Models" always links to the catalog and is highlighted while
 	     you're anywhere in the section; the page itself names where you are
 	     (each page leads with its own h1). Gaps widen from md up; phones keep
 	     the tighter gap so both sides still fit on one row. -->
-	<nav class="flex items-center gap-1.5 text-[15px] md:gap-3">
+	<nav class="flex items-center gap-4 text-[15px] md:gap-6">
 		<a href={resolve('/')}>
-			<Logo --logo-height="1.25rem" />
+			<Logo --logo-height="1.5rem" />
 		</a>
 
-		<span aria-hidden="true" class="mr-1 ml-1.5 h-5 w-px bg-border"></span>
+		<span aria-hidden="true" class="h-5 w-px bg-border"></span>
 
 		<a
 			href={resolve('/models')}
@@ -93,7 +94,7 @@
 		<button
 			type="button"
 			onclick={cycleMode}
-			class="-m-1.5 inline-flex cursor-pointer items-center rounded-md p-1.5 text-foreground/70 transition-colors hover:bg-muted-foreground/10 hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+			class="-m-1.5 inline-flex cursor-pointer items-center rounded-md p-1.5 text-foreground/70"
 			aria-label="Theme: {userPrefersMode.current} (click to change)"
 			title="Theme: {userPrefersMode.current}"
 		>

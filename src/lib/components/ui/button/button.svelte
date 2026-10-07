@@ -3,38 +3,36 @@
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 	import { tv, type VariantProps } from 'tailwind-variants';
 
-	// Mirrors llama.cpp/tools/ui's button so both apps share one button language.
-	// `xl` is the addition: llama-pages' marketing CTA size, taller than
-	// llama-ui's `lg`, for the hero and closing calls to action. On phones it
-	// steps down to `lg`'s height, where the taller button crowds the hero.
 	export const buttonVariants = tv({
-		base: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+		base: "cursor-pointer focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-lg border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-3 active:not-aria-[haspopup]:translate-y-px aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4 group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 		defaultVariants: {
 			size: 'default',
 			variant: 'default'
 		},
 		variants: {
 			size: {
-				default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-				icon: 'size-9',
-				'icon-lg': 'size-10',
-				'icon-sm': 'size-5 rounded-sm',
-				lg: 'h-10 rounded-lg px-6 has-[>svg]:px-4',
-				sm: 'h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
-				xl: 'h-10 gap-1.5 rounded-lg px-6 text-sm has-[>svg]:px-5 sm:h-12 sm:text-[15px]'
+				default:
+					'h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
+				icon: 'size-8',
+				'icon-lg': 'size-9',
+				'icon-sm':
+					'size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg',
+				'icon-xs':
+					"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+				lg: 'h-12 gap-1.5 px-6 text-[15px] has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3',
+				sm: "h-8 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+				xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
 			},
 			variant: {
-				default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
+				default: 'bg-primary text-primary-foreground',
 				destructive:
-					'bg-destructive shadow-sm hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white!',
-				ghost: 'hover:text-accent-foreground hover:bg-muted-foreground/10 backdrop-blur-sm',
+					'bg-destructive/10 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40',
+				ghost: 'aria-expanded:bg-muted aria-expanded:text-foreground',
 				link: 'text-primary underline',
 				outline:
-					'shadow-sm hover:text-accent-foreground hover:bg-muted-foreground/10 backdrop-blur-sm dark:border-input border',
+					'border-border bg-background dark:bg-input/30 dark:border-input aria-expanded:bg-muted aria-expanded:text-foreground',
 				secondary:
-					'bg-muted/30 dark:bg-muted-foreground/15 dark:text-secondary-foreground shadow-sm border-muted border text-foreground hover:bg-muted dark:hover:bg-muted-foreground/25',
-				tertiary:
-					'bg-muted/60 dark:bg-muted/75 shadow-sm border border-border/30 text-foreground hover:bg-muted/80 dark:border-border/20 dark:hover:bg-muted'
+					'bg-secondary text-secondary-foreground aria-expanded:bg-secondary aria-expanded:text-secondary-foreground'
 			}
 		}
 	});
@@ -71,10 +69,10 @@
 {#if href}
 	<a
 		bind:this={ref}
-		aria-disabled={disabled}
-		class={cn(buttonVariants({ size, variant }), className)}
 		data-slot="button"
+		class={cn(buttonVariants({ size, variant }), className)}
 		href={disabled ? undefined : href}
+		aria-disabled={disabled}
 		role={disabled ? 'link' : undefined}
 		tabindex={disabled ? -1 : undefined}
 		{...restProps}
@@ -84,19 +82,12 @@
 {:else}
 	<button
 		bind:this={ref}
-		class={cn(buttonVariants({ size, variant }), className)}
 		data-slot="button"
-		{disabled}
+		class={cn(buttonVariants({ size, variant }), className)}
 		{type}
+		{disabled}
 		{...restProps}
 	>
 		{@render children?.()}
 	</button>
 {/if}
-
-<style>
-	a,
-	button {
-		cursor: pointer;
-	}
-</style>

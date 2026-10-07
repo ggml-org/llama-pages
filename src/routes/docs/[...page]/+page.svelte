@@ -17,9 +17,8 @@
 
 	let article = $state<HTMLElement>();
 
-	// Wrap every markdown code block in llama-ui's code-block chrome: a rounded,
-	// soft-bordered box with a floating header that names the language and holds
-	// the copy button. The markdown HTML is rendered by <Content />, so the
+	// Give every code block a header that names its language and holds the
+	// copy button. The markdown HTML is rendered by <Content />, so the
 	// wrapper and header are built imperatively around each <pre>.
 	$effect(() => {
 		void data.local;
@@ -29,26 +28,23 @@
 		const blocks = [...article.querySelectorAll('pre')].map((pre) => {
 			const wrapper = document.createElement('div');
 
-			wrapper.className = 'code-block-wrapper';
+			wrapper.className = 'code-block';
 
 			const header = document.createElement('div');
 
 			header.className = 'code-block-header';
 
+			// Prism tags the <pre> with the fence's language (`language-sh`).
+			// Blocks without one get no label, just the copy button.
 			const language = /language-([\w-]+)/.exec(pre.className)?.[1];
 
 			if (language) {
 				const label = document.createElement('span');
 
-				label.className = 'code-language';
+				label.className = 'code-block-language';
 				label.textContent = language;
 				header.appendChild(label);
 			}
-
-			const actions = document.createElement('div');
-
-			actions.className = 'code-block-actions';
-			header.appendChild(actions);
 
 			pre.replaceWith(wrapper);
 			wrapper.appendChild(header);
@@ -56,7 +52,7 @@
 
 			const button = mount(DocsCodeCopyButton, {
 				props: { getText: () => pre.innerText },
-				target: actions
+				target: header
 			});
 
 			return { button, pre, wrapper };
@@ -121,49 +117,41 @@
 		scroll-margin-top: 6rem;
 	}
 
-	/* Code blocks mirror llama-ui's markdown renderer: a rounded, soft-bordered
-	   box (border/30, dark border/20) with a small shadow, a floating header
-	   that names the language, and a transparent <pre> the box provides the
-	   chrome for. The global prism theme strips pre box styling with !important
-	   (the homepage install widget provides its own container), so the box rules
-	   live on the wrapper and only the pre's padding is restored here. */
-	article :global(.code-block-wrapper) {
+	/* Each code block is a box with a header row -- the language on the left,
+	   the copy button on the right -- laid over the top of the <pre>, whose
+	   top padding makes room for it. The global prism theme strips pre box
+	   styling with !important (the homepage install widget provides its own
+	   container), so the box lives on the wrapper and the pre is reset with
+	   higher specificity. */
+	article :global(.code-block) {
 		position: relative;
 		overflow: hidden;
-		border: 1px solid color-mix(in oklch, var(--border) 30%, transparent);
-		border-radius: 0.75rem;
+		border: 1px solid var(--border);
+		border-radius: calc(var(--radius) + 2px);
 		background: var(--code-background);
-		box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-	}
-
-	:global(.dark) article :global(.code-block-wrapper) {
-		border-color: color-mix(in oklch, var(--border) 20%, transparent);
 	}
 
 	article :global(.code-block-header) {
 		position: absolute;
 		inset-inline: 0;
 		top: 0;
-		z-index: 1;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: 0.5rem 1rem 0;
 	}
 
-	article :global(.code-language) {
+	/* Pushes the copy button right even when there's no language label. */
+	article :global(.code-block-header > :last-child) {
+		margin-left: auto;
+	}
+
+	article :global(.code-block-language) {
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		font-weight: 500;
 		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: var(--foreground);
-	}
-
-	article :global(.code-block-actions) {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
 	}
 
 	article :global(pre) {

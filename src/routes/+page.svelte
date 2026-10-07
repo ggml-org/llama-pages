@@ -243,25 +243,19 @@
        header's nav); 11px and 13px only in the app mockups, the params
        chip, and code (the terminal, command chips). Titles are
        `font-semibold`.
-     - Grays: `bg-muted/30` for cards (llama-ui's card fill). Chips and
-       tiles contrast with what they sit on: on a gray card, white
-       (`bg-background`) with a border; on white, a borderless
-       `bg-foreground/6` tint. Card borders are the soft tier,
-       `border-border/30 dark:border-border/20`; panels nested inside a
-       card use `border-border/50` (llama-ui's inset-panel tier), so a box
-       reads as outlined even beside its own row dividers. The exceptions
-       copy the app: the params chip (see there), and the menu's
-       `bg-foreground/6` logo circles, reused as-is wherever a model logo
-       has one.
-     - Shapes: cards are `rounded-xl p-6 shadow-sm`, panels inside them
-       `rounded-lg`, chips and tiles `rounded-lg` (`rounded-md` for the
+     - Grays: `bg-foreground/2` for cards. Chips and tiles contrast with
+       what they sit on: on a gray card, white (`bg-background`) with a
+       border; on white, a borderless `bg-foreground/6` tint. Borders are
+       `border-border`. The exceptions copy the app: the params chip (see
+       there), and the menu's `bg-foreground/6` logo circles, reused
+       as-is wherever a model logo has one.
+     - Shapes: cards are `rounded-2xl p-6`, panels inside them
+       `rounded-xl`, chips and tiles `rounded-lg` (`rounded-md` for the
        smallest), pills `rounded-full`.
      - Spacing: sections `py-20`, a section's header `mb-10` above its
        content, an h2 or h3 `gap-4` above its text, cards `gap-4` apart.
-     - Accents: `brand` (app.css) is the primary orange accent -- the `.cpp`
-       wordmark, docs highlights, and command program names. `highlight` is
-       the secondary sky blue, reserved mainly for diagrams and the app's
-       own UI inside the mockups, at `/10` for fills. -->
+     - Highlight: `highlight` (app.css), the one sky blue, at `/10` for
+       fills. Other blues are the app's own UI, inside the mockups. -->
 <main class="mx-auto w-full max-w-6xl px-6 md:px-12">
 	<!-- "Mac" for Mac visitors and `other` for everyone else, for copy that
 	     addresses the visitor's computer ("your Mac" / "your computer"). -->
@@ -279,7 +273,7 @@
 	     can't be skimmed past, and it goes wherever the button goes (the
 	     closing call to action, and the "other" visitors who get both). -->
 	{#snippet downloadButtons()}
-		<Button data-os-only="mac other" href={resolve('/download/[os]', { os: 'mac' })} size="xl">
+		<Button data-os-only="mac other" href={resolve('/download/[os]', { os: 'mac' })} size="lg">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<span class="mb-0.5">{@html appleIcon}</span>
 			Download for Mac
@@ -287,7 +281,7 @@
 		<Button
 			data-os-only="windows other"
 			href={resolve('/download/[os]', { os: 'windows' })}
-			size="xl"
+			size="lg"
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html windowsIcon}
@@ -340,14 +334,14 @@
 				? 'py-0.5 pr-0.5 pl-2'
 				: 'min-h-10 py-1 pr-1 pl-3'}"
 		>
-			<!-- Programs in the brand orange, flags and pipes muted, so
+			<!-- Programs in the page's sky highlight, flags and pipes muted, so
 			     the parts you'd change or read -- the package, the URL, the
 			     model -- stay in the plain foreground. No whitespace between the
 			     spans, so the copied selection matches the text. -->
 			<code class="min-w-0 flex-1 font-mono wrap-break-word text-foreground"
 				>{#each commandWords(text) as { kind, word }, i (i)}<span
 						class={{
-							'text-brand': kind === 'program',
+							'text-highlight': kind === 'program',
 							'text-muted-foreground': kind === 'flag' || kind === 'pipe'
 						}}>{word}</span
 					>{/each}</code
@@ -513,6 +507,8 @@
 			> team and Hugging Face
 		</span>
 
+		<!-- 2.5rem on phones rather than text-5xl: at 48px "On your computer."
+		     wraps, and the headline runs to three lines. -->
 		<h1
 			class="text-[2.5rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl md:text-7xl"
 		>
@@ -550,7 +546,7 @@
 					href={r.url}
 					target="_blank"
 					rel="noreferrer"
-					size="xl"
+					size="lg"
 					variant="outline"
 				>
 					View on GitHub
@@ -589,30 +585,24 @@
 			<p
 				class="flex flex-col items-center gap-1 text-sm text-muted-foreground sm:flex-row sm:gap-2"
 			>
-				<span class="flex items-center gap-2">
+				<span>
 					Prefer Brew or Winget?
-					<Button
+					<a
 						href="https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md"
 						target="_blank"
 						rel="noreferrer"
-						size="sm"
-						variant="secondary"
+						class="font-medium underline">Package managers</a
 					>
-						Package managers
-					</Button>
 				</span>
 				<span aria-hidden="true" class="max-sm:hidden">·</span>
-				<span class="flex items-center gap-2">
+				<span>
 					Rather build from source?
-					<Button
+					<a
 						href="https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md"
 						target="_blank"
 						rel="noreferrer"
-						size="sm"
-						variant="secondary"
+						class="font-medium underline">Follow instructions</a
 					>
-						Follow instructions
-					</Button>
 				</span>
 			</p>
 		</div>
@@ -652,7 +642,8 @@
 		     the same 48px on every side it has room, as if the picture were a
 		     crop of a larger screen: the menu floats on the wallpaper instead
 		     of being jammed into the corner. On phones it's one column, the
-		     picture first. Only one picture shows (data-os-only), so the
+		     picture first, with p-6 so the numbered callouts get some room
+		     from the panel's edge. Only one picture shows (data-os-only), so the
 		     grid only ever holds the two. -->
 		<div
 			class="grid gap-6 overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-6 md:grid-cols-[1fr_21rem] md:items-center md:gap-x-10 md:p-12 dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]"
@@ -824,9 +815,7 @@
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 			<!-- For you: the chat. A private document, because that's where
 			     "it stays on your computer" obviously matters. -->
-			<div
-				class="flex flex-col gap-5 rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
-			>
+			<div class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6">
 				<div>
 					<p class="text-xs tracking-wide text-muted-foreground uppercase">For you</p>
 					<h3 class="mt-1 text-xl font-semibold">
@@ -835,7 +824,7 @@
 				</div>
 				<div
 					aria-hidden="true"
-					class="flex flex-1 flex-col gap-3 rounded-lg border border-border/50 bg-background p-4 text-sm"
+					class="flex flex-1 flex-col gap-3 rounded-xl border border-border bg-background p-4 text-sm"
 				>
 					<div class="ml-auto flex max-w-[85%] flex-col items-end gap-1.5">
 						<span
@@ -857,9 +846,7 @@
 
 			<!-- For your apps: the API. Categories, not a logo wall -- Pi is
 			     the only integration we can name with confidence today. -->
-			<div
-				class="flex flex-col gap-5 rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
-			>
+			<div class="flex flex-col gap-5 rounded-2xl border border-border bg-foreground/2 p-6">
 				<div>
 					<p class="text-xs tracking-wide text-muted-foreground uppercase">For your apps</p>
 					<h3 class="mt-1 text-xl font-semibold">
@@ -869,7 +856,7 @@
 				<div class="flex flex-1 flex-col gap-2 text-sm">
 					{#each CLIENTS as c (c.label)}
 						<div
-							class="flex items-center gap-3 rounded-lg border border-border/50 bg-background px-4 py-3"
+							class="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3"
 						>
 							<c.icon class="size-4 text-muted-foreground" />
 							<span class="flex-1">{c.label}</span>
@@ -893,7 +880,7 @@
 			<div class="mx-auto h-4 w-px bg-border"></div>
 		</div>
 		<div
-			class="mt-4 flex flex-col gap-4 rounded-xl border border-border/30 bg-muted/30 px-6 py-4 shadow-sm md:mt-0 md:flex-row md:items-center md:justify-between dark:border-border/20"
+			class="mt-4 flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 px-6 py-4 md:mt-0 md:flex-row md:items-center md:justify-between"
 		>
 			<!-- One line, body size: this is the base, not a third feature
 			     card, so it shouldn't outweigh the chips beside it. The
@@ -950,9 +937,7 @@
 			</p>
 		</div>
 
-		<div
-			class="flex flex-col gap-4 rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
-		>
+		<div class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6">
 			<!-- Header: which model, and that the work is done. -->
 			<div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-1">
 				<span class="flex items-center gap-2 text-sm font-medium">
@@ -967,7 +952,7 @@
 					{@render paramsChip(EXAMPLE_MODEL.params)}
 				</span>
 				<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
-					<Check class="size-3.5 text-green-500" />
+					<Check class="size-3.5 text-highlight" />
 					<!-- One span, so the flex gap doesn't also land between
 					     "your" and "Mac". -->
 					<span>Chosen by Llama, for your {@render macOr('computer')}</span>
@@ -978,9 +963,7 @@
 			     pill, which a <dl>'s row wrapper isn't allowed to contain.
 			     Setting names are in the body font, not mono -- they're
 			     labels here, not something to type. -->
-			<ul
-				class="divide-y divide-border/50 rounded-lg border border-border/50 bg-background dark:divide-border/35"
-			>
+			<ul class="divide-y divide-border rounded-xl border border-border bg-background">
 				{#each TUNED as t (t.setting)}
 					<li class="flex items-center gap-3 px-4 py-3">
 						<span
@@ -1180,9 +1163,7 @@
 	     into the gap between the two -- so the drawings keep their natural
 	     heights instead of being boxed to a common one. -->
 	{#snippet lightCard(title: string, body: string, art: Snippet)}
-		<div
-			class="flex flex-col gap-8 rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
-		>
+		<div class="flex flex-col gap-8 rounded-2xl border border-border bg-foreground/2 p-6">
 			<div>
 				<h3 class="font-semibold">{title}</h3>
 				<p class="mt-1 leading-relaxed text-foreground/70">{body}</p>
@@ -1248,7 +1229,7 @@
 			{#each PICKS as p (p.family)}
 				<a
 					href={resolve(`/models/${slugify(p.f.name)}`)}
-					class="flex flex-col gap-4 rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm transition-colors hover:bg-muted/50 dark:border-border/20"
+					class="flex flex-col gap-4 rounded-2xl border border-border bg-foreground/2 p-6"
 				>
 					{#if p.mem}
 						<span class="text-sm text-muted-foreground"
@@ -1271,9 +1252,12 @@
 		     site. The Hugging Face route ("Use this model") now lives at the
 		     end of the models page, for people who didn't find what they
 		     wanted in the catalog. -->
-		<Button href={resolve('/models')} class="mt-8" size="sm" variant="secondary">
+		<a
+			href={resolve('/models')}
+			class="mt-8 inline-flex items-center gap-1.5 font-medium underline"
+		>
 			Browse models <ArrowRight class="size-4" />
-		</Button>
+		</a>
 	</section>
 
 	<!-- 7. Developers. One chapter with a single h2, like every other
@@ -1338,13 +1322,19 @@
 						over Tailscale
 					</li>
 				</ul>
-				<div class="flex flex-wrap gap-2">
-					<Button href={resolve('/docs/[...page]', { page: 'api' })} size="sm" variant="secondary">
+				<div class="flex flex-wrap gap-x-6 gap-y-2">
+					<a
+						href={resolve('/docs/[...page]', { page: 'api' })}
+						class="inline-flex items-center gap-1.5 text-sm font-medium underline"
+					>
 						API reference <ArrowRight class="size-3.5" />
-					</Button>
-					<Button href={resolve('/docs/[...page]', { page: 'cli' })} size="sm" variant="secondary">
+					</a>
+					<a
+						href={resolve('/docs/[...page]', { page: 'cli' })}
+						class="inline-flex items-center gap-1.5 text-sm font-medium underline"
+					>
 						Command line <ArrowRight class="size-3.5" />
-					</Button>
+					</a>
 				</div>
 			</div>
 
@@ -1369,7 +1359,7 @@
 				<!-- eslint-disable svelte/no-at-html-tags -->
 				<div class="terminal-code overflow-x-auto p-5">
 					<p class="whitespace-pre">
-						<span class="mr-[1ch] text-brand select-none">$</span>{@html API_CALL_HTML}
+						<span class="mr-[1ch] text-accent select-none">$</span>{@html API_CALL_HTML}
 					</p>
 				</div>
 				<!-- eslint-enable svelte/no-at-html-tags -->
@@ -1418,9 +1408,7 @@
 				</span>
 			{/snippet}
 			<div class="grid grid-cols-1 gap-4 text-xs md:grid-cols-2">
-				<figure
-					class="rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
-				>
+				<figure class="rounded-2xl border border-border bg-foreground/2 p-6">
 					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
 						Without Llama
 						<span>{3 * exampleModelGB} GB on disk</span>
@@ -1441,9 +1429,7 @@
 						{/each}
 					</div>
 				</figure>
-				<figure
-					class="rounded-xl border border-border/30 bg-muted/30 p-6 shadow-sm dark:border-border/20"
-				>
+				<figure class="rounded-2xl border border-border bg-foreground/2 p-6">
 					<figcaption class="mb-4 flex justify-between gap-3 text-sm text-muted-foreground">
 						With Llama
 						<span>{exampleModelSize} on disk</span>

@@ -216,7 +216,7 @@ pre[class*='language-'] {
 .token.class-name {
 	&,
 	:is(.dark) & {
-		color: var(--brand) !important;
+		color: var(--accent) !important;
 	}
 }
 
@@ -253,7 +253,7 @@ pre[class*='language-'] {
 
 /* Inline code in the docs' prose. */
 .prose p code {
-	color: var(--brand) !important;
+	color: var(--accent) !important;
 	margin-inline: 0.25rem;
 }
 

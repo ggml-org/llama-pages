@@ -22,7 +22,7 @@
 	onclick={copy}
 	aria-label="Copy code"
 	title="Copy code"
-	class="inline-flex size-6 cursor-pointer items-center justify-center rounded-md text-foreground/60 transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+	class="inline-flex size-6 cursor-pointer items-center justify-center rounded-md text-foreground/60 hover:text-foreground"
 >
 	{#if copied}
 		<Check class="size-3.5 text-green-500" />
