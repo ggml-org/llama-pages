@@ -106,9 +106,9 @@ With EAGLE drafter, above process becomes: f(cat) + embedding("sat") → small E
 
 EAGLE uses features from previous token and embedding from current token to predict features for the current token to pass to LM head. The second trick with the drafter model is that it actually predicts a tree of multiple generations, and target model evaluates the tree in one forward pass and discards paths.
 
-![EAGLE pass](https://huggingface.co/datasets/huggingface/documentation-images/blob/main/speculative_decoding/eagle-pass.png)
+![EAGLE pass](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/speculative_decoding/eagle-pass.png)
 
-![EAGLE verification](https://huggingface.co/datasets/huggingface/documentation-images/blob/main/speculative_decoding/eagle-verification.png)
+![EAGLE verification](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/speculative_decoding/eagle-verification.png)
 
 Latest update to EAGLE is EAGLE-3. Compared to EAGLE, EAGLE-3 no longer has to reproduce target's hidden features. Let's take the token "cat", it takes multiple hidden states for the word "cat" from target model, combines them into `g(cat)`. This `g(cat)`, combined with embedding for the word "sat", is passed to EAGLE-3 drafter to produce another hidden vector (`a(sat)`), passed to LM head to predict "on". So pipeline is `g(cat) + embedding(sat) → EAGLE-3 drafter → a(sat) → LM head → proposed token "on"`. 
 These hidden states contain more information than token IDs alone, which can improve the acceptance rate for a drafter of the same size. EAGLE-3 drafter still creates a tree, similarly to EAGLE.
@@ -121,7 +121,7 @@ DFlash replaces sequential autoregressive drafting with a small block-diffusion 
 
 It is very similar to EAGLE-3, it uses target model's embeddings and LM head. Given an input text, let's say "The answer is", the target model generates the token "42", which the authors call "anchor". This is concatenated with mask tokens as many as the number of draft tokens to be generated: `[42, MASK, MASK, MASK, ...]` as a placeholder.  At the same time, hidden states from several layers of the target model are concatenated, converted into K/V and injected to drafter layers. This gives rich representations draft model can work with. Then input is passed through the target embedding → drafter → target LM head, outputting tokens. You can see the entire process visualized below.
 
-![DFlash](https://huggingface.co/datasets/huggingface/documentation-images/blob/main/speculative_decoding/dflash.png) 
+![DFlash](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/speculative_decoding/dflash.png) 
 
 The maximum draft length is limited by the block size the draft model was trained with.
 
@@ -145,7 +145,7 @@ Most drafter models are inside target model GGUF repositories, they are also tra
 
 
 To use `llama serve` to serve models with drafters, you can pass in speculative decoding specific parameters: 
-- `--spec-type` is drafter type, `draft-eagle3`, `draft-dflash`, `draft-dspark`, `draft-mtp`. You can access the full list of the supported methods [here](https://github.com/ggml-org/llama.cpp/blob/master/docs/speculative.md#general-speculative-parameters)
+- `--spec-type` is drafter type, `draft-eagle3`, `draft-dflash`, `draft-dspark`, `draft-mtp`. You can access the full list of the supported methods [here](https://github.com/ggml-org/llama.cpp/resolve/master/docs/speculative.md#general-speculative-parameters)
 - `--spec-draft-n-max` number of tokens drafter can generate. For DFlash and DSpark it is clamped to the draft model's trained block size. 
 - `hfd` if the drafter is separately stored in another repository, pass repo ID with this parameter.
 
