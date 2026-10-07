@@ -17,29 +17,49 @@
 
 	let article = $state<HTMLElement>();
 
-	// Give every code block a hover copy button. The markdown HTML is rendered
-	// by <Content />, so the buttons are mounted imperatively onto each <pre>.
+	// Give every code block a header that names its language and holds the
+	// copy button. The markdown HTML is rendered by <Content />, so the
+	// wrapper and header are built imperatively around each <pre>.
 	$effect(() => {
 		void data.local;
 
 		if (!article) return;
 
-		const buttons = [...article.querySelectorAll('pre')].map((pre) => {
+		const blocks = [...article.querySelectorAll('pre')].map((pre) => {
 			const wrapper = document.createElement('div');
 
-			wrapper.className = 'group relative';
+			wrapper.className = 'code-block';
+
+			const header = document.createElement('div');
+
+			header.className = 'code-block-header';
+
+			// Prism tags the <pre> with the fence's language (`language-sh`).
+			// Blocks without one get no label, just the copy button.
+			const language = /language-([\w-]+)/.exec(pre.className)?.[1];
+
+			if (language) {
+				const label = document.createElement('span');
+
+				label.className = 'code-block-language';
+				label.textContent = language;
+				header.appendChild(label);
+			}
+
 			pre.replaceWith(wrapper);
+			wrapper.appendChild(header);
 			wrapper.appendChild(pre);
+
 			const button = mount(DocsCodeCopyButton, {
 				props: { getText: () => pre.innerText },
-				target: wrapper
+				target: header
 			});
 
 			return { button, pre, wrapper };
 		});
 
 		return () => {
-			for (const { button, pre, wrapper } of buttons) {
+			for (const { button, pre, wrapper } of blocks) {
 				unmount(button);
 
 				if (wrapper.isConnected) wrapper.replaceWith(pre);
@@ -97,14 +117,50 @@
 		scroll-margin-top: 6rem;
 	}
 
-	/* The global prism theme strips pre box styling with !important (the
-	   homepage install widget provides its own container), so docs code
-	   blocks restore it here with higher specificity. */
+	/* Each code block is a box with a header row -- the language on the left,
+	   the copy button on the right -- laid over the top of the <pre>, whose
+	   top padding makes room for it. The global prism theme strips pre box
+	   styling with !important (the homepage install widget provides its own
+	   container), so the box lives on the wrapper and the pre is reset with
+	   higher specificity. */
+	article :global(.code-block) {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--border);
+		border-radius: calc(var(--radius) + 2px);
+		background: var(--code-background);
+	}
+
+	article :global(.code-block-header) {
+		position: absolute;
+		inset-inline: 0;
+		top: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 1rem 0;
+	}
+
+	/* Pushes the copy button right even when there's no language label. */
+	article :global(.code-block-header > :last-child) {
+		margin-left: auto;
+	}
+
+	article :global(.code-block-language) {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
 	article :global(pre) {
-		background: var(--code-background) !important;
+		margin: 0 !important;
+		padding: 3rem 1rem 1rem !important;
+		border: none !important;
+		border-radius: 0 !important;
+		background: transparent !important;
 		color: var(--code-foreground);
-		border: 1px solid var(--border) !important;
-		border-radius: calc(var(--radius) + 2px) !important;
-		padding: 1rem !important;
+		line-height: 1.3;
 	}
 </style>

@@ -507,8 +507,10 @@
 			> team and Hugging Face
 		</span>
 
+		<!-- 2.5rem on phones rather than text-5xl: at 48px "On your computer."
+		     wraps, and the headline runs to three lines. -->
 		<h1
-			class="text-5xl leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl md:text-7xl"
+			class="text-[2.5rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl md:text-7xl"
 		>
 			Your AI.<br />On your computer.
 		</h1>
@@ -640,10 +642,11 @@
 		     the same 48px on every side it has room, as if the picture were a
 		     crop of a larger screen: the menu floats on the wallpaper instead
 		     of being jammed into the corner. On phones it's one column, the
-		     picture first. Only one picture shows (data-os-only), so the
+		     picture first, with p-6 so the numbered callouts get some room
+		     from the panel's edge. Only one picture shows (data-os-only), so the
 		     grid only ever holds the two. -->
 		<div
-			class="grid gap-6 overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-4 md:grid-cols-[1fr_21rem] md:items-center md:gap-x-10 md:p-12 dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]"
+			class="grid gap-6 overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_15%_10%,#dcecfb_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#e8f2fc_0%,transparent_50%),linear-gradient(160deg,#c4ddf6_0%,#d0e4f7_55%,#dfecf9_100%)] p-6 md:grid-cols-[1fr_21rem] md:items-center md:gap-x-10 md:p-12 dark:bg-[radial-gradient(ellipse_at_15%_10%,#22385c_0%,transparent_55%),radial-gradient(ellipse_at_90%_95%,#1e3752_0%,transparent_50%),linear-gradient(160deg,#152238_0%,#172a42_55%,#1a3049_100%)]"
 		>
 			<!-- macOS menu bar. No background of its own: in current macOS the
 			     bar is transparent, with the icons straight on the wallpaper.

@@ -34,13 +34,14 @@
 	];
 
 	// Nav links are full-strength text, like the GitHub link on the right --
-	// muted gray read as disabled. The current section gets a solid
-	// underline. No hover states: the pointer cursor already signals
-	// interactivity, and hover does nothing on touch screens.
+	// muted gray read as disabled. The current section sits on a soft gray
+	// pill, the site's `bg-foreground/6` chip tint. Every link carries the
+	// pill's padding, cancelled by equal negative margins, so the pill draws
+	// around the text without moving it or the header's height. No hover
+	// states: the pointer cursor already signals interactivity, and hover
+	// does nothing on touch screens.
 	function navLinkClass(active: boolean) {
-		return active
-			? 'text-foreground underline decoration-foreground decoration-2 underline-offset-[6px]'
-			: 'text-foreground';
+		return `-mx-2 -my-1 rounded-md px-2 py-1 text-foreground${active ? ' bg-foreground/6' : ''}`;
 	}
 
 	const NEXT_MODE = { dark: 'system', light: 'dark', system: 'light' } as const;
@@ -53,7 +54,7 @@
 <header class="mx-auto flex w-full max-w-6xl items-center justify-between p-6 md:px-12">
 	<!-- Left: the logo (home) plus permanent site nav. A vertical hairline after
 	     the logo separates brand from nav, so the link doesn't read as part of
-	     the wordmark. "Models" always links to the catalog and is underlined while
+	     the wordmark. "Models" always links to the catalog and is highlighted while
 	     you're anywhere in the section; the page itself names where you are
 	     (each page leads with its own h1). Gaps widen from md up; phones keep
 	     the tighter gap so both sides still fit on one row. -->
