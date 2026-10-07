@@ -14,7 +14,7 @@ Once downloaded, you can click on the model, which opens chat options. Depending
 
 ### Llama CLI
 
-If you want to use CLI to chat with models, pass a Hugging Face repository with the `-hf` flag. The model is downloaded automatically:
+If you want to use the CLI to chat with models, pass a Hugging Face repository with the `-hf` flag. The model is downloaded automatically the first time you use it:
 
 ```sh
 llama cli -hf unsloth/gemma-4-E4B-it-GGUF:Q4_K_M

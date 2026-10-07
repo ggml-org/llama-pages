@@ -27,11 +27,11 @@ To pair with a coding agent, install with a package manager or build yourself, p
 
 ## Verify the installation
 
-If you have downloaded the Llama app, it should show up on your bottom bar as dropdown.
+If you have downloaded the Llama app, it should show up on your tool bar.
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app-install.png" alt="Installation" />
 
-If you want to use CLI or on other platforms that don't support the app, type:
+If you want to use the CLI, or you are on a platform that doesn't support the app, type:
 
 ```sh
 llama cli --version
