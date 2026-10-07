@@ -304,6 +304,8 @@
 
 		<!-- Right under the cards, same width and gap, so it reads as part of
 		     the page's main group rather than a footer. -->
-		<NewsletterSignup />
+		<!-- Tagged by the page's OS rather than the visitor's: it's the app
+		     they chose, even if they signed up from a phone. -->
+		<NewsletterSignup tag={data.os === 'mac' ? 'macOS' : 'Windows'} />
 	</div>
 </main>

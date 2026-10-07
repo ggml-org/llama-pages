@@ -2,6 +2,10 @@
 	import { Mail } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { NEWSLETTER_SUBSCRIBE_URL } from '$lib/constants';
+
+	// Mailcoach tag to add to the subscriber, e.g. which app they downloaded,
+	// so updates about one platform can go only to its users.
+	let { tag }: { tag?: string } = $props();
 </script>
 
 <!-- A band rather than a plain section: as plain text under the download
@@ -49,6 +53,12 @@
 		method="post"
 		class="flex w-full flex-col gap-2 sm:flex-row md:flex-col lg:flex-row"
 	>
+		<!-- Mailcoach only applies tags listed under the list's "Allowed tags"
+		     for form subscriptions; others are silently dropped. -->
+		{#if tag}
+			<input type="hidden" name="tags" value={tag} />
+		{/if}
+
 		<label class="sr-only" for="newsletter-email">Your email address</label>
 
 		<input
