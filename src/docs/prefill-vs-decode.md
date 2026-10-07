@@ -85,7 +85,7 @@ The total tokens served across all active requests per second. Batching may impr
 
 ### End-to-end latency
 
-The time from the moment you submit the prompt until the end of the generation, which is approximately `TTFT + number of output tokens × TPOT`. 
+The time from the moment you submit the prompt until the end of the generation, which is approximately `TTFT + number of output tokens × TPOT`.
 
 ## Improving metrics
 

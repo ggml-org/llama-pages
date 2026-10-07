@@ -61,7 +61,6 @@
 
 			return { button, pre, wrapper };
 		});
-
 		// Wide tables scroll inside the column instead of widening the page.
 		const tables = [...article.querySelectorAll('table')].map((table) => {
 			const wrap = document.createElement('div');
