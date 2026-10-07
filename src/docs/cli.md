@@ -101,13 +101,13 @@ llama cli -m model.gguf --reasoning-budget 1024
 
 Speed up generation using speculative decoding assistant (or draft) models. This applies to models that support this feature, and you need to specify both the main model and the drafter:
 
-```sh
+```bash
 llama cli -m big-model.gguf -md small-draft-model.gguf --spec-type draft-simple
 ```
 
 For Hugging Face Hub GGUF repositories, you can point to large model and small model repositories. In some repositories, they are put together, in others, you can point to repositories containing main and assistant models separately.
 
-```sh
+```bash
 llama cli -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --hf-repo-draft ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --spec-type draft-mtp
 ```
 

@@ -132,13 +132,13 @@ Once served, you can send images through [webui](webui#attachments) with drag-an
 
 Pair the model with a small draft model to speed up generation:
 
-```sh
+```bash
 llama serve -m big-model.gguf -md small-draft-model.gguf --spec-type draft-simple
 ```
 
 For model repositories that contain main model and drafter model (as well as separate repositories), you can serve llama server as follows.
 
-```sh
+```bash
 llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --hf-repo-draft ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --spec-type draft-mtp
 ```
 

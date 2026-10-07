@@ -73,7 +73,7 @@ The time it takes between subsequent generated tokens, which gives a signal on h
 
 The number of output tokens generated per second. You can benchmark this with `llama bench`.
 
-```sh
+```bash
 # prefill 128 tokens, generate 64 tokens, run 3 times, benchmark throughput
 
 llama bench -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 -p 128 -n 64 -r 3

@@ -25,7 +25,7 @@
 <main
 	class="mx-auto flex min-h-svh w-full max-w-5xl flex-col items-center justify-center gap-6 px-6 pb-[12vh] text-center md:px-12"
 >
-	<Check class="size-10 text-green-500" />
+	<Check class="size-10 text-muted-foreground" />
 
 	<div class="flex flex-col items-center gap-3">
 		<h1 class="text-3xl font-semibold tracking-tight">You're subscribed</h1>

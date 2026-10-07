@@ -14,7 +14,7 @@ All of them give you the same set of tools (`llama cli`, `llama serve` and other
 
 This is the easiest way to get started with llama.cpp. The following command detects your platform, fetches the latest version of the llama binary and installs it.
 
-```sh
+```bash
 curl -LsSf https://llama.app/install.sh | sh
 ```
 

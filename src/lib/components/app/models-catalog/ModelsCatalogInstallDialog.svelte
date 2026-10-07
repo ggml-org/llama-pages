@@ -22,7 +22,6 @@
 	import { Check, Copy, X } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import { type Build, cliCommand, displaySize, minMemForBuild, type Size } from '$lib/catalog';
-	import { Button } from '$lib/components/ui/button';
 	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
 	import { deviceInfo } from '$lib/stores/device/index.svelte';
 
@@ -78,7 +77,7 @@
 	bind:this={dialog}
 	onclose={() => (run = null)}
 	onclick={(e) => e.target === dialog && dialog?.close()}
-	class="m-auto w-full max-w-xl rounded-lg border border-border/30 bg-background p-0 text-foreground shadow-lg backdrop:bg-black/50 dark:border-border/20"
+	class="m-auto w-full max-w-xl rounded-2xl bg-background p-0 text-foreground shadow-xl backdrop:bg-black/10"
 >
 	{#if run}
 		<div class="relative px-8 pt-8 pb-7">
@@ -86,7 +85,7 @@
 				type="button"
 				aria-label="Close"
 				onclick={() => dialog?.close()}
-				class="absolute top-4 right-4 cursor-pointer rounded-xs text-muted-foreground transition-opacity hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-hidden"
+				class="absolute top-4 right-4 cursor-pointer text-muted-foreground hover:text-foreground"
 			>
 				<X class="size-4" />
 			</button>
@@ -110,11 +109,10 @@
 
 				<!-- Tagged as the "Download" goal; source separates this click from
 				     the hero banner's download link -->
-				<Button
+				<a
 					href={MACOS_DOWNLOAD_URL}
 					rel="external"
-					size="lg"
-					class="plausible-event-name=Download plausible-event-source=dialog mt-4 w-full"
+					class="plausible-event-name=Download plausible-event-source=dialog mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-[14px] font-medium text-primary-foreground hover:bg-primary/80"
 				>
 					<svg
 						aria-hidden="true"
@@ -131,18 +129,16 @@
 						<path d="M3 13.5h10" />
 					</svg>
 					Download Llama for Mac
-				</Button>
+				</a>
 
 				<p class="mt-5 text-[13px] text-muted-foreground">
-					Or use the <code class="mx-1 rounded bg-muted px-1 py-0.5 text-brand">llama</code> CLI:
+					Or use the <code class="mx-1 rounded bg-muted px-1 py-0.5 text-accent">llama</code> CLI:
 				</p>
 			{:else}
 				<p class="mt-5 text-[13px] text-muted-foreground">In your terminal:</p>
 			{/if}
 
-			<div
-				class="mt-2 w-full overflow-hidden rounded-md border border-border/30 bg-muted/60 shadow-sm dark:border-border/20 dark:bg-muted/75"
-			>
+			<div class="mt-2 w-full overflow-hidden rounded-xl border border-secondary bg-foreground/4">
 				<div class="flex items-stretch justify-between">
 					<code
 						class="block min-w-0 flex-1 overflow-x-auto px-4 py-3 text-left font-mono text-[13px] whitespace-nowrap text-foreground/90"
@@ -150,7 +146,7 @@
 						{cliCommand(run.build)}
 					</code>
 					<button
-						class="flex shrink-0 cursor-pointer items-center border-l border-border/30 px-4 text-foreground/70 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-hidden dark:border-border/20"
+						class="flex shrink-0 cursor-pointer items-center border-l border-secondary px-4 text-foreground/70 hover:text-foreground"
 						aria-label={copied ? 'Copied command' : 'Copy command'}
 						onclick={() => run && copyCli(cliCommand(run.build))}
 					>
@@ -171,9 +167,9 @@
 				     llama command" -- with a link home, where the CLI install command
 				     is front and center. Not on a Mac, where the download button above
 				     is already the answer and a second install link only competes. -->
-				<p class="mt-1 flex items-center gap-2 text-[13px] text-muted-foreground">
+				<p class="mt-1 text-[13px] text-muted-foreground">
 					Don’t have the CLI?
-					<Button href={resolve('/')} size="sm" variant="secondary">Install it first</Button>
+					<a href={resolve('/')} class="text-foreground underline">Install it first</a>.
 				</p>
 			{/if}
 		</div>
