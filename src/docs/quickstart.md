@@ -6,16 +6,11 @@ This guide takes you from a fresh [installation](installation) to chatting with 
 
 ### Llama app
 
-On the Llama app, click downwards arrow next to one of the models recommended for your platform.
-
-<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app.png" alt="UI after installation" />
-
+On the Llama app, click downwards arrow next to one of the models recommended for your platform. 
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-onboarding.png" alt="Onboarding" />
 Once downloaded, you can click on the model, which opens chat options. Depending on your memory and the length of the conversation you want to have, select the context window > Chat with the model.
 
-<div style="display: flex; gap: 1rem;">
-  <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app-start.png" alt="Llama app start screen" style="width: 50%; min-width: 0;" />
-  <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/ctx-windows.png" alt="Context windows" style="width: 50%; min-width: 0;" />
-</div>
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/ctx-windows.png" alt="Context window" />
 
 ### Llama CLI
 

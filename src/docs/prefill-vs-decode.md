@@ -6,11 +6,7 @@ Large language model inference has two distinct phases: **prefill**, when the mo
 
 ## Prefill: reading the prompt
 
-During prefill, the model processes the input tokens in parallel. Each transformer layer computes representations for the prompt and stores the attention **keys and values** in the KV cache. The model then produces the probability distribution for the first output token. This makes time to first token roughly:
-
-```text
-time to first token ≈ prompt processing time + first token generation
-```
+During prefill, the model processes the input tokens in parallel. Each transformer layer computes representations for the prompt and stores the attention **keys and values** in the KV cache. The model then produces the probability distribution for the first output token.
 
 So here's how prefill looks like. We do one pass through the model: we read the weights once to perform the computations on GPU, generate the first token, and save the KV cache to memory for future use.
 
@@ -48,11 +44,7 @@ KV cache is a trick to make attention run faster. Attention is the basic compone
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/kv-cache.png" alt="KV cache" />
 
-The memory consumption of KV cache depends on the model architecture, but we can approximate it with:
-
-```text
-KV-cache size ∝ layers × context length × KV heads × head dimension × bytes per element
-```
+The memory consumption of KV cache depends on the model architecture, but we can approximate it with `number of layers × context length × KV heads × head dim × precision`.
 
 Long conversations therefore have two costs:
 
@@ -77,13 +69,13 @@ The number of output tokens generated per second. You can benchmark this with `l
 
 ```sh
 # prefill 128 tokens, generate 64 tokens, run 3 times, benchmark throughput
-
 llama bench -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 -p 128 -n 64 -r 3
-
-|     model   |     size     | params  | backend | threads | test |     t/s      |
-| gemma3 1B Q4_K | 762.49 MiB | 999.89 M | MTL,BLAS |  5 | pp128 | 2184.32 ± 3.54 |
-| gemma3 1B Q4_K | 762.49 MiB |   999.89 M | MTL,BLAS | 5 | tg64 |  115.03 ± 0.19 |
 ```
+
+| model          | size       | params   | backend  | threads | test  | t/s            |
+| -------------- | ---------- | -------- | -------- | ------- | ----- | -------------- |
+| gemma3 1B Q4_K | 762.49 MiB | 999.89 M | MTL,BLAS | 5       | pp128 | 2184.32 ± 3.54 |
+| gemma3 1B Q4_K | 762.49 MiB | 999.89 M | MTL,BLAS | 5       | tg64  | 115.03 ± 0.19  |
 
 The number of runs you pass (three, in this case) increases the accuracy of the estimate.
 
@@ -93,11 +85,7 @@ The total tokens served across all active requests per second. Batching may impr
 
 ### End-to-end latency
 
-The time from the moment you submit the prompt until the end of the generation:
-
-```text
-end-to-end latency ≈ TTFT + number of output tokens × TPOT
-```
+The time from the moment you submit the prompt until the end of the generation, which is approximately `TTFT + number of output tokens × TPOT`. 
 
 ## Improving metrics
 

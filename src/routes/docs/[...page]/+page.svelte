@@ -62,11 +62,26 @@
 			return { button, pre, wrapper };
 		});
 
+		// Wide tables scroll inside the column instead of widening the page.
+		const tables = [...article.querySelectorAll('table')].map((table) => {
+			const wrap = document.createElement('div');
+
+			wrap.className = 'table-scroll';
+			table.replaceWith(wrap);
+			wrap.appendChild(table);
+
+			return { table, wrap };
+		});
+
 		return () => {
 			for (const { button, pre, wrapper } of blocks) {
 				unmount(button);
 
 				if (wrapper.isConnected) wrapper.replaceWith(pre);
+			}
+
+			for (const { table, wrap } of tables) {
+				if (wrap.isConnected) wrap.replaceWith(table);
 			}
 		};
 	});
@@ -174,5 +189,19 @@
 		background: transparent !important;
 		color: var(--code-foreground);
 		line-height: 1.3;
+	}
+
+	/* Wrap every docs block inside the column. The docs column is narrower than
+	   a typical command or reply line, and the prism theme's `white-space: pre`
+	   would otherwise leave the rest of the line on a horizontal scrollbar. */
+	article :global(pre),
+	article :global(pre code) {
+		white-space: pre-wrap;
+		overflow-wrap: break-word;
+	}
+
+	article :global(.table-scroll) {
+		max-width: 100%;
+		overflow-x: auto;
 	}
 </style>
