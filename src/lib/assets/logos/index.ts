@@ -1,5 +1,7 @@
 // Per-brand logos, mirroring LlamaBarn's ModelLogos asset set.
 // SVGs are inlined (?raw) so they inherit text color via `currentColor`.
+// Clef models are made by Cloudflare.
+import cloudflare from './cloudflare.svg?raw';
 import deepseek from './deepseek.svg?raw';
 import gemma from './gemma.svg?raw';
 // GLM models are made by Z.ai, so we use the Z brand logo for that brand.
@@ -13,6 +15,7 @@ import qwen from './qwen.svg?raw';
 
 // Keyed by the `brand` label used in catalog.json.
 const byBrand: Record<string, string> = {
+	Cloudflare: cloudflare,
 	DeepSeek: deepseek,
 	Gemma: gemma,
 	GLM: glm,

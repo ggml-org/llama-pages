@@ -4,6 +4,12 @@
 	import { logoFor } from '$lib/assets/logos';
 	import { families, releasedFor, slugify } from '$lib/catalog';
 	import { ModelsCatalogVisionBadge } from '$lib/components/app';
+
+	// Decision models get their own section below the main list: they don't
+	// chat, so mixed into a newest-first list of chat models (where, being
+	// recent, they'd lead) they'd read as ordinary picks.
+	const chatFamilies = families.filter((f) => !f.decision);
+	const decisionFamilies = families.filter((f) => f.decision);
 </script>
 
 <svelte:head>
@@ -28,11 +34,56 @@
 		</p>
 	</header>
 
-	<!-- All families in one flat list, newest first. The publisher is already
+	<!-- Chat model families in one flat list, newest first. The publisher is already
 	     legible from each row's name and icon, so we don't group by publisher.
 	     Flush full-width rows separated by subtle hairlines. -->
+	{@render familyList(chatFamilies)}
+
+	<!-- Decision models: a short explainer, since the concept is new and the
+	     only way to use one is the API, then the same rows. -->
+	{#if decisionFamilies.length > 0}
+		<section class="mt-14">
+			<h2 class="text-[20px] font-semibold tracking-tight">Decision models</h2>
+			<p class="mt-2 mb-4 max-w-2xl text-[15px] text-muted-foreground">
+				Small models that answer typed questions with a probability for every option — route a
+				ticket, moderate content, pick an agent’s next step. They don’t chat; apps call them through
+				the API.
+				<a
+					href="https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp"
+					target="_blank"
+					rel="noopener"
+					class="whitespace-nowrap underline hover:text-foreground">How to use ↗</a
+				>
+			</p>
+			{@render familyList(decisionFamilies)}
+		</section>
+	{/if}
+
+	<!-- Closing escape hatch: the catalog is curated, not exhaustive, so after
+	     the list ends we point at the full GGUF ecosystem for anything we
+	     don't carry. On a Mac it also says how to install one: Llama is
+	     listed under "Use this model" on a model's page (as `llama-app` in
+	     huggingface.js's local-apps.ts, which opens the app's
+	     `llama://install` deep link). Mac only: the HF entry is macOS-only,
+	     and the Windows app doesn't handle the deep link yet. -->
+	<p class="mt-10 text-[15px] text-muted-foreground">
+		Find thousands more GGUF models on
+		<!-- whitespace-nowrap so the link never breaks across lines ("Hugging /
+		     Face ↗" reads badly and strands the arrow). -->
+		<a
+			href="https://huggingface.co/models?library=gguf"
+			target="_blank"
+			rel="noopener"
+			class="whitespace-nowrap underline hover:text-foreground"
+		>
+			Hugging Face ↗</a
+		><span data-os-only="mac">, then choose Llama under “Use this model” on a model’s page</span>.
+	</p>
+</main>
+
+{#snippet familyList(list: typeof families)}
 	<div class="flex flex-col">
-		{#each families as f, i (f.name)}
+		{#each list as f, i (f.name)}
 			{#if i > 0}
 				<div aria-hidden="true" class="border-t border-border/40"></div>
 			{/if}
@@ -81,25 +132,4 @@
 			</a>
 		{/each}
 	</div>
-
-	<!-- Closing escape hatch: the catalog is curated, not exhaustive, so after
-	     the list ends we point at the full GGUF ecosystem for anything we
-	     don't carry. On a Mac it also says how to install one: Llama is
-	     listed under "Use this model" on a model's page (as `llama-app` in
-	     huggingface.js's local-apps.ts, which opens the app's
-	     `llama://install` deep link). Mac only: the HF entry is macOS-only,
-	     and the Windows app doesn't handle the deep link yet. -->
-	<p class="mt-10 text-[15px] text-muted-foreground">
-		Find thousands more GGUF models on
-		<!-- whitespace-nowrap so the link never breaks across lines ("Hugging /
-		     Face ↗" reads badly and strands the arrow). -->
-		<a
-			href="https://huggingface.co/models?library=gguf"
-			target="_blank"
-			rel="noopener"
-			class="whitespace-nowrap underline hover:text-foreground"
-		>
-			Hugging Face ↗</a
-		><span data-os-only="mac">, then choose Llama under “Use this model” on a model’s page</span>.
-	</p>
-</main>
+{/snippet}

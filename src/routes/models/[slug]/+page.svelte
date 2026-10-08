@@ -37,6 +37,21 @@
 			<span class="tabular-nums">{releasedFor(family)}</span>
 		</div>
 		<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">{family.description}</p>
+		<!-- Decision models don't chat, and nothing else on the page says so --
+		     without this, installing one and finding no way to talk to it reads
+		     as a broken install. Names what it is and where to learn the API. -->
+		{#if family.decision}
+			<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">
+				A decision model: it doesn’t chat — apps call it through the API to score the options of
+				typed questions.
+				<a
+					href="https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp"
+					target="_blank"
+					rel="noopener"
+					class="whitespace-nowrap underline hover:text-foreground">How to use ↗</a
+				>
+			</p>
+		{/if}
 	</header>
 
 	<section class="mt-10">
