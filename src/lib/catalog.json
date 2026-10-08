@@ -666,34 +666,6 @@
 		]
 	},
 	{
-		"name": "Clef Flash",
-		"brand": "Cloudflare",
-		"description": "Cloudflare's decision model. Reads a text or JSON state and returns a probability for every option of every typed question in a single pass.",
-		"released": "2026-09",
-		"license": "Apache 2.0",
-		"decision": true,
-		"sizes": [
-			{
-				"name": "Clef Flash 9B",
-				"params": "9B",
-				"builds": [
-					{
-						"quant": "Q8_0",
-						"size": "9.7 GB",
-						"sizeBytes": 9657260192,
-						"repo": "ggml-org/Clef-Flash-GGUF"
-					},
-					{
-						"quant": "Q4_K_M",
-						"size": "6.5 GB",
-						"sizeBytes": 6486448288,
-						"repo": "ggml-org/Clef-Flash-GGUF"
-					}
-				]
-			}
-		]
-	},
-	{
 		"name": "Laya",
 		"brand": "ConvAI Innovations",
 		"description": "Multilingual decision model from ConvAI Innovations. Answers typed questions about a text, email, ticket, or JSON with calibrated probabilities across 100+ languages.",
