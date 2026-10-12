@@ -18,10 +18,10 @@ llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0
 llama serve -m my-model.gguf
 ```
 
-By default the server listens on `http://127.0.0.1:8080`. Open that address in a browser for the web UI, or send API requests to it:
+By default the server listens on `http://127.0.0.1:9931`. Open that address in a browser for the web UI, or send API requests to it:
 
 ```sh
-curl http://localhost:8080/v1/chat/completions \
+curl http://localhost:9931/v1/chat/completions \
     -H "Content-Type: application/json" \
     -d '{"messages": [{"role": "user", "content": "Hello!"}]}'
 ```
@@ -33,7 +33,7 @@ llama serve -m model.gguf \
     -c 16384 \ # context size (pass 0 for model's native maximum)
     -ngl all \          # GPU offload (default: auto)
     --host 0.0.0.0 \    # listen on all interfaces (default: 127.0.0.1)
-    --port 8080
+    --port 9931
 ```
 
 | Flag                   | What it does                                                        |
@@ -41,7 +41,7 @@ llama serve -m model.gguf \
 | `-c, --ctx-size N`     | Context size in tokens; `-c 0` uses the model's full context window |
 | `-ngl, --gpu-layers N` | Layers to offload to GPU (`auto`, `all`, or a number)               |
 | `-np, --parallel N`    | Number of server slots for concurrent requests (default: auto)      |
-| `--host`, `--port`     | Bind address and port (default `127.0.0.1:8080`)                    |
+| `--host`, `--port`     | Bind address and port (default `127.0.0.1:9931`)                    |
 | `-a, --alias NAME`     | Model name reported by the API                                      |
 | `--api-key KEY`        | Require an API key (comma-separated list for multiple keys)         |
 | `--no-webui`           | Disable the web UI, serve the API only                              |
@@ -53,7 +53,7 @@ services:
   llamacpp-server:
     image: ghcr.io/ggml-org/llama.cpp:server
     ports:
-      - '8080:8080'
+      - '9931:9931'
     volumes:
       - ./models:/models
     environment:
@@ -61,7 +61,7 @@ services:
       LLAMA_ARG_MODEL: /models/my_model.gguf
       LLAMA_ARG_CTX_SIZE: 4096
       LLAMA_ARG_N_PARALLEL: 2
-      LLAMA_ARG_PORT: 8080
+      LLAMA_ARG_PORT: 9931
 ```
 
 ## Serving multiple users
@@ -84,10 +84,10 @@ Prompt caching is enabled by default, so repeated requests with a shared prefix 
 llama serve \
   -hf unsloth/embeddinggemma-300m-GGUF \
   --embedding \
-  --port 8080
+  --port 9931
 
 # Send text pairs
-curl http://127.0.0.1:8080/v1/embeddings \
+curl http://127.0.0.1:9931/v1/embeddings \
   -H 'Content-Type: application/json' \
   -d '{"input": ["The cat sat on the mat", "A feline rested on a rug"]}'
 ```
@@ -102,10 +102,10 @@ llama serve -m reranker-model.gguf --rerank
 llama serve \
   -hf ggml-org/Qwen3-reranker-0.6B-Q8_0-GGUF:Q8_0 \
   --embedding --rerank --pooling rank \
-  --port 8080
+  --port 9931
 
 # query rerank endpoint
-curl http://127.0.0.1:8080/v1/rerank \
+curl http://127.0.0.1:9931/v1/rerank \
   -H 'Content-Type: application/json' \
   -d '{
     "query": "What is panda?",
@@ -161,7 +161,7 @@ Models can come from three sources:
 Note that when sending requests, you need to specify the model name.
 
 ```sh
-curl http://localhost:8080/v1/chat/completions \
+curl http://localhost:9931/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer no-key" \
   -d '{
@@ -175,7 +175,7 @@ curl http://localhost:8080/v1/chat/completions \
 You can list the available model names as follows.
 
 ```sh
-(base) ➜  ~ curl -s http://localhost:8080/v1/models | jq '.data[].id'
+(base) ➜  ~ curl -s http://localhost:9931/v1/models | jq '.data[].id'
 "LiquidAI/LFM2.5-230M-GGUF:Q4_K_M"
 "ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF:Q8_0"
 "ggml-org/gemma-3-4b-it-qat-GGUF:Q4_0"

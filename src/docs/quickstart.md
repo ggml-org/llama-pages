@@ -64,10 +64,10 @@ See [Using the CLI](cli) for system prompts, sampling settings, multimodal input
 llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0
 ```
 
-Then open **http://localhost:8080** in your browser to use the [built-in web UI](webui), or call the API:
+Then open **http://localhost:9931** in your browser to use the [built-in web UI](webui), or call the API:
 
 ```sh
-curl http://localhost:8080/v1/chat/completions \
+curl http://localhost:9931/v1/chat/completions \
     -H "Content-Type: application/json" \
     -d '{
         "messages": [
@@ -81,7 +81,7 @@ Because the API is compatible with OpenAI endpoints, you can plug it in many dif
 ```python
 import openai
 
-client = openai.OpenAI(base_url="http://localhost:8080/v1", api_key="no-key-required")
+client = openai.OpenAI(base_url="http://localhost:9931/v1", api_key="no-key-required")
 
 response = client.chat.completions.create(
     model="gemma-4-e4b-it",
