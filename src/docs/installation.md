@@ -23,7 +23,7 @@ This is the easiest way to get started with llama.cpp. The following command det
 curl -LsSf https://llama.app/install.sh | sh
 ```
 
-To pair with a coding agent, install with a package manager or build yourself, please follow the instructions in [https://llama.app](https://llama.app).
+To pair with a coding agent, install with a package manager or build yourself, please follow the instructions on [https://llama.app](https://llama.app).
 
 ## Verify the installation
 
