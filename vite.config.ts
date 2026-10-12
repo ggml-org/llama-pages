@@ -1,10 +1,30 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { playwright } from '@vitest/browser-playwright';
+import type { PreviewServer, ViteDevServer } from 'vite';
 import { defineConfig } from 'vitest/config';
 
+function configureMarkdownCharset(server: ViteDevServer | PreviewServer) {
+	server.middlewares.use((req, res, next) => {
+		// The static server omits the charset for Markdown, so browsers may misread UTF-8.
+		if (/^\/docs\/.*\.md(?:\?|$)/.test(req.url ?? '')) {
+			res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+		}
+
+		next();
+	});
+}
+
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [
+		{
+			configurePreviewServer: configureMarkdownCharset,
+			configureServer: configureMarkdownCharset,
+			name: 'docs-markdown-charset'
+		},
+		tailwindcss(),
+		sveltekit()
+	],
 	test: {
 		expect: { requireAssertions: true },
 		// There are no unit tests at the moment (the homepage is covered by
