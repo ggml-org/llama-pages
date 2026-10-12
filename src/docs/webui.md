@@ -2,7 +2,7 @@
 
 # Web UI
 
-llama.cpp ships a modern chat interface built right into `llama serve`, with support for multimodal input, MCPs and more.
+llama.cpp ships with a modern chat interface built right into `llama serve`, with support for multimodal input, MCPs and more.
 
 ## Getting started
 
