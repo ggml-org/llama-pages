@@ -64,7 +64,7 @@ services:
       LLAMA_ARG_PORT: 8080
 ```
 
-> Most of the time, you won't need to specify many command-line options, as the defaults are sensible and optimized.
+Most of the time, you won't need to specify many command-line options, as the defaults are sensible and optimized.
 
 ## Serving multiple users
 
