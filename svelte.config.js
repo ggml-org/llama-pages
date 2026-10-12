@@ -1,5 +1,5 @@
 import adapter from '@sveltejs/adapter-static';
-import { mdsvex } from 'mdsvex';
+import { code_highlighter, mdsvex } from 'mdsvex';
 import { relative, sep } from 'node:path';
 import rehypeSlug from 'rehype-slug';
 
@@ -25,7 +25,21 @@ const config = {
 			entries: ['*']
 		}
 	},
-	preprocess: [mdsvex({ extensions: ['.svx', '.md'], rehypePlugins: [rehypeSlug] })]
+	preprocess: [
+		mdsvex({
+			extensions: ['.svx', '.md'],
+			highlight: {
+				// mdsvex's own Prism highlighter, with every backslash turned into
+				// an HTML entity. mdsvex emits highlighted code inside a JS template
+				// literal (`{@html `...`}`), where a backslash is an escape -- so a
+				// shell line continuation (`\` + newline) vanished, joining
+				// multi-line commands into one line. The output's only backslashes
+				// come from the code itself, so escaping all of them is safe.
+				highlighter: async (...args) => (await code_highlighter(...args)).replace(/\\/g, '&#92;')
+			},
+			rehypePlugins: [rehypeSlug]
+		})
+	]
 };
 
 export default config;

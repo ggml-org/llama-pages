@@ -251,12 +251,6 @@ pre[class*='language-'] {
 	}
 }
 
-/* Inline code in the docs' prose. */
-.prose p code {
-	color: var(--accent) !important;
-	margin-inline: 0.25rem;
-}
-
 /* The homepage's API terminal: a palette for a panel that's dark in both
    themes. Kept muted -- the orange is saved for strings, so the
    snippet's "payload" (the URL, the model, the prompt) stands out. Scoped to
