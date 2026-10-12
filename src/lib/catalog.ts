@@ -53,6 +53,12 @@ export type Family = {
 	// "Gemma license"). Families whose sizes ship under different licenses
 	// list both (e.g. "Apache 2.0 / Modified MIT").
 	license: string;
+	// Whether the license forbids commercial use (e.g. CC BY-NC). An explicit
+	// flag rather than parsed from `license`, which is free-form display text.
+	// The website tags these on the models list, where people choose -- the
+	// license string alone ("CC BY-NC 4.0") doesn't read as a restriction to
+	// most visitors. Absent means false.
+	nonCommercial?: boolean;
 	// Whether this family is featured. Exposed in the published catalog API for
 	// consumers to highlight; the website doesn't surface it -- the homepage
 	// grid keeps its own handpicked list, so the two move independently.

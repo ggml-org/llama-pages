@@ -28,13 +28,20 @@
      the family prose. -->
 <main class="mx-auto w-full max-w-6xl px-6 pt-8 pb-24 md:px-12">
 	<!-- Header, title-first: the family name leads at full size, with the
-	     release date as a byline under it and the one-line summary last --
-	     headline / byline / standfirst. The brand isn't repeated here: the
-	     title contains it and the summary opens by naming the publisher. -->
+	     release date and license as a byline under it and the one-line summary
+	     last -- headline / byline / standfirst. The brand isn't repeated here:
+	     the title contains it and the summary opens by naming the publisher.
+	     The license is labeled, since a bare "OpenMDW 1.1" or "MIT" after a
+	     date doesn't say what it is. -->
 	<header>
 		<h1 class="text-[30px] font-semibold tracking-tight">{family.name}</h1>
 		<div class="mt-2.5 text-[13px] text-muted-foreground">
 			<span class="tabular-nums">{releasedFor(family)}</span>
+			<span aria-hidden="true" class="mx-1">·</span>
+			<span>License: {family.license}</span>
+			{#if family.nonCommercial}
+				<span>(non-commercial)</span>
+			{/if}
 		</div>
 		<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">{family.description}</p>
 		<!-- Decision models don't chat, and nothing else on the page says so --

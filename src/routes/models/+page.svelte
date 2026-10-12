@@ -119,6 +119,16 @@
 								{s.params ?? s.name}
 							</span>
 						{/each}
+						<!-- Flagged here, where people pick a model, rather than only in
+						     the detail page's license line: "CC BY-NC 4.0" doesn't read
+						     as a restriction to most visitors, and the description that
+						     spells it out is clamped to one line on this list. Plain amber
+						     text, not a pill, so it doesn't pass for another size. -->
+						{#if f.nonCommercial}
+							<span class="ml-1 text-[12px] font-normal text-amber-700 dark:text-amber-400">
+								Non-commercial
+							</span>
+						{/if}
 					</h3>
 					<p class="mt-0.5 line-clamp-1 text-[15px] text-muted-foreground">{f.description}</p>
 				</div>
