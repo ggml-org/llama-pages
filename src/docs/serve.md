@@ -141,7 +141,10 @@ llama serve -m big-model.gguf -md small-draft-model.gguf --spec-type draft-simpl
 For model repositories that contain main model and drafter model (as well as separate repositories), you can serve llama server as follows.
 
 ```sh
-llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --hf-repo-draft ggml-org/gemma-4-e4b-it-GGUF:Q4_0 --spec-type draft-mtp
+llama serve \
+  -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0 \
+  --hf-repo-draft ggml-org/gemma-4-e4b-it-GGUF:Q4_0 \
+  --spec-type draft-mtp
 ```
 
 ## Serving multiple models (router mode)
