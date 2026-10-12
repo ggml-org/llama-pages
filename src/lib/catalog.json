@@ -693,6 +693,7 @@
 		"description": "Bespoke Labs' decision model built on Qwen 3.5 9B. Given a context and typed questions, it returns a probability for each option. Non-commercial license.",
 		"released": "2026-09",
 		"license": "CC BY-NC 4.0",
+		"nonCommercial": true,
 		"decision": true,
 		"sizes": [
 			{
