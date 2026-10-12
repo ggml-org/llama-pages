@@ -44,7 +44,7 @@
 			{/if}
 		</div>
 		<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">{family.description}</p>
-		<!-- Decision models don't chat, and nothing else on the page says so --
+		<!-- Decision and embedding models don't chat, and nothing else on the page says so --
 		     without this, installing one and finding no way to talk to it reads
 		     as a broken install. Names what it is and where to learn the API. -->
 		{#if family.decision}
@@ -53,6 +53,17 @@
 				typed questions.
 				<a
 					href="https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp"
+					target="_blank"
+					rel="noopener"
+					class="whitespace-nowrap underline hover:text-foreground">How to use ↗</a
+				>
+			</p>
+		{:else if family.embedding}
+			<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">
+				An embedding model: it doesn’t chat — apps call it through the API to turn input into
+				vectors for search and retrieval.
+				<a
+					href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-v1embeddings-openai-compatible-embeddings-api"
 					target="_blank"
 					rel="noopener"
 					class="whitespace-nowrap underline hover:text-foreground">How to use ↗</a

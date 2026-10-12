@@ -867,5 +867,28 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "EmbeddingGemma 2",
+		"brand": "Gemma",
+		"description": "Google's multimodal embedding model. Maps text, images, audio, and code into one shared vector space for search and retrieval.",
+		"released": "2026-10",
+		"license": "Apache 2.0",
+		"embedding": true,
+		"sizes": [
+			{
+				"name": "EmbeddingGemma 2",
+				"params": "740M",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "310 MB",
+						"sizeBytes": 309855456,
+						"repo": "ggml-org/embeddinggemma-2-GGUF"
+					}
+				]
+			}
+		]
 	}
 ]
