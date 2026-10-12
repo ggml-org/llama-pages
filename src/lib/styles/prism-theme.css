@@ -22,70 +22,6 @@ code[class*='language-'] {
 	background: none !important;
 }
 
-/* Dark mode Prism color overrides */
-.dark .token.comment,
-.dark .token.prolog,
-.dark .token.doctype,
-.dark .token.cdata {
-	color: #6a737d !important;
-}
-
-.dark .token.punctuation {
-	color: #c9d1d9 !important;
-}
-
-.dark .token.property,
-.dark .token.tag,
-.dark .token.boolean,
-.dark .token.number,
-.dark .token.constant,
-.dark .token.symbol {
-	color: #79c0ff !important;
-}
-
-.dark .token.selector,
-.dark .token.attr-name,
-.dark .token.string,
-.dark .token.char,
-.dark .token.builtin,
-.dark .token.inserted {
-	color: #a5d6ff !important;
-}
-
-.dark .token.operator {
-	color: #ff7b72 !important;
-}
-
-.dark .token.entity,
-.dark .token.url {
-	color: #79c0ff !important;
-}
-
-.dark .token.atrule,
-.dark .token.attr-value,
-.dark .token.keyword {
-	color: #ff7b72 !important;
-}
-
-.dark .token.function,
-.dark .token.class-name {
-	color: #d2a8ff !important;
-}
-
-.dark .token.regex,
-.dark .token.important,
-.dark .token.variable {
-	color: #ffa657 !important;
-}
-
-.dark .token.deleted {
-	color: #ff7b72 !important;
-}
-
-/**
- * GitHub Prism Light Theme
- * Based on GitHub's syntax highlighting colors
- */
 code[class*='language-'],
 pre[class*='language-'] {
 	color: var(--foreground) !important;
@@ -107,10 +43,6 @@ pre[class*='language-'] {
 	-moz-hyphens: none;
 	-ms-hyphens: none;
 	hyphens: none;
-}
-
-pre[class*='language-'] code[class*='language-'] {
-	color: #24292e;
 }
 
 /* Background & box — stripped, container handles it */
@@ -138,125 +70,77 @@ pre[class*='language-'] {
 	white-space: normal;
 }
 
-/* Tokens */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-	&,
-	:is(.dark) & {
-		color: var(--color-ring) !important;
-	}
+/* The docs' code colors. Three hues, so a block reads at a glance:
+   commands (`llama`, `curl`) in violet, names (flags, JSON and YAML keys)
+   in sky blue, values (strings, numbers) in orange -- the orange the
+   homepage terminal saves for its payload, whose violet this one echoes
+   too. Comments and punctuation recede. Each theme swaps only the
+   variables. */
+:root {
+	/* sky-700, amber-700 -- orange-700 reads as red at this size -- and
+	   violet-700 with its chroma cut to about theirs (from 0.27), since at full
+	   strength it outshouts the other two */
+	--code-command: oklch(49.1% 0.15 292.581);
+	--code-name: oklch(50% 0.134 242.749);
+	--code-value: oklch(55.5% 0.163 48.998);
+	--code-dim: var(--muted-foreground);
 }
 
-.token.punctuation {
-	&,
-	:is(.dark) & {
-		color: #24292e;
-	}
-}
-
-.token.namespace {
-	&,
-	:is(.dark) & {
-		opacity: 0.7;
-	}
-}
-
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol {
-	&,
-	:is(.dark) & {
-		color: #005cc5;
-	}
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.url,
-.token.inserted {
-	&,
-	:is(.dark) & {
-		color: #032f62;
-	}
-}
-
-.token.operator {
-	&,
-	:is(.dark) & {
-		color: #d73a49;
-	}
-}
-
-.token.entity {
-	&,
-	:is(.dark) & {
-		color: #005cc5;
-		cursor: help;
-	}
-}
-
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-	&,
-	:is(.dark) & {
-		color: #d73a49;
-	}
+.dark {
+	/* violet-300, sky-300, orange-300 */
+	--code-command: oklch(81.1% 0.111 293.571);
+	--code-name: oklch(82.8% 0.111 230.318);
+	--code-value: oklch(83.7% 0.128 66.29);
 }
 
 .token.function,
-.token.class-name {
-	&,
-	:is(.dark) & {
-		color: var(--accent) !important;
-	}
+.token.builtin,
+.token.keyword {
+	color: var(--code-command);
 }
 
-.token.regex,
-.token.important,
-.token.variable {
-	&,
-	:is(.dark) & {
-		color: #e36209;
-	}
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata,
+.token.punctuation,
+.token.operator {
+	color: var(--code-dim);
+}
+
+.token.parameter,
+.token.property,
+.token.atrule,
+.token.attr-name,
+.token.tag,
+.token.selector {
+	color: var(--code-name);
+}
+
+.token.string,
+.token.char,
+.token.attr-value,
+.token.url,
+.token.number,
+.token.boolean,
+.token.constant {
+	color: var(--code-value);
 }
 
 .token.important,
 .token.bold {
-	&,
-	:is(.dark) & {
-		font-weight: bold;
-	}
+	font-weight: bold;
 }
 
 .token.italic {
-	&,
-	:is(.dark) & {
-		font-style: italic;
-	}
-}
-
-.token.deleted {
-	&,
-	:is(.dark) {
-		color: #b31d28;
-	}
+	font-style: italic;
 }
 
 /* The homepage's API terminal: a palette for a panel that's dark in both
    themes. Kept muted -- the orange is saved for strings, so the
    snippet's "payload" (the URL, the model, the prompt) stands out. Scoped to
-   `.terminal-code` so the docs' code blocks keep their GitHub colors, and
-   `!important` so it wins over the page-wide `.dark` rules above in dark
-   mode. */
+   `.terminal-code` so the docs' code blocks keep their own colors, and
+   `!important` so it wins over the page-wide token rules above. */
 .terminal-code .token.comment,
 .terminal-code .token.prolog,
 .terminal-code .token.doctype,
