@@ -1,7 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import 'prismjs/themes/prism.css';
-	import 'prismjs/themes/prism-dark.css';
 	import { dev } from '$app/environment';
 	import { page } from '$app/state';
 	import { DevOsSwitcher, SeoMetadata, SiteHeader } from '$lib/components/app';

@@ -150,7 +150,7 @@
 	<button
 		type="button"
 		onclick={copyMarkdown}
-		class="inline-flex cursor-pointer items-center gap-1.5 rounded-l-md border border-border px-2.5 py-1.5 transition-colors hover:bg-foreground/5"
+		class="inline-flex cursor-pointer items-center gap-1.5 rounded-l-md border border-border px-2.5 py-1.5"
 	>
 		{#if copied}
 			<Check class="size-3.5 text-green-500" />
@@ -165,7 +165,7 @@
 		onclick={toggleMenu}
 		aria-label="More page actions"
 		aria-expanded={open}
-		class="inline-flex cursor-pointer items-center rounded-r-md border border-l-0 border-border px-1.5 py-1.5 transition-colors hover:bg-foreground/5"
+		class="inline-flex cursor-pointer items-center rounded-r-md border border-l-0 border-border px-1.5 py-1.5"
 	>
 		<ChevronDown class="size-3.5 transition-transform {open ? 'rotate-180' : ''}" />
 	</button>
@@ -177,7 +177,7 @@
 			<button
 				type="button"
 				onclick={copyMarkdown}
-				class="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left transition-colors hover:bg-foreground/5"
+				class="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left"
 			>
 				<Copy class="size-3.5 shrink-0" />
 				Copy page as Markdown
@@ -188,13 +188,13 @@
 				target="_blank"
 				rel="noopener"
 				onclick={() => (open = false)}
-				class="flex items-center gap-2 rounded px-2 py-1.5 transition-colors hover:bg-foreground/5"
+				class="flex items-center gap-2 rounded px-2 py-1.5"
 			>
 				<FileText class="size-3.5 shrink-0" />
 				View as Markdown
 			</a>
 
-			<div class="flex items-center rounded transition-colors hover:bg-foreground/5">
+			<div class="flex items-center rounded">
 				<a
 					href={llamaHref}
 					target="_blank"
@@ -224,7 +224,7 @@
 					onclick={() => editLlamaServer()}
 					aria-label="Set Llama server port or URL"
 					title="Set Llama server port or URL"
-					class="cursor-pointer py-1.5 pr-2 pl-1 text-foreground/40 transition-colors hover:text-foreground"
+					class="cursor-pointer py-1.5 pr-2 pl-1 text-muted-foreground"
 				>
 					<Pencil class="size-3" />
 				</button>

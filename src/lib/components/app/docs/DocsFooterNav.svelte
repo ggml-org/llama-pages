@@ -11,15 +11,20 @@
 	let { next, prev }: Props = $props();
 </script>
 
+<!-- Two cards, each labelled with its direction, so "Next" is findable
+     without reading the titles. The empty span keeps "Next" in the right
+     column on the first page. -->
 {#if prev || next}
-	<nav class="mt-12 flex items-center justify-between gap-4 border-t pt-6" aria-label="Pagination">
+	<nav class="mt-16 grid grid-cols-2 gap-4 text-sm" aria-label="Pagination">
 		{#if prev}
 			<a
 				href={resolve('/docs/[...page]', { page: prev.local })}
-				class="inline-flex items-center gap-2 text-sm text-foreground/70 transition-colors hover:text-foreground"
+				class="flex flex-col gap-1 rounded-xl border p-4"
 			>
-				<ArrowLeft class="size-4" />
-				{prev.title}
+				<span class="flex items-center gap-1 text-muted-foreground">
+					<ArrowLeft class="size-3.5" /> Previous
+				</span>
+				<span class="font-medium">{prev.title}</span>
 			</a>
 		{:else}
 			<span></span>
@@ -28,10 +33,12 @@
 		{#if next}
 			<a
 				href={resolve('/docs/[...page]', { page: next.local })}
-				class="inline-flex items-center gap-2 text-sm text-foreground/70 transition-colors hover:text-foreground"
+				class="flex flex-col items-end gap-1 rounded-xl border p-4 text-right"
 			>
-				{next.title}
-				<ArrowRight class="size-4" />
+				<span class="flex items-center gap-1 text-muted-foreground">
+					Next <ArrowRight class="size-3.5" />
+				</span>
+				<span class="font-medium">{next.title}</span>
 			</a>
 		{/if}
 	</nav>

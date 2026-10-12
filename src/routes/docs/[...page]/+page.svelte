@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ChevronDown } from '@lucide/svelte';
 	import {
 		DocsCodeCopyButton,
 		DocsCopyPage,
@@ -17,9 +18,9 @@
 
 	let article = $state<HTMLElement>();
 
-	// Give every code block a header that names its language and holds the
-	// copy button. The markdown HTML is rendered by <Content />, so the
-	// wrapper and header are built imperatively around each <pre>.
+	// Give every code block a copy button. The markdown HTML is rendered by
+	// <Content />, so a wrapper is built imperatively around each <pre> to
+	// hold the button in its top-right corner.
 	$effect(() => {
 		void data.local;
 
@@ -29,30 +30,12 @@
 			const wrapper = document.createElement('div');
 
 			wrapper.className = 'code-block';
-
-			const header = document.createElement('div');
-
-			header.className = 'code-block-header';
-
-			// Prism tags the <pre> with the fence's language (`language-sh`).
-			// Blocks without one get no label, just the copy button.
-			const language = /language-([\w-]+)/.exec(pre.className)?.[1];
-
-			if (language) {
-				const label = document.createElement('span');
-
-				label.className = 'code-block-language';
-				label.textContent = language;
-				header.appendChild(label);
-			}
-
 			pre.replaceWith(wrapper);
-			wrapper.appendChild(header);
 			wrapper.appendChild(pre);
 
 			const button = mount(DocsCodeCopyButton, {
 				props: { getText: () => pre.innerText },
-				target: header
+				target: wrapper
 			});
 
 			return { button, pre, wrapper };
@@ -90,101 +73,145 @@
 
 <DocsSearch />
 
-<div class="flex w-full">
-	<aside
-		class="sticky top-20 hidden h-[calc(100vh-5rem)] w-[19rem] shrink-0 overflow-y-auto px-7 py-6 lg:block"
-	>
+<!-- Same content column as the header and the rest of the site
+     (`max-w-6xl`, `px-6 md:px-12`, per llama-design), so the sidebar lines up
+     under the logo instead of hugging the window edge. Two columns: the page
+     nav and the article -- no third "on this page" column, which would
+     squeeze the article and its code blocks. -->
+<div
+	class="relative mx-auto grid w-full max-w-6xl grid-cols-1 px-6 md:px-12 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14"
+>
+	<!-- The site header isn't sticky (it scrolls away), so the sidebar sticks
+	     to the very top of the viewport. -->
+	<aside class="sticky top-0 hidden h-dvh overflow-y-auto pt-6 pb-10 lg:block">
 		<DocsSidebar toctree={data.toctree} active={data.local} />
 	</aside>
 
-	<div class="flex min-h-screen w-full min-w-0 grow gap-x-8 px-4 pt-6 lg:pt-10 lg:pr-10 lg:pl-16">
-		<main class="mx-auto w-full max-w-xl min-w-0 pb-10 xl:w-[calc(100%-28rem)] 2xl:max-w-2xl">
-			<details class="mb-6 rounded-md border border-border lg:hidden">
-				<summary class="cursor-pointer px-3 py-2 text-sm font-medium">Documentation</summary>
-				<div class="px-3 pb-3">
+	<!-- The current page's sections, hung in the right margin, outside the
+	     content column. Only where the margin fits it (from 1600px: 224px of
+	     margin for a 192px list) -- it's a nice-to-have, so narrower screens
+	     simply go without, rather than the nav making room for it. -->
+	<aside class="absolute top-0 left-full hidden h-full w-48 min-[100rem]:block">
+		<div class="sticky top-0 max-h-dvh overflow-y-auto pt-6 pb-10">
+			<DocsToc {article} pageKey={data.local} />
+		</div>
+	</aside>
+
+	<main class="relative min-w-0 pt-2 pb-24 lg:pt-6">
+		<!-- On phones and tablets the nav folds into a menu named after the
+		     current page. Keyed by page so it closes after navigating -- the
+		     component (and an open <details>) otherwise persists. -->
+		{#key data.local}
+			<details class="group mb-8 rounded-xl border lg:hidden">
+				<summary
+					class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm [&::-webkit-details-marker]:hidden"
+				>
+					<span class="truncate">
+						<span class="text-muted-foreground">Docs /</span>
+						<span class="font-medium">{data.title}</span>
+					</span>
+					<ChevronDown class="size-4 shrink-0 transition-transform group-open:rotate-180" />
+				</summary>
+				<div class="border-t p-4">
 					<DocsSidebar toctree={data.toctree} active={data.local} />
 				</div>
 			</details>
+		{/key}
 
-			<div class="mb-4 flex justify-end">
-				<DocsCopyPage local={data.local} />
-			</div>
+		<!-- In the top-right corner, level with the h1 (which leaves room for it,
+		     see the style block) from lg up; above it on narrower screens, where
+		     a long title would run into it. -->
+		<div class="mb-4 flex justify-end lg:absolute lg:top-6 lg:right-0 lg:mb-0">
+			<DocsCopyPage local={data.local} />
+		</div>
 
-			<article bind:this={article} class="prose max-w-none dark:prose-invert">
-				<Content />
-			</article>
-
-			<DocsFooterNav prev={data.prev} next={data.next} />
-		</main>
-
-		<aside
-			class="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-[19rem] shrink-0 self-start overflow-y-auto pb-4 pl-10 xl:block"
+		<!-- Prose colors come from the site's tokens (see the style block), so
+		     dark mode needs no `prose-invert`. Inline code is a soft gray chip
+		     rather than typography's bold-with-backticks. -->
+		<article
+			bind:this={article}
+			class="prose max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-h1:text-4xl prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-img:rounded-xl [&_:not(pre)>code]:rounded-md [&_:not(pre)>code]:bg-foreground/6 [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:text-[0.85em]"
 		>
-			<DocsToc {article} pageKey={data.local} />
-		</aside>
-	</div>
+			<Content />
+		</article>
+
+		<DocsFooterNav prev={data.prev} next={data.next} />
+	</main>
 </div>
 
 <style lang="postcss">
-	/* Keep anchor targets clear of the sticky site header. */
-	article :global(:is(h1, h2, h3, h4, h5, h6)) {
-		scroll-margin-top: 6rem;
+	/* Typography's palette, swapped for the site's tokens, which already
+	   change with the theme. Body text is a touch softer than headings, for
+	   long reading (llama-design: soften with foreground/80, don't go gray). */
+	article {
+		--tw-prose-body: color-mix(in oklab, var(--foreground) 85%, transparent);
+		--tw-prose-headings: var(--foreground);
+		--tw-prose-lead: var(--foreground);
+		--tw-prose-links: var(--foreground);
+		--tw-prose-bold: var(--foreground);
+		--tw-prose-counters: var(--muted-foreground);
+		--tw-prose-bullets: var(--muted-foreground);
+		--tw-prose-hr: var(--border);
+		--tw-prose-quotes: var(--foreground);
+		--tw-prose-quote-borders: var(--border);
+		--tw-prose-captions: var(--muted-foreground);
+		--tw-prose-code: var(--foreground);
+		--tw-prose-th-borders: var(--border);
+		--tw-prose-td-borders: var(--border);
 	}
 
-	/* Each code block is a box with a header row -- the language on the left,
-	   the copy button on the right -- laid over the top of the <pre>, whose
-	   top padding makes room for it. The global prism theme strips pre box
-	   styling with !important (the homepage install widget provides its own
-	   container), so the box lives on the wrapper and the pre is reset with
-	   higher specificity. */
+	/* Room for the "Copy page" control beside the title (see above). */
+	@media (min-width: 64rem) {
+		article :global(h1) {
+			padding-right: 10rem;
+		}
+	}
+
+	/* The header scrolls away, so anchor targets need only a little air. */
+	article :global(:is(h1, h2, h3, h4, h5, h6)) {
+		scroll-margin-top: 1.5rem;
+	}
+
+	/* Each code block is a box with the copy button in its top-right corner.
+	   Code panels are light in light mode on llama.app (see llama-design).
+	   The global prism theme strips pre box styling with !important (the
+	   homepage install widget provides its own container), so the box lives
+	   on the wrapper and the pre is reset with higher specificity. */
 	article :global(.code-block) {
 		position: relative;
-		overflow: hidden;
+		margin-block: 1.5em;
 		border: 1px solid var(--border);
-		border-radius: calc(var(--radius) + 2px);
+		border-radius: calc(var(--radius) + 4px);
 		background: var(--code-background);
 	}
 
-	article :global(.code-block-header) {
+	/* Backed by the panel color, so a long first line scrolled under it
+	   (narrow screens) doesn't show through. */
+	article :global(.code-block > button) {
 		position: absolute;
-		inset-inline: 0;
-		top: 0;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.5rem 1rem 0;
+		top: 0.625rem;
+		right: 0.625rem;
+		background: var(--code-background);
 	}
 
-	/* Pushes the copy button right even when there's no language label. */
-	article :global(.code-block-header > :last-child) {
-		margin-left: auto;
-	}
-
-	article :global(.code-block-language) {
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		font-weight: 500;
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
-	}
-
+	/* Lines don't wrap: wrapping breaks a command or a column of aligned
+	   comments mid-line, where it reads as two lines. The column is wide
+	   enough for most lines; the rest scroll inside the block. The right
+	   padding keeps the first line clear of the copy button. */
 	article :global(pre) {
 		margin: 0 !important;
-		padding: 3rem 1rem 1rem !important;
+		padding: 1rem 3rem 1rem 1.25rem !important;
 		border: none !important;
 		border-radius: 0 !important;
 		background: transparent !important;
 		color: var(--code-foreground);
-		line-height: 1.3;
+		font-size: 0.8125rem;
+		line-height: 1.7;
+		overflow-x: auto !important;
 	}
 
-	/* Wrap every docs block inside the column. The docs column is narrower than
-	   a typical command or reply line, and the prism theme's `white-space: pre`
-	   would otherwise leave the rest of the line on a horizontal scrollbar. */
-	article :global(pre),
 	article :global(pre code) {
-		white-space: pre-wrap;
-		overflow-wrap: break-word;
+		font-size: inherit !important;
 	}
 
 	article :global(.table-scroll) {

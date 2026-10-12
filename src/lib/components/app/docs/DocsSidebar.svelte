@@ -15,21 +15,15 @@
 <button
 	type="button"
 	onclick={() => (searchState.open = true)}
-	class="flex w-full cursor-pointer items-center gap-2 rounded-lg bg-foreground/4 px-2.5 py-2 text-sm text-foreground/45 transition-colors hover:bg-foreground/7 hover:text-foreground/70"
+	class="flex w-full cursor-pointer items-center gap-2 rounded-lg bg-foreground/4 px-2.5 py-2 text-sm text-muted-foreground"
 >
 	<Search class="size-3.5 shrink-0" />
 	Search docs
-	<kbd
-		class="ml-auto rounded bg-foreground/6 px-1.5 py-0.5 font-mono text-[10px] text-foreground/40"
-	>
-		⌘K
-	</kbd>
+	<kbd class="ml-auto rounded bg-foreground/6 px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
 </button>
 
-<nav class="mt-4 flex flex-col gap-0.5" aria-label="Documentation">
-	{#key active}
-		{#each toctree as item (item.title)}
-			<DocsSectionNav {item} {active} />
-		{/each}
-	{/key}
+<nav class="mt-6 flex flex-col gap-6" aria-label="Documentation">
+	{#each toctree as item (item.title)}
+		<DocsSectionNav {item} {active} />
+	{/each}
 </nav>
