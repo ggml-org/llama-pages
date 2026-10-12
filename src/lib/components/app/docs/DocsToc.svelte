@@ -1,6 +1,6 @@
 <script lang="ts">
-	// The current page's sections, nested under its link in the sidebar. Only
-	// `h2`s: the list sits inside the page nav, so it stays one level deep.
+	// The current page's sections, in the right margin. Only `h2`s, to keep the
+	// list short and one level deep.
 	interface Heading {
 		id: string;
 		text: string;
@@ -67,11 +67,12 @@
 	});
 </script>
 
-<!-- A hairline down the left, with the current section's stretch of it drawn
-     in `foreground` -- a quiet "you are here" that doesn't compete with the
-     page link's pill above. -->
+<!-- A small muted label, like the sidebar's group labels, over a hairline
+     with the current section's stretch of it drawn in `foreground` -- a quiet
+     "you are here". -->
 {#if headings.length > 0}
-	<nav aria-label="On this page" class="my-1 ml-2 flex flex-col border-l text-[13px] leading-5">
+	<p class="pb-2 text-[13px] text-muted-foreground">On this page</p>
+	<nav aria-label="On this page" class="flex flex-col border-l text-[13px] leading-5">
 		{#each headings as heading (heading.id)}
 			<a
 				href="#{heading.id}"

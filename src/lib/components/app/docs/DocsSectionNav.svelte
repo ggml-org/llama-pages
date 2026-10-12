@@ -2,16 +2,13 @@
 	import Self from './DocsSectionNav.svelte';
 	import { resolve } from '$app/paths';
 	import type { TocItem } from '$lib/docs/types';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		item: TocItem;
 		active: string;
-		/** Rendered under the active page's link -- its "on this page" list. */
-		onPage?: Snippet;
 	}
 
-	let { active, item, onPage }: Props = $props();
+	let { active, item }: Props = $props();
 
 	const isActive = $derived(item.local === active);
 </script>
@@ -26,7 +23,7 @@
 	<div class="flex flex-col gap-0.5">
 		<p class="px-2 pb-1 text-[13px] text-muted-foreground">{item.title}</p>
 		{#each item.sections as section (section.title)}
-			<Self item={section} {active} {onPage} />
+			<Self item={section} {active} />
 		{/each}
 	</div>
 {:else if item.local}
@@ -42,7 +39,4 @@
 			<span class="ml-1 text-xs font-medium text-highlight">New</span>
 		{/if}
 	</a>
-	{#if isActive}
-		{@render onPage?.()}
-	{/if}
 {/if}

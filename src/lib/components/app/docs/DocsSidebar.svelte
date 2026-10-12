@@ -3,16 +3,13 @@
 	import { Search } from '@lucide/svelte';
 	import { searchState } from '$lib/docs/search.svelte';
 	import type { TocItem } from '$lib/docs/types';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		toctree: TocItem[];
 		active: string;
-		/** Rendered under the active page's link -- its "on this page" list. */
-		onPage?: Snippet;
 	}
 
-	let { active, onPage, toctree }: Props = $props();
+	let { active, toctree }: Props = $props();
 </script>
 
 <button
@@ -27,6 +24,6 @@
 
 <nav class="mt-6 flex flex-col gap-6" aria-label="Documentation">
 	{#each toctree as item (item.title)}
-		<DocsSectionNav {item} {active} {onPage} />
+		<DocsSectionNav {item} {active} />
 	{/each}
 </nav>

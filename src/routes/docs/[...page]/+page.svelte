@@ -73,23 +73,28 @@
 
 <DocsSearch />
 
-{#snippet onPage()}
-	<DocsToc {article} pageKey={data.local} />
-{/snippet}
-
 <!-- Same content column as the header and the rest of the site
      (`max-w-6xl`, `px-6 md:px-12`, per llama-design), so the sidebar lines up
      under the logo instead of hugging the window edge. Two columns: the page
-     nav (with the current page's sections nested under it) and the article --
-     no third "on this page" column, which would squeeze the article and its
-     code blocks. -->
+     nav and the article -- no third "on this page" column, which would
+     squeeze the article and its code blocks. -->
 <div
-	class="mx-auto grid w-full max-w-6xl grid-cols-1 px-6 md:px-12 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14"
+	class="relative mx-auto grid w-full max-w-6xl grid-cols-1 px-6 md:px-12 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14"
 >
 	<!-- The site header isn't sticky (it scrolls away), so the sidebar sticks
 	     to the very top of the viewport. -->
 	<aside class="sticky top-0 hidden h-dvh overflow-y-auto pt-6 pb-10 lg:block">
-		<DocsSidebar toctree={data.toctree} active={data.local} {onPage} />
+		<DocsSidebar toctree={data.toctree} active={data.local} />
+	</aside>
+
+	<!-- The current page's sections, hung in the right margin, outside the
+	     content column. Only where the margin fits it (from 1600px: 224px of
+	     margin for a 192px list) -- it's a nice-to-have, so narrower screens
+	     simply go without, rather than the nav making room for it. -->
+	<aside class="absolute top-0 left-full hidden h-full w-48 min-[100rem]:block">
+		<div class="sticky top-0 max-h-dvh overflow-y-auto pt-6 pb-10">
+			<DocsToc {article} pageKey={data.local} />
+		</div>
 	</aside>
 
 	<main class="relative min-w-0 pt-2 pb-24 lg:pt-6">
@@ -108,7 +113,7 @@
 					<ChevronDown class="size-4 shrink-0 transition-transform group-open:rotate-180" />
 				</summary>
 				<div class="border-t p-4">
-					<DocsSidebar toctree={data.toctree} active={data.local} {onPage} />
+					<DocsSidebar toctree={data.toctree} active={data.local} />
 				</div>
 			</details>
 		{/key}
