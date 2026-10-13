@@ -74,6 +74,11 @@ export type Family = {
 	// says how to use them; the apps detect the kind from the GGUF itself, so
 	// they don't depend on this flag. Absent means false (a chat model).
 	decision?: boolean;
+	// Whether this is an embedding model: it turns input (text, and for some
+	// models images or audio) into vectors through `/v1/embeddings`, for
+	// search and retrieval, rather than chatting. Listed and explained like
+	// decision models, and likewise not read by the apps. Absent means false.
+	embedding?: boolean;
 	sizes: Size[];
 };
 
