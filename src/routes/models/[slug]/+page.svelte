@@ -70,7 +70,9 @@
 			<h2 class="text-[13px] text-muted-foreground">Sizes</h2>
 			{#if hasQuantized}
 				<div class="flex items-center gap-1.5">
-					<label class="flex cursor-pointer items-baseline gap-2 text-[13px] text-muted-foreground">
+					<label
+						class="flex cursor-pointer items-baseline gap-2 text-[13px] text-muted-foreground select-none"
+					>
 						<input type="checkbox" bind:checked={showQuantized} class="accent-sky-500" />
 						<span>Show smaller quantizations</span>
 					</label>
