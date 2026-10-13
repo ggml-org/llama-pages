@@ -32,12 +32,16 @@
 	const sections: Record<number, Section> = {};
 
 	async function ensureIndex() {
-		if (mini) return;
+		if (mini) {
+			return;
+		}
 
 		const res = await fetch('/docs/search-index.json');
 		const docs: Section[] = await res.json();
 
-		for (const doc of docs) sections[doc.id] = doc;
+		for (const doc of docs) {
+			sections[doc.id] = doc;
+		}
 		mini = new MiniSearch<Section>({ fields: ['title', 'heading', 'text'] });
 		mini.addAll(docs);
 		// Re-run the current query once the index is ready.
@@ -50,7 +54,9 @@
 
 	/** A short window of `text` around the first matched term, split for <mark>. */
 	function fragmentParts(text: string, terms: string[]): { text: string; match: boolean }[] {
-		if (terms.length === 0 || !text) return [{ match: false, text: text.slice(0, 140) }];
+		if (terms.length === 0 || !text) {
+			return [{ match: false, text: text.slice(0, 140) }];
+		}
 
 		const re = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
 		const first = text.search(re);
@@ -63,7 +69,9 @@
 	const results: Result[] = $derived.by(() => {
 		const q = query.trim();
 
-		if (!mini || !q) return [];
+		if (!mini || !q) {
+			return [];
+		}
 
 		return mini
 			.search(q, { boost: { heading: 2, title: 3 }, fuzzy: 0.2, prefix: true })
@@ -88,7 +96,9 @@
 	});
 
 	$effect(() => {
-		if (!dialog) return;
+		if (!dialog) {
+			return;
+		}
 
 		if (searchState.open && !dialog.open) {
 			query = '';
@@ -111,7 +121,9 @@
 		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 			event.preventDefault();
 
-			if (results.length === 0) return;
+			if (results.length === 0) {
+				return;
+			}
 
 			const delta = event.key === 'ArrowDown' ? 1 : -1;
 
@@ -132,7 +144,9 @@
 
 	function onDialogClick(event: MouseEvent) {
 		// Clicks on the backdrop land on the <dialog> element itself.
-		if (event.target === dialog) searchState.open = false;
+		if (event.target === dialog) {
+			searchState.open = false;
+		}
 	}
 </script>
 

@@ -38,7 +38,9 @@ const deviceInfo = $state<DeviceInfo>({
 let _initialized = false;
 
 async function detectAndSet() {
-	if (_initialized) return;
+	if (_initialized) {
+		return;
+	}
 
 	_initialized = true;
 

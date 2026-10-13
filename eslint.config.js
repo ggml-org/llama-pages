@@ -30,6 +30,8 @@ export default defineConfig(
 				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
 			],
 
+			curly: ['error', 'all'],
+
 			// Enforce empty line at end of file
 			'eol-last': 'error',
 

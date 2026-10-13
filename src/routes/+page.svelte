@@ -201,12 +201,19 @@
 		return text.split(/( +)/).map((word) => {
 			let kind = 'arg';
 
-			if (word.trim() === '') kind = 'space';
-			else if (word === '|') kind = 'pipe';
-			else if (expectProgram) kind = 'program';
-			else if (word.startsWith('-')) kind = 'flag';
+			if (word.trim() === '') {
+				kind = 'space';
+			} else if (word === '|') {
+				kind = 'pipe';
+			} else if (expectProgram) {
+				kind = 'program';
+			} else if (word.startsWith('-')) {
+				kind = 'flag';
+			}
 
-			if (kind !== 'space') expectProgram = kind === 'pipe';
+			if (kind !== 'space') {
+				expectProgram = kind === 'pipe';
+			}
 
 			return { kind, word };
 		});

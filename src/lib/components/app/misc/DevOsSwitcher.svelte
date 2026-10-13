@@ -23,15 +23,21 @@
 	// Ignored while typing (e.g. in the models page's search) or with a
 	// modifier held, so it doesn't steal real input or browser shortcuts.
 	function onkeydown(e: KeyboardEvent) {
-		if (e.metaKey || e.ctrlKey || e.altKey) return;
+		if (e.metaKey || e.ctrlKey || e.altKey) {
+			return;
+		}
 
 		const t = e.target as HTMLElement;
 
-		if (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
+		if (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) {
+			return;
+		}
 
 		const os = OSES[Number(e.key) - 1];
 
-		if (os) select(os);
+		if (os) {
+			select(os);
+		}
 	}
 </script>
 

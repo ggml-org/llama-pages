@@ -88,15 +88,25 @@ export function getMacModelFromHeuristics(
 	deviceMemory: number | undefined,
 	hardwareConcurrency: number | undefined
 ): MacDeviceType | null {
-	if (!deviceMemory || !hardwareConcurrency) return null;
+	if (!deviceMemory || !hardwareConcurrency) {
+		return null;
+	}
 
-	if (hardwareConcurrency >= 24 && deviceMemory >= 100) return 'desktop';
+	if (hardwareConcurrency >= 24 && deviceMemory >= 100) {
+		return 'desktop';
+	}
 
-	if (hardwareConcurrency >= 32 && deviceMemory >= 150) return 'desktop';
+	if (hardwareConcurrency >= 32 && deviceMemory >= 150) {
+		return 'desktop';
+	}
 
-	if (hardwareConcurrency <= 16 && deviceMemory >= 8) return 'macbook';
+	if (hardwareConcurrency <= 16 && deviceMemory >= 8) {
+		return 'macbook';
+	}
 
-	if (hardwareConcurrency <= 10 && deviceMemory >= 4) return 'macbook';
+	if (hardwareConcurrency <= 10 && deviceMemory >= 4) {
+		return 'macbook';
+	}
 
 	return null;
 }

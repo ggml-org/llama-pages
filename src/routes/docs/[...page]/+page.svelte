@@ -24,7 +24,9 @@
 	$effect(() => {
 		void data.local;
 
-		if (!article) return;
+		if (!article) {
+			return;
+		}
 
 		const blocks = [...article.querySelectorAll('pre')].map((pre) => {
 			const wrapper = document.createElement('div');
@@ -55,11 +57,15 @@
 			for (const { button, pre, wrapper } of blocks) {
 				unmount(button);
 
-				if (wrapper.isConnected) wrapper.replaceWith(pre);
+				if (wrapper.isConnected) {
+					wrapper.replaceWith(pre);
+				}
 			}
 
 			for (const { table, wrap } of tables) {
-				if (wrap.isConnected) wrap.replaceWith(table);
+				if (wrap.isConnected) {
+					wrap.replaceWith(table);
+				}
 			}
 		};
 	});
