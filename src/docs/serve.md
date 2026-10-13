@@ -64,6 +64,8 @@ services:
       LLAMA_ARG_PORT: 9931
 ```
 
+Most of the time, you won't need to specify many command-line options, as the defaults are sensible and optimized.
+
 ## Serving multiple users
 
 The server handles concurrent requests out of the box. Each parallel _slot_ holds one conversation; the context is shared across slots:
