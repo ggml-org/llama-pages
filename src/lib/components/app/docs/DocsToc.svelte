@@ -37,7 +37,9 @@
 	// heading, since short final sections never reach that line. (`scrollY > 0`
 	// so a page too short to scroll keeps its first section.)
 	$effect(() => {
-		if (headings.length === 0) return;
+		if (headings.length === 0) {
+			return;
+		}
 
 		function onScroll() {
 			const atBottom =
@@ -55,7 +57,9 @@
 			for (const heading of headings) {
 				const el = document.getElementById(heading.id);
 
-				if (el && el.getBoundingClientRect().top <= window.innerHeight / 4) current = heading.id;
+				if (el && el.getBoundingClientRect().top <= window.innerHeight / 4) {
+					current = heading.id;
+				}
 			}
 			activeId = current;
 		}

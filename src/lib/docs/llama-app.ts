@@ -26,7 +26,9 @@ export function saveLlamaServerUrl(base: string): void {
 export function parseLlamaServerInput(input: string): string | null {
 	const trimmed = input.trim().replace(/\/+$/, '');
 
-	if (!trimmed) return null;
+	if (!trimmed) {
+		return null;
+	}
 
 	if (/^\d+$/.test(trimmed)) {
 		const port = Number(trimmed);
@@ -85,11 +87,15 @@ export async function probeLlamaServer(base: string): Promise<boolean> {
 
 		// Marks the request as intentionally targeting loopback for Chrome's
 		// Local Network Access permission model.
-		if (isLoopback(base)) init.targetAddressSpace = 'loopback';
+		if (isLoopback(base)) {
+			init.targetAddressSpace = 'loopback';
+		}
 
 		const res = await fetch(`${base}/v1/models`, init);
 
-		if (!res.ok) return false;
+		if (!res.ok) {
+			return false;
+		}
 
 		const body = await res.json();
 

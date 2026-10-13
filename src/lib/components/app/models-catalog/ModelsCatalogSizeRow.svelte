@@ -20,7 +20,9 @@
 	// exist, so skip the deeplink. Either way the page owns the follow-up
 	// via oninstall.
 	function install(b: Build) {
-		if (deviceInfo.isMac) location.href = deeplink(b);
+		if (deviceInfo.isMac) {
+			location.href = deeplink(b);
+		}
 
 		oninstall(b, size);
 	}

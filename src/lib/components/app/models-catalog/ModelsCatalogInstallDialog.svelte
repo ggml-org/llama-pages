@@ -34,27 +34,41 @@
 
 	// Open/close the native dialog as `run` comes and goes.
 	$effect(() => {
-		if (!dialog) return;
+		if (!dialog) {
+			return;
+		}
 
-		if (run && !dialog.open) dialog.showModal();
+		if (run && !dialog.open) {
+			dialog.showModal();
+		}
 
-		if (!run && dialog.open) dialog.close();
+		if (!run && dialog.open) {
+			dialog.close();
+		}
 	});
 
 	// The byline under the title: quant, download size, and memory bar --
 	// the same facts as the table row, echoed so the dialog stands alone.
 	const byline = $derived.by(() => {
-		if (!run) return '';
+		if (!run) {
+			return '';
+		}
 
 		const parts = [];
 
-		if (run.build.quant) parts.push(run.build.quant.toUpperCase());
+		if (run.build.quant) {
+			parts.push(run.build.quant.toUpperCase());
+		}
 
-		if (run.build.sizeBytes) parts.push(displaySize(run.build.sizeBytes));
+		if (run.build.sizeBytes) {
+			parts.push(displaySize(run.build.sizeBytes));
+		}
 
 		const mem = minMemForBuild(run.build);
 
-		if (mem) parts.push(`requires ${mem} GB+ memory`);
+		if (mem) {
+			parts.push(`requires ${mem} GB+ memory`);
+		}
 
 		return parts.join(' · ');
 	});

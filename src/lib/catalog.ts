@@ -108,11 +108,15 @@ export function familyBySlug(slug: string): Family | undefined {
 export function releasedFor(f: Family): string {
 	const r = f.released;
 
-	if (!r) return '';
+	if (!r) {
+		return '';
+	}
 
 	const [y, m] = r.split('-').map(Number);
 
-	if (!y || !m) return '';
+	if (!y || !m) {
+		return '';
+	}
 
 	const month = [
 		'Jan',
@@ -136,7 +140,9 @@ export function releasedFor(f: Family): string {
 // matching what Hugging Face and Finder show) keeps the column comparable
 // at a glance, so sub-GB sizes render as fractions (e.g. "0.24 GB").
 export function displaySize(size: number | undefined): string {
-	if (!size) return '—';
+	if (!size) {
+		return '—';
+	}
 
 	const gb = size / 1e9;
 
@@ -158,14 +164,18 @@ const MAC_MEM_TIERS = [8, 16, 24, 32, 48, 64, 96, 128, 192, 256, 512, 768, 1024]
 // budget = RAM × 0.75 − 2 GB overhead, and a build fits when
 // fileSize × 1.05 ≤ budget — so the website and the app never disagree.
 export function minMemForBuild(b: Build): number | null {
-	if (!b.sizeBytes) return null;
+	if (!b.sizeBytes) {
+		return null;
+	}
 
 	const weightMb = (b.sizeBytes / 1_048_576) * 1.05;
 
 	for (const tier of MAC_MEM_TIERS) {
 		const budgetMb = tier * 1024 * 0.75 - 2048;
 
-		if (weightMb <= budgetMb) return tier;
+		if (weightMb <= budgetMb) {
+			return tier;
+		}
 	}
 
 	return null;
@@ -192,7 +202,9 @@ const INSTALL_SCHEME = 'llama';
 export function deeplink(b: Build): string {
 	const params = new URLSearchParams({ repo: b.repo });
 
-	if (b.quant) params.set('quant', b.quant);
+	if (b.quant) {
+		params.set('quant', b.quant);
+	}
 
 	return `${INSTALL_SCHEME}://install?${params.toString()}`;
 }

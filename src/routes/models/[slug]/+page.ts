@@ -7,7 +7,9 @@ import { familyBySlug } from '$lib/catalog';
 export const load: PageLoad = ({ params }) => {
 	const family = familyBySlug(params.slug);
 
-	if (!family) error(404, 'Family not found');
+	if (!family) {
+		error(404, 'Family not found');
+	}
 
 	return { family };
 };

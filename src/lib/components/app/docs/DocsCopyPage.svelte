@@ -53,7 +53,9 @@
 	async function probe() {
 		llamaStatus = 'unknown';
 
-		if (await probeLlamaServer(llamaBase)) llamaStatus = 'up';
+		if (await probeLlamaServer(llamaBase)) {
+			llamaStatus = 'up';
+		}
 	}
 
 	// A function read defeats TS's control-flow narrowing, which can't see
@@ -65,7 +67,9 @@
 	async function toggleMenu() {
 		open = !open;
 
-		if (!open) return;
+		if (!open) {
+			return;
+		}
 
 		llamaBase = getLlamaServerUrl();
 		probe();
@@ -81,7 +85,9 @@
 			llamaBase === DEFAULT_LLAMA_SERVER_URL ? '9931' : llamaBase
 		);
 
-		if (input === null) return false;
+		if (input === null) {
+			return false;
+		}
 
 		const base = parseLlamaServerInput(input);
 
@@ -111,7 +117,9 @@
 			`Couldn't verify a Llama server at ${llamaServerLabel(llamaBase)}.`
 		);
 
-		if (!saved) return;
+		if (!saved) {
+			return;
+		}
 
 		if (
 			!llamaIsUp() &&

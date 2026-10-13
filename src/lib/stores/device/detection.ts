@@ -55,15 +55,25 @@ export function getChromeDeviceModel(): Promise<string | null> {
 export function detectBrowser(): string {
 	const ua = navigator.userAgent;
 
-	if (ua.includes('Firefox/')) return 'Firefox';
+	if (ua.includes('Firefox/')) {
+		return 'Firefox';
+	}
 
-	if (ua.includes('Edg/')) return 'Edge';
+	if (ua.includes('Edg/')) {
+		return 'Edge';
+	}
 
-	if (ua.includes('OPR/') || ua.includes('Opera')) return 'Opera';
+	if (ua.includes('OPR/') || ua.includes('Opera')) {
+		return 'Opera';
+	}
 
-	if (ua.includes('Chrome/')) return 'Chrome';
+	if (ua.includes('Chrome/')) {
+		return 'Chrome';
+	}
 
-	if (ua.includes('Safari/')) return 'Safari';
+	if (ua.includes('Safari/')) {
+		return 'Safari';
+	}
 
 	return 'Unknown';
 }
@@ -71,9 +81,13 @@ export function detectBrowser(): string {
 export function detectFormFactor(): DeviceFormFactor {
 	const width = window.innerWidth;
 
-	if (width < 768) return 'mobile';
+	if (width < 768) {
+		return 'mobile';
+	}
 
-	if (width < 1024) return 'tablet';
+	if (width < 1024) {
+		return 'tablet';
+	}
 
 	return 'desktop';
 }
