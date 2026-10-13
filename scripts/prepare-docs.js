@@ -13,7 +13,7 @@ const STATIC_DIR = path.join(ROOT, 'static/docs');
 fs.rmSync(STATIC_DIR, { force: true, recursive: true });
 
 const mdFiles = fs
-	.readdirSync(DOCS_SRC, { recursive: true })
+	.readdirSync(DOCS_SRC, { encoding: 'utf8', recursive: true })
 	.filter((entry) => entry.endsWith('.md'));
 
 for (const entry of mdFiles) {
@@ -25,6 +25,10 @@ for (const entry of mdFiles) {
 console.log(`[prepare-docs] mirrored ${mdFiles.length} markdown files into static/docs`);
 
 /** Markdown inline syntax → plain text. */
+/**
+ * @param {string} markdown
+ * @returns {string}
+ */
 function plainText(markdown) {
 	return markdown
 		.replace(/!\[[^\]]*\]\([^)]*\)/g, '')
@@ -38,6 +42,7 @@ function plainText(markdown) {
  * Section-level search index, consumed by the ⌘K search modal (MiniSearch).
  * Anchors replicate rehype-slug: one slugger per page, fed every heading in
  * document order so duplicate suffixes match.
+ * @type {{ anchor: string; heading: string; id: number; local: string; text: string; title: string; }[]}
  */
 const sections = [];
 
@@ -49,6 +54,9 @@ for (const entry of mdFiles) {
 	let heading = '';
 	let anchor = '';
 	let inFence = false;
+	/**
+	 * @type {string[]}
+	 */
 	let buffer = [];
 
 	const flush = () => {

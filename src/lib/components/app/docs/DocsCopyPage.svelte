@@ -77,8 +77,8 @@
 		const input = window.prompt(
 			(message ? `${message}\n` : '') +
 				'Enter the port of your local Llama app, or the full URL of a llama-server\n' +
-				'(e.g. 8080 or https://llama.example.com):',
-			llamaBase === DEFAULT_LLAMA_SERVER_URL ? '8080' : llamaBase
+				'(e.g. 9931 or https://llama.example.com):',
+			llamaBase === DEFAULT_LLAMA_SERVER_URL ? '9931' : llamaBase
 		);
 
 		if (input === null) return false;

@@ -1,6 +1,6 @@
 # API server
 
-`llama serve` exposes a REST API on `http://localhost:8080` in various formats:
+`llama serve` exposes a REST API on `http://localhost:9931` in various formats:
 
 - **OpenAI-compatible** endpoints under `/v1/...` works with existing OpenAI SDKs and apps
 - An **Anthropic-compatible** `/v1/messages` endpoint
@@ -13,7 +13,7 @@ If the server was started with `--api-key`, pass it as a Bearer token: `Authoriz
 `POST /v1/chat/completions` is the endpoint you'll use most. It accepts the standard OpenAI chat format, with streaming supported via `"stream": true`:
 
 ```sh
-curl http://localhost:8080/v1/chat/completions \
+curl http://localhost:9931/v1/chat/completions \
     -H "Content-Type: application/json" \
     -d '{
         "messages": [
@@ -28,7 +28,7 @@ Or with the OpenAI Python SDK — only the base URL changes:
 ```python
 import openai
 
-client = openai.OpenAI(base_url="http://localhost:8080/v1", api_key="no-key-required")
+client = openai.OpenAI(base_url="http://localhost:9931/v1", api_key="no-key-required")
 
 completion = client.chat.completions.create(
     model="local-model",
@@ -111,7 +111,7 @@ The model `id` reported by `/v1/models` defaults to the model file path; set a f
 `POST /v1/messages` accepts the Anthropic Messages API format, including `system`, `stop_sequences`, streaming, and tool use — so Anthropic SDKs and apps can point at llama serve too:
 
 ```sh
-curl http://localhost:8080/v1/messages \
+curl http://localhost:9931/v1/messages \
     -H "Content-Type: application/json" \
     -H "x-api-key: your-api-key" \
     -d '{
@@ -142,7 +142,7 @@ These expose llama.cpp features beyond the OpenAI surface:
 A minimal native completion request:
 
 ```sh
-curl http://localhost:8080/completion \
+curl http://localhost:9931/completion \
     -H "Content-Type: application/json" \
     -d '{"prompt": "Building a website can be done in 10 simple steps:", "n_predict": 128}'
 ```

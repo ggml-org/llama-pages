@@ -9,7 +9,7 @@
 
 import { STORAGE_KEY } from '$lib/constants';
 
-export const DEFAULT_LLAMA_SERVER_URL = 'http://localhost:8080';
+export const DEFAULT_LLAMA_SERVER_URL = 'http://localhost:9931';
 
 export function getLlamaServerUrl(): string {
 	return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_LLAMA_SERVER_URL;
@@ -20,7 +20,7 @@ export function saveLlamaServerUrl(base: string): void {
 }
 
 /**
- * Accepts a bare port ("8080") or a URL ("llama.example.com",
+ * Accepts a bare port ("9931") or a URL ("llama.example.com",
  * "https://llama.example.com"); returns a normalized base URL, or null.
  */
 export function parseLlamaServerInput(input: string): string | null {
@@ -39,7 +39,7 @@ export function parseLlamaServerInput(input: string): string | null {
 	try {
 		const url = new URL(withProtocol);
 		// new URL() accepts almost any string as a single-label hostname
-		// (e.g. a port typo like "8080x"), so require a plausible host:
+		// (e.g. a port typo like "9931x"), so require a plausible host:
 		// localhost, a dotted name/IP, or a bracketed IPv6 address.
 		const host = url.hostname;
 
@@ -63,7 +63,7 @@ export function isLoopback(base: string): boolean {
 	}
 }
 
-/** ':8080' for a local server, the hostname for a remote one. */
+/** ':9931' for a local server, the hostname for a remote one. */
 export function llamaServerLabel(base: string): string {
 	try {
 		const url = new URL(base);

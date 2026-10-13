@@ -715,5 +715,33 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "Nemotron 3.5 Lightning",
+		"brand": "NVIDIA",
+		"description": "NVIDIA's hybrid Mamba-Transformer mixture-of-experts model. Fast and efficient, with switchable reasoning and up to 1M context.",
+		"details": "Nemotron 3.5 Lightning is NVIDIA's efficiency-focused open model: 30B total parameters with 3B activated per token, built from interleaved Mamba-2, mixture-of-experts, and attention layers. The hybrid design keeps memory use low on long inputs, and the model handles contexts of up to 1M tokens.\n\nReasoning can be turned on or off per request, and the model is trained for coding, tool use, and agentic tasks in English, Spanish, French, German, Italian, and Japanese. It ships with a multi-token prediction head for faster generation, and the Q4_0 build runs on a 32 GB Mac.",
+		"released": "2026-08",
+		"license": "OpenMDW 1.1",
+		"sizes": [
+			{
+				"name": "Nemotron 3.5 Lightning 30B-A3B",
+				"params": "30B-A3B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "33.6 GB",
+						"sizeBytes": 33585495616,
+						"repo": "ggml-org/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF"
+					},
+					{
+						"quant": "Q4_0",
+						"size": "18.9 GB",
+						"sizeBytes": 18898091584,
+						"repo": "ggml-org/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF"
+					}
+				]
+			}
+		]
 	}
 ]
