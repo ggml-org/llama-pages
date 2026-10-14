@@ -62,7 +62,7 @@ You can also use the ChatGPT desktop app and the OpenAI Codex CLI with Llama App
 npm install -g @openai/codex
 ```
 
-Add the following configuration to `~/.codex/config.toml`.
+To use Llama App with both Codex CLI and ChatGPT Desktop, add the following configuration to `~/.codex/config.toml`.
 
 ```toml
 model = "local-model"
@@ -82,3 +82,5 @@ To use Codex CLI, just run it in your project directory as follows.
 cd /path/to/project
 codex
 ```
+
+To use ChatGPT Desktop, simply quit and restart the app.
