@@ -1,4 +1,4 @@
-# Bring Your Own Agent
+# Using Llama App with Agents
 
 Llama App can be easily paired with your agents, this section shows how to do it for Pi and Codex / ChatGPT.
 
