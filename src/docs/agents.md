@@ -87,7 +87,3 @@ If you want to use Codex CLI, just run it in your project directory as follows.
 cd /path/to/project
 codex
 ```
-
-## Personal Agents
-
-You can use Llama App with OpenClaw and Hermes Agent in their respective GUI installers.
