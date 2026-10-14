@@ -75,7 +75,7 @@ supports_websockets = false
 ```
 
 You can quit and rerun Codex desktop app and it will run on your local model.
-If you want to use Codex CLI, just run it in your project directory as follows.
+To use Codex CLI, just run it in your project directory as follows.
 
 ```bash
 cd /path/to/project
