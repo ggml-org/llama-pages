@@ -53,7 +53,7 @@ Configure Pi to use your Llama App server by running
 
 Enter the router URL and optional API key. The default URL is `http://127.0.0.1:9931`. Run `/llama` to load a model, then `/model` to select the loaded model for the current session.
 
-## Codex CLI
+## ChatGPT desktop and Codex CLI
 
 You can use OpenAI Codex CLI with Llama App. First install Codex CLI.
 
