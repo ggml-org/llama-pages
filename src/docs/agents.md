@@ -56,7 +56,7 @@ Enter the server URL, the default is `http://127.0.0.1:9931`. Then run `/model` 
 
 ## ChatGPT desktop and Codex CLI
 
-You can use OpenAI Codex CLI with Llama App. First install Codex CLI.
+You can also use the ChatGPT desktop app and the OpenAI Codex CLI with Llama App. First, you need to install Codex CLI.
 
 ```bash
 npm install -g @openai/codex
