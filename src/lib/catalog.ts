@@ -22,6 +22,13 @@ export type Build = {
 	// Download size in bytes, as reported by the Hugging Face tree API
 	// (the sum of the build's GGUF files for split models).
 	sizeBytes?: number;
+	// Bytes of the build that load into memory, when that's less than
+	// `sizeBytes` -- some models have tensors llama.cpp reads from disk on
+	// demand instead of keeping resident (e.g. Qwen 3.8 Flash Next's
+	// per-layer token embeddings, ~29 GB in every quant; see `--lazy-mode`).
+	// The download size minus those tensors, from the GGUF tensor table.
+	// Absent means the whole download loads.
+	memBytes?: number;
 	repo: string;
 };
 
@@ -163,12 +170,18 @@ const MAC_MEM_TIERS = [8, 16, 24, 32, 48, 64, 96, 128, 192, 256, 512, 768, 1024]
 // Mirrors the app's compatibility check (Model+Compatibility.swift):
 // budget = RAM × 0.75 − 2 GB overhead, and a build fits when
 // fileSize × 1.05 ≤ budget — so the website and the app never disagree.
+// Sized from `memBytes` when the build has one, since tensors left on disk
+// don't count against memory. The app doesn't read `memBytes` yet -- its
+// pre-download estimate uses the file size, and once a model is installed
+// it measures resident memory instead.
 export function minMemForBuild(b: Build): number | null {
-	if (!b.sizeBytes) {
+	const bytes = b.memBytes ?? b.sizeBytes;
+
+	if (!bytes) {
 		return null;
 	}
 
-	const weightMb = (b.sizeBytes / 1_048_576) * 1.05;
+	const weightMb = (bytes / 1_048_576) * 1.05;
 
 	for (const tier of MAC_MEM_TIERS) {
 		const budgetMb = tier * 1024 * 0.75 - 2048;
