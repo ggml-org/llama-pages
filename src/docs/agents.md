@@ -20,7 +20,7 @@ The setup has two components running locally:
   terminal, etc.
 ```
 
-To get started, start `llama serve` in router mode (by passing in `--no-models-autoload`). If you want to browse models in any other folder than Hugging Face cache, use `--models-dir`.
+To get started, simply start `llama serve`.
 
 ```bash
 llama serve
