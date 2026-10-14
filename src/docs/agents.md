@@ -23,8 +23,7 @@ The setup has two components running locally:
 To get started, start `llama serve` in router mode (by passing in `--no-models-autoload`). If you want to browse models in any other folder than Hugging Face cache, use `--models-dir`.
 
 ```bash
-llama serve \
-  --no-models-autoload
+llama serve
 ```
 
 This will spawn a server which by defaults listen in `http://127.0.0.1:9931`.
