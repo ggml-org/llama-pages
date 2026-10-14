@@ -1,6 +1,8 @@
 # Bring Your Own Agent
 
-Llama App can be paired easily with your agents. This section covers how to do this for every agent. For all of the below models, we recommend to run with context window of at least 32k tokens, running on variety of models recommended [here](https://llama.app/models) with mentions to "agentic coding".
+Llama App can be easily paired with your agents, this section shows how to do it for Pi and Codex / ChatGPT.
+
+We recommend running models with a context window of at least 32k tokens, as agents can fill up context quickly. For good models to use, please refer to the [recommended models in this list](https://llama.app/models), paying special attention to those that mention "agentic coding".
 
 ## How It Works
 
