@@ -13,7 +13,7 @@ npm install -g @openai/codex
 Serve the model of your choice either on Llama App or using `llama serve`.
 
 ```bash
-llama serve --hf unsloth/Qwen3.8-27B-GGUF --alias local-model
+llama serve --hf ggml-org/Qwen3.8-27B-GGUF --alias local-model
 ```
 
 Add below to `~/.codex/config.toml`.
