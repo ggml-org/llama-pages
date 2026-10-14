@@ -17,7 +17,7 @@
     - local: api
       title: API server
     - local: agents
-      title: Agents
+      title: Using Llama App with Agents
 - title: Conceptual guides
   sections:
     - local: prefill-vs-decode
