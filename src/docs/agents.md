@@ -84,3 +84,7 @@ codex
 ```
 
 To use ChatGPT Desktop, simply quit and restart the app.
+
+## Other Agents
+
+You can use Llama App with any OpenAI-compatible agent by simply pointing the endpoint the base URL to `http://127.0.0.1:9931/v1` (by default) or where you serve the Llama App.
