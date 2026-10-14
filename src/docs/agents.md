@@ -27,6 +27,7 @@ llama serve \
   --no-models-autoload
 ```
 
+This will spawn a server which by defaults listen in `http://127.0.0.1:9931`.
 ## Pi
 
 [Pi](https://pi.dev) is an efficient and performant coding harness (it's also the one behind [OpenClaw](https://github.com/openclaw)). It integrates easily with Llama App.
