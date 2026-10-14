@@ -20,6 +20,13 @@ The setup has two components running locally:
   terminal, etc.
 ```
 
+To get started, start `llama serve` in router mode (by passing in `--no-models-autoload`). If you want to browse models in any other folder than Hugging Face cache, use `--models-dir`.
+
+```bash
+llama serve \
+  --no-models-autoload
+```
+
 ## Pi
 
 [Pi](https://pi.dev) is an efficient and performant coding harness (it's also the one behind [OpenClaw](https://github.com/openclaw)). It integrates easily with Llama App.
@@ -28,13 +35,6 @@ Install Pi:
 
 ```bash
 curl -fsSL https://pi.dev/install.sh | sh
-```
-
-Start `llama serve` in router mode (by passing in `--no-models-autoload`). If you want to browse models in any other folder than Hugging Face cache, use `--models-dir`.
-
-```bash
-llama serve \
-  --no-models-autoload
 ```
 
 Start Pi in your project directory:
@@ -58,12 +58,6 @@ You can use OpenAI Codex CLI with Llama App. First install Codex CLI.
 
 ```bash
 npm install -g @openai/codex
-```
-
-Serve the model of your choice either on Llama App or using `llama serve`.
-
-```bash
-llama serve --hf ggml-org/Qwen3.8-27B-GGUF --alias local-model
 ```
 
 Add below to `~/.codex/config.toml`.
