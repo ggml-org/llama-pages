@@ -22,18 +22,11 @@ The setup has two components running locally:
   terminal, etc.
 ```
 
+Once you start serving a model on Llama App, you can use them with coding agents.
 
 ## Pi
 
 [Pi](https://pi.dev) is an efficient and performant coding harness (it's also the one behind [OpenClaw](https://github.com/openclaw)). It integrates easily with Llama App.
-
-To get started, simply start `llama serve`.
-
-```bash
-llama serve
-```
-
-This will spawn a server which by default listen in `http://127.0.0.1:9931`.
 
 Install Pi:
 
@@ -64,16 +57,10 @@ You can also use the ChatGPT desktop app and the OpenAI Codex CLI with Llama App
 npm install -g @openai/codex
 ```
 
-You need to set an alias to your server, this will allow for easy switching. 
-
-```bash
-llama serve --alias local-model
-```
-
 To use Llama App with both Codex CLI and ChatGPT Desktop, add the following configuration to `~/.codex/config.toml`.
 
 ```toml
-model = "local-model"
+model = "ggml-org/Qwen3.5-35B-A3B-GGUF" # id of the model you serve
 model_provider = "llamacpp"
 
 [model_providers.llamacpp]
