@@ -50,7 +50,7 @@ Configure Pi to use your Llama App server by running
 /login llama.cpp
 ```
 
-Enter the router URL and optional API key. The default URL is `http://127.0.0.1:9931`. Run `/llama` to load a model, then `/model` to select the loaded model for the current session.
+Enter the server URL, the default is `http://127.0.0.1:9931`. Then run `/model` in Pi to select the model to use for the current session.
 
 ## ChatGPT desktop and Codex CLI
 
