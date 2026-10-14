@@ -61,7 +61,7 @@ You can use OpenAI Codex CLI with Llama App. First install Codex CLI.
 npm install -g @openai/codex
 ```
 
-Add below to `~/.codex/config.toml`.
+Add the following configuration to `~/.codex/config.toml`.
 
 ```toml
 model = "local-model"
