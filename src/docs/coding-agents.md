@@ -4,7 +4,7 @@ Llama App can be paired easily with your coding/personal agents. This section co
 
 ## Codex CLI
 
-You can use OpenAI Codex CLI with Llama App. First install Codex CLI. 
+You can use OpenAI Codex CLI with Llama App. First install Codex CLI.
 
 ```bash
 npm install -g @openai/codex
@@ -16,7 +16,7 @@ Serve the model of your choice either on Llama App or using `llama serve`.
 llama serve --hf unsloth/Qwen3.8-27B-GGUF --alias local-model
 ```
 
-Add below to `~/.codex/config.toml`. 
+Add below to `~/.codex/config.toml`.
 
 ```toml
 model = "local-model"
@@ -40,7 +40,7 @@ codex
 
 ## Pi
 
-[Pi](https://pi.dev) is an efficient and performant coding agent (it's also the one behind [OpenClaw](https://github.com/openclaw)). It integrates easily with Llama App. 
+[Pi](https://pi.dev) is an efficient and performant coding agent (it's also the one behind [OpenClaw](https://github.com/openclaw)). It integrates easily with Llama App.
 
 Install Pi:
 
@@ -48,11 +48,11 @@ Install Pi:
 curl -fsSL https://pi.dev/install.sh | sh
 ```
 
-Start `llama serve` in router mode (by passing in `--no-models-autoload`). If you want to browse models in any other folder than Hugging Face cache, use `--models-dir`. 
+Start `llama serve` in router mode (by passing in `--no-models-autoload`). If you want to browse models in any other folder than Hugging Face cache, use `--models-dir`.
 
 ```bash
 llama serve \
-  --no-models-autoload 
+  --no-models-autoload
 ```
 
 Start Pi in your project directory:
@@ -70,10 +70,9 @@ Configure Pi to use your Llama App server by running
 
 Enter the router URL and optional API key. The default URL is `http://127.0.0.1:9931`. Run `/llama` to load a model, then `/model` to select the loaded model for the current session.
 
-
 ## Hermes Agent
 
-[Hermes Agent](https://hermes-agent.nousresearch.com/) works locally with llama.cpp. 
+[Hermes Agent](https://hermes-agent.nousresearch.com/) works locally with llama.cpp.
 
 Install Hermes Agent one-click [here](https://hermes-agent.nousresearch.com/) or by running
 
@@ -81,12 +80,11 @@ Install Hermes Agent one-click [here](https://hermes-agent.nousresearch.com/) or
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
-During installation, Hermes asks you for provider, giving you options for "Nous Portal" and "Run locally". You can either pick the model options if your setup can handle them, or you can search for models with "Find more models". 
+During installation, Hermes asks you for provider, giving you options for "Nous Portal" and "Run locally". You can either pick the model options if your setup can handle them, or you can search for models with "Find more models".
 
 ![Hermes](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/hermes-llama.png)
 
 Once downloaded, the model will appear under "Models", which you can start using by clicking "Use".
-
 
 ## How It Works
 

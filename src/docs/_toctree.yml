@@ -16,6 +16,8 @@
       title: Web UI
     - local: api
       title: API server
+    - local: coding-agents
+      title: Coding agents
 - title: Conceptual guides
   sections:
     - local: prefill-vs-decode
