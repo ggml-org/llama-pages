@@ -774,5 +774,46 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "Muse Spark Open",
+		"brand": "Meta",
+		"description": "Meta's 816B-parameter mixture-of-experts model with 42B active parameters, image and audio input, adjustable reasoning, and 1M context.",
+		"details": "Muse Spark Open is Meta's 816B-parameter multimodal mixture-of-experts model. It routes each token through a subset of 256 experts, activating about 42B parameters at a time, and accepts text, image, and audio input across a 1M-token context window.\n\nReasoning depth can be adjusted from low to xhigh, and the model supports tool use for agentic workflows. The imatrix-calibrated Q2_K build is the most practical local option at 304 GB and fits in 512 GB of unified memory.",
+		"released": "2026-10",
+		"license": "Muse Model License",
+		"sizes": [
+			{
+				"name": "Muse Spark Open 816B-A42B",
+				"params": "816B-A42B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "BF16",
+						"size": "1.64 TB",
+						"sizeBytes": 1640264556374,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					},
+					{
+						"quant": "Q8_0",
+						"size": "872 GB",
+						"sizeBytes": 871648188873,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					},
+					{
+						"quant": "Q4_K_S",
+						"size": "470 GB",
+						"sizeBytes": 470069227350,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					},
+					{
+						"quant": "Q2_K",
+						"size": "304 GB",
+						"sizeBytes": 304080474208,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					}
+				]
+			}
+		]
 	}
 ]
