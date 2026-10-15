@@ -789,12 +789,6 @@
 				"vision": true,
 				"builds": [
 					{
-						"quant": "BF16",
-						"size": "1.64 TB",
-						"sizeBytes": 1640264556374,
-						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
-					},
-					{
 						"quant": "Q8_0",
 						"size": "872 GB",
 						"sizeBytes": 871648188873,
