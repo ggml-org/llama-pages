@@ -45,9 +45,9 @@
 		<section class="mt-14">
 			<h2 class="text-[20px] font-semibold tracking-tight">Decision models</h2>
 			<p class="mt-2 mb-4 max-w-2xl text-[15px] text-muted-foreground">
-				Small models that answer typed questions with a probability for every option — route a
-				ticket, moderate content, pick an agent’s next step. They don’t chat; apps call them through
-				the API.
+				Robust, production-grade models that take typed questions with documents as input and return
+				a probability for each option as output. Use for a variety of tasks: route a ticket,
+				moderate content, pick an agent’s next step. They don't output free text like LLMs.
 				<a
 					href="https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp"
 					target="_blank"
@@ -130,7 +130,15 @@
 							</span>
 						{/if}
 					</h3>
-					<p class="mt-0.5 line-clamp-1 text-[15px] text-muted-foreground">{f.description}</p>
+					<p class="mt-0.5 line-clamp-1 text-[15px] text-muted-foreground">
+						{#each f.description.split(/(\*\*[^*]+\*\*)/g) as part, i (i)}
+							{#if part.startsWith('**') && part.endsWith('**')}
+								<strong class="font-semibold">{part.slice(2, -2)}</strong>
+							{:else}
+								{part}
+							{/if}
+						{/each}
+					</p>
 				</div>
 				<!-- Trailing chevron: signals each row is a link to a detail page.
 				     Centered against the whole row (self-center overrides the row's

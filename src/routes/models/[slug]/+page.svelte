@@ -43,7 +43,15 @@
 				<span>(non-commercial)</span>
 			{/if}
 		</div>
-		<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">{family.description}</p>
+		<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">
+			{#each family.description.split(/(\*\*[^*]+\*\*)/g) as part, i (i)}
+				{#if part.startsWith('**') && part.endsWith('**')}
+					<strong class="font-semibold">{part.slice(2, -2)}</strong>
+				{:else}
+					{part}
+				{/if}
+			{/each}
+		</p>
 		<!-- Decision models don't chat, and nothing else on the page says so --
 		     without this, installing one and finding no way to talk to it reads
 		     as a broken install. Names what it is and where to learn the API. -->
