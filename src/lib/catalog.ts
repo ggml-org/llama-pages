@@ -67,9 +67,9 @@ export type Family = {
 	// most visitors. Absent means false.
 	nonCommercial?: boolean;
 	// Whether this family is featured. Exposed in the published catalog API for
-	// consumers to highlight; the website doesn't surface it -- the homepage
-	// grid keeps its own handpicked list, so the two move independently.
-	// Absent means false.
+	// consumers to highlight (the app suggests these), and shown as starting
+	// points at the top of the website's models page. The homepage grid keeps
+	// its own handpicked list, so the two move independently. Absent means false.
 	featured?: boolean;
 	// Memory cap (in GB) for featuring: consumers should not suggest this family
 	// on machines with more RAM than this. Marks a family as a low-memory pick
