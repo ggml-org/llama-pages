@@ -809,5 +809,34 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "LFM 2.5",
+		"brand": "Liquid AI",
+		"description": "Liquid AI's reasoning mixture-of-experts model with 24B parameters and 2B active, built for fast on-device agents and tool use.",
+		"details": "LFM 2.5 24B-A2B is the largest model in Liquid AI's LFM 2.5 family: 24B total parameters with about 2B active per token, in a hybrid design that mixes 30 short-convolution blocks with 10 attention layers. It always reasons before answering, and with so few active parameters each reasoning token is cheap.\n\nIt is trained for agentic work and tool calling, with a 131K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks. The Q8_0 build suits a 48 GB Mac, and the Q4_K_M a 32 GB one.",
+		"released": "2026-10",
+		"license": "LFM Open License 1.0",
+		"featured": true,
+		"sizes": [
+			{
+				"name": "LFM 2.5 24B-A2B",
+				"params": "24B-A2B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "25.5 GB",
+						"sizeBytes": 25493733408,
+						"repo": "ggml-org/LFM2.5-24B-A2B-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "14.5 GB",
+						"sizeBytes": 14526259232,
+						"repo": "ggml-org/LFM2.5-24B-A2B-GGUF"
+					}
+				]
+			}
+		]
 	}
 ]
