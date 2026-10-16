@@ -196,7 +196,8 @@ export function minMemForBuild(b: Build): number | null {
 
 // The family's entry bar: the smallest tier that runs *any* of its builds
 // (i.e. the smallest quant of the smallest size). A floor, not a guarantee
-// for the whole family — the list page renders it as "from N GB".
+// for the whole family — the models list renders it as "N GB+ memory" on each
+// row, and the homepage picks as "N GB of memory or more".
 export function minMemGB(f: Family): number | null {
 	const tiers = f.sizes
 		.flatMap((s) => s.builds)

@@ -2,7 +2,7 @@
 	import { ChevronRight } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import { logoFor } from '$lib/assets/logos';
-	import { families, releasedFor, slugify } from '$lib/catalog';
+	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
 	import { ModelsCatalogVisionBadge } from '$lib/components/app';
 
 	// Decision models get their own section below the main list: they don't
@@ -122,8 +122,7 @@
 					     they read as discrete configurations rather than a run-on
 					     string; fully rounded rather than rounded-md, because the
 					     rounded-md filled chip is the quant badge on the detail
-					     pages and sizes get a distinct silhouette. Memory
-					     requirements live on the detail page. -->
+					     pages and sizes get a distinct silhouette. -->
 					<h3 class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[16px] font-medium">
 						<span class="mr-0.5">{f.name}</span>
 						{#if f.sizes.some((s) => s.vision)}
@@ -136,6 +135,17 @@
 								{s.params ?? s.name}
 							</span>
 						{/each}
+						<!-- The family's memory floor -- what the smallest build needs --
+						     so "will it run on my computer?" is answered while scanning,
+						     without opening every detail page (which lists each build's
+						     own requirement). Phrased like those ("16 GB+ memory") so the
+						     two read as one system, and as plain text rather than a pill,
+						     so it doesn't pass for another size. -->
+						{#if minMemGB(f)}
+							<span class="ml-1 text-[12px] font-normal text-muted-foreground tabular-nums">
+								{minMemGB(f)} GB+ memory
+							</span>
+						{/if}
 						<!-- Flagged here, where people pick a model, rather than only in
 						     the detail page's license line: "CC BY-NC 4.0" doesn't read
 						     as a restriction to most visitors, and the description that
