@@ -6,6 +6,7 @@ import deepseek from './deepseek.svg?raw';
 import gemma from './gemma.svg?raw';
 // GLM models are made by Z.ai, so we use the Z brand logo for that brand.
 import glm from './glm.svg?raw';
+import liquid from './liquid.svg?raw';
 import mistral from './mistral.svg?raw';
 import nvidia from './nvidia.svg?raw';
 import openai from './openai.svg?raw';
@@ -20,6 +21,7 @@ const byBrand: Record<string, string> = {
 	Gemma: gemma,
 	GLM: glm,
 	Laguna: poolside,
+	'Liquid AI': liquid,
 	Mistral: mistral,
 	NVIDIA: nvidia,
 	OpenAI: openai,
