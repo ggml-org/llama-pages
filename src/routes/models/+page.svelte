@@ -10,6 +10,13 @@
 	// recent, they'd lead) they'd read as ordinary picks.
 	const chatFamilies = families.filter((f) => !f.decision);
 	const decisionFamilies = families.filter((f) => f.decision);
+
+	// Starting points, from the catalog's `featured` flag -- the same families
+	// the app suggests, so the web and the app recommend the same models. The
+	// list below holds the rest, so each family appears once -- on a page this
+	// short, a repeat sits on the same screen as the original and reads as a bug.
+	const featuredFamilies = chatFamilies.filter((f) => f.featured);
+	const otherFamilies = chatFamilies.filter((f) => !f.featured);
 </script>
 
 <svelte:head>
@@ -34,10 +41,20 @@
 		</p>
 	</header>
 
-	<!-- Chat model families in one flat list, newest first. The publisher is already
-	     legible from each row's name and icon, so we don't group by publisher.
-	     Flush full-width rows separated by subtle hairlines. -->
-	{@render familyList(chatFamilies)}
+	<!-- Starting points first: a newest-first list puts whatever shipped last at
+	     the top, which isn't necessarily a good first model. -->
+	<section>
+		<h2 class="mb-2 text-[20px] font-semibold tracking-tight">Good places to start</h2>
+		{@render familyList(featuredFamilies)}
+	</section>
+
+	<!-- The remaining chat model families in one flat list, newest first. The
+	     publisher is already legible from each row's name and icon, so we don't
+	     group by publisher. Flush full-width rows separated by subtle hairlines. -->
+	<section class="mt-14">
+		<h2 class="mb-2 text-[20px] font-semibold tracking-tight">More models</h2>
+		{@render familyList(otherFamilies)}
+	</section>
 
 	<!-- Decision models: a short explainer, since the concept is new and the
 	     only way to use one is the API, then the same rows. -->
