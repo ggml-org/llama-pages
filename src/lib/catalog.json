@@ -780,6 +780,7 @@
 		"details": "Qwen 3.8 Flash Next is the first open release of the architecture that will underpin Qwen 4: 125B total parameters with 6B activated per token, plus 51B of n-gram embeddings -- so the downloads are larger than the headline size suggests. It pairs Gated DeltaNet layers with Qwen Sparse Attention, which cuts latency on long inputs.\n\nIt is natively multimodal, understanding images alongside text, and takes 256K tokens of context natively, extensible to 1M. It ships with a multi-token prediction head for faster generation. About 29 GB of the n-gram embeddings stay on disk rather than in memory, so the IQ4_NL build runs on a 128 GB Mac or DGX Spark.",
 		"released": "2026-08",
 		"license": "Qwen Community License",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "Qwen 3.8 Flash Next 125B-A6B",
