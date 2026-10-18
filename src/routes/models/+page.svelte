@@ -5,11 +5,12 @@
 	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
 	import { ModelsCatalogVisionBadge } from '$lib/components/app';
 
-	// Decision models get their own section below the main list: they don't
-	// chat, so mixed into a newest-first list of chat models (where, being
-	// recent, they'd lead) they'd read as ordinary picks.
-	const chatFamilies = families.filter((f) => !f.decision);
+	// Decision and embedding models get their own sections below the main
+	// list: they don't chat, so mixed into a newest-first list of chat models
+	// (where, being recent, they'd lead) they'd read as ordinary picks.
+	const chatFamilies = families.filter((f) => !f.decision && !f.embedding);
 	const decisionFamilies = families.filter((f) => f.decision);
+	const embeddingFamilies = families.filter((f) => f.embedding);
 
 	// Starting points, from the catalog's `featured` flag -- the same families
 	// the app suggests, so the web and the app recommend the same models. The
@@ -73,6 +74,25 @@
 				>
 			</p>
 			{@render familyList(decisionFamilies)}
+		</section>
+	{/if}
+
+	<!-- Embedding models: same shape as the decision section -- what they're
+	     for, that the API is the way in, then the rows. -->
+	{#if embeddingFamilies.length > 0}
+		<section class="mt-14">
+			<h2 class="text-[20px] font-semibold tracking-tight">Embedding models</h2>
+			<p class="mt-2 mb-4 max-w-2xl text-[15px] text-muted-foreground">
+				Models that turn text — and, for some, images and audio — into vectors, for search,
+				retrieval, and clustering. They don’t chat; apps call them through the API.
+				<a
+					href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-v1embeddings-openai-compatible-embeddings-api"
+					target="_blank"
+					rel="noopener"
+					class="whitespace-nowrap underline hover:text-foreground">How to use ↗</a
+				>
+			</p>
+			{@render familyList(embeddingFamilies)}
 		</section>
 	{/if}
 
