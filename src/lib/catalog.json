@@ -774,6 +774,35 @@
 		]
 	},
 	{
+		"name": "Nemotron 3.5 Super VL",
+		"brand": "NVIDIA",
+		"description": "NVIDIA's large hybrid Mamba-Transformer mixture-of-experts model with vision. Strong at reasoning, coding, and documents, with up to 1M context.",
+		"details": "Nemotron 3.5 Super VL is the larger sibling of Nemotron 3.5 Lightning: 120B total parameters with 12B activated per token, built from interleaved Mamba-2, mixture-of-experts, and attention layers, plus a vision encoder for image input. The hybrid design keeps memory use low on long inputs, and the model handles contexts of up to 1M tokens.\n\nReasoning can be turned on or off per request, and the model is trained for reasoning, coding, tool use, and document understanding in English, Spanish, French, German, Italian, and Japanese. It ships with a multi-token prediction head for faster generation, and the Q4_0 build runs on a 128 GB Mac or DGX Spark.",
+		"released": "2026-10",
+		"license": "OpenMDW 1.1",
+		"sizes": [
+			{
+				"name": "Nemotron 3.5 Super VL 120B-A12B",
+				"params": "120B-A12B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "128 GB",
+						"sizeBytes": 128472993728,
+						"repo": "ggml-org/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-GGUF"
+					},
+					{
+						"quant": "Q4_0",
+						"size": "71.8 GB",
+						"sizeBytes": 71803752384,
+						"repo": "ggml-org/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "Qwen 3.8 Flash Next",
 		"brand": "Qwen",
 		"description": "An experimental preview of the architecture behind Qwen 4. A sparse mixture-of-experts model with 6B active parameters, vision, and 256K context.",
