@@ -666,6 +666,35 @@
 		]
 	},
 	{
+		"name": "Clef Flash",
+		"brand": "Cloudflare",
+		"description": "Cloudflare's decision model. Reads a text, JSON, or image state and returns a probability for every option of every typed question in a single pass.",
+		"released": "2026-09",
+		"license": "Apache 2.0",
+		"decision": true,
+		"sizes": [
+			{
+				"name": "Clef Flash 9B",
+				"params": "9B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "9.7 GB",
+						"sizeBytes": 9657260192,
+						"repo": "ggml-org/Clef-Flash-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "6.5 GB",
+						"sizeBytes": 6486448288,
+						"repo": "ggml-org/Clef-Flash-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "Laya",
 		"brand": "ConvAI Innovations",
 		"description": "A **multilingual decision model for documents and structured data**, returning calibrated probabilities across 100+ languages.",
@@ -745,12 +774,42 @@
 		]
 	},
 	{
+		"name": "Nemotron 3.5 Super VL",
+		"brand": "NVIDIA",
+		"description": "NVIDIA's large hybrid Mamba-Transformer mixture-of-experts model with vision. Strong at reasoning, coding, and documents, with up to 1M context.",
+		"details": "Nemotron 3.5 Super VL is the larger sibling of Nemotron 3.5 Lightning: 120B total parameters with 12B activated per token, built from interleaved Mamba-2, mixture-of-experts, and attention layers, plus a vision encoder for image input. The hybrid design keeps memory use low on long inputs, and the model handles contexts of up to 1M tokens.\n\nReasoning can be turned on or off per request, and the model is trained for reasoning, coding, tool use, and document understanding in English, Spanish, French, German, Italian, and Japanese. It ships with a multi-token prediction head for faster generation, and the Q4_0 build runs on a 128 GB Mac or DGX Spark.",
+		"released": "2026-10",
+		"license": "OpenMDW 1.1",
+		"sizes": [
+			{
+				"name": "Nemotron 3.5 Super VL 120B-A12B",
+				"params": "120B-A12B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "128 GB",
+						"sizeBytes": 128472993728,
+						"repo": "ggml-org/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-GGUF"
+					},
+					{
+						"quant": "Q4_0",
+						"size": "71.8 GB",
+						"sizeBytes": 71803752384,
+						"repo": "ggml-org/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "Qwen 3.8 Flash Next",
 		"brand": "Qwen",
 		"description": "Alibaba's capable coding model for **long-context agents for large setups**, with vision support and 256K context.",
 		"details": "Qwen 3.8 Flash Next is the first open release of the architecture that will underpin Qwen 4: 125B total parameters with 6B activated per token, plus 51B of n-gram embeddings -- so the downloads are larger than the headline size suggests. It pairs Gated DeltaNet layers with Qwen Sparse Attention, which cuts latency on long inputs.\n\nIt is natively multimodal, understanding images alongside text, and takes 256K tokens of context natively, extensible to 1M. It ships with a multi-token prediction head for faster generation. About 29 GB of the n-gram embeddings stay on disk rather than in memory, so the IQ4_NL build runs on a 128 GB Mac or DGX Spark.",
 		"released": "2026-08",
 		"license": "Qwen Community License",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "Qwen 3.8 Flash Next 125B-A6B",
@@ -805,46 +864,87 @@
 		]
 	},
 	{
+		"name": "Muse Spark Open",
+		"brand": "Meta",
+		"description": "Meta's 816B-parameter mixture-of-experts model with 42B active parameters, image and audio input, adjustable reasoning, and 1M context.",
+		"details": "Muse Spark Open is Meta's 816B-parameter multimodal mixture-of-experts model. It routes each token through a subset of 256 experts, activating about 42B parameters at a time, and accepts text, image, and audio input across a 1M-token context window.\n\nReasoning depth can be adjusted from low to xhigh, and the model supports tool use for agentic workflows. The imatrix-calibrated Q2_K build is the most practical local option at 304 GB and fits in 512 GB of unified memory.",
+		"released": "2026-10",
+		"license": "Muse Model License",
+		"sizes": [
+			{
+				"name": "Muse Spark Open 816B-A42B",
+				"params": "816B-A42B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "872 GB",
+						"sizeBytes": 871648188873,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					},
+					{
+						"quant": "Q4_K_S",
+						"size": "470 GB",
+						"sizeBytes": 470069227350,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					},
+					{
+						"quant": "Q2_K",
+						"size": "304 GB",
+						"sizeBytes": 304080474208,
+						"repo": "ggml-org/Muse-Spark-Open-816B-A42B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "LFM 2.5",
 		"brand": "Liquid AI",
 		"description": "Liquid AI's **fast local model** for reasoning and tool use.",
-		"details": "LFM 2.5 is Liquid AI's edge-focused hybrid mixture-of-experts model, with 24B total parameters and 2B activated per token. It is designed to balance model quality with fast, memory-efficient inference on local hardware.\n\nThe instruction-tuned model supports conversational generation and tool use across ten languages with a 131K-token context window. Its GGUF release includes a quantization-aware-distilled Q4_0 build trained to recover accuracy normally lost during 4-bit quantization.",
+		"details": "LFM 2.5 24B-A2B is the largest model in Liquid AI's LFM 2.5 family: 24B total parameters with about 2B active per token, in a hybrid design that mixes 30 short-convolution blocks with 10 attention layers. It always reasons before answering, and with so few active parameters each reasoning token is cheap.\n\nIt is trained for agentic work and tool calling, with a 131K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks. The Q8_0 build suits a 48 GB Mac, and the Q4_K_M a 24 GB one.",
 		"released": "2026-10",
-		"license": "LFM 1.0",
+		"license": "LFM Open License 1.0",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "LFM 2.5 24B-A2B",
 				"params": "24B-A2B",
 				"builds": [
 					{
-						"quant": "Q4_0",
-						"size": "13.6 GB",
-						"sizeBytes": 13578190880,
-						"repo": "LiquidAI/LFM2.5-24B-A2B-GGUF"
+						"quant": "Q8_0",
+						"size": "25.5 GB",
+						"sizeBytes": 25493733408,
+						"repo": "ggml-org/LFM2.5-24B-A2B-GGUF"
 					},
 					{
 						"quant": "Q4_K_M",
 						"size": "14.5 GB",
-						"sizeBytes": 14526258464,
-						"repo": "LiquidAI/LFM2.5-24B-A2B-GGUF"
-					},
-					{
-						"quant": "Q5_K_M",
-						"size": "17.0 GB",
-						"sizeBytes": 17029602592,
-						"repo": "LiquidAI/LFM2.5-24B-A2B-GGUF"
-					},
-					{
-						"quant": "Q6_K",
-						"size": "19.7 GB",
-						"sizeBytes": 19689405728,
-						"repo": "LiquidAI/LFM2.5-24B-A2B-GGUF"
-					},
+						"sizeBytes": 14526259232,
+						"repo": "ggml-org/LFM2.5-24B-A2B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "EmbeddingGemma 2",
+		"brand": "Gemma",
+		"description": "Google's multimodal embedding model. Maps text, images, audio, and code into one shared vector space for search and retrieval.",
+		"released": "2026-10",
+		"license": "Apache 2.0",
+		"embedding": true,
+		"sizes": [
+			{
+				"name": "EmbeddingGemma 2",
+				"params": "740M",
+				"vision": true,
+				"builds": [
 					{
 						"quant": "Q8_0",
-						"size": "25.5 GB",
-						"sizeBytes": 25493732640,
-						"repo": "LiquidAI/LFM2.5-24B-A2B-GGUF"
+						"size": "310 MB",
+						"sizeBytes": 309855456,
+						"repo": "ggml-org/embeddinggemma-2-GGUF"
 					}
 				]
 			}

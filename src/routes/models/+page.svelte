@@ -2,14 +2,22 @@
 	import { ChevronRight } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import { logoFor } from '$lib/assets/logos';
-	import { families, releasedFor, slugify } from '$lib/catalog';
+	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
 	import { ModelsCatalogVisionBadge } from '$lib/components/app';
 
-	// Decision models get their own section below the main list: they don't
-	// chat, so mixed into a newest-first list of chat models (where, being
-	// recent, they'd lead) they'd read as ordinary picks.
-	const chatFamilies = families.filter((f) => !f.decision);
+	// Decision and embedding models get their own sections below the main
+	// list: they don't chat, so mixed into a newest-first list of chat models
+	// (where, being recent, they'd lead) they'd read as ordinary picks.
+	const chatFamilies = families.filter((f) => !f.decision && !f.embedding);
 	const decisionFamilies = families.filter((f) => f.decision);
+	const embeddingFamilies = families.filter((f) => f.embedding);
+
+	// Starting points, from the catalog's `featured` flag -- the same families
+	// the app suggests, so the web and the app recommend the same models. The
+	// list below holds the rest, so each family appears once -- on a page this
+	// short, a repeat sits on the same screen as the original and reads as a bug.
+	const featuredFamilies = chatFamilies.filter((f) => f.featured);
+	const otherFamilies = chatFamilies.filter((f) => !f.featured);
 </script>
 
 <svelte:head>
@@ -34,10 +42,20 @@
 		</p>
 	</header>
 
-	<!-- Chat model families in one flat list, newest first. The publisher is already
-	     legible from each row's name and icon, so we don't group by publisher.
-	     Flush full-width rows separated by subtle hairlines. -->
-	{@render familyList(chatFamilies)}
+	<!-- Starting points first: a newest-first list puts whatever shipped last at
+	     the top, which isn't necessarily a good first model. -->
+	<section>
+		<h2 class="mb-2 text-[20px] font-semibold tracking-tight">Good places to start</h2>
+		{@render familyList(featuredFamilies)}
+	</section>
+
+	<!-- The remaining chat model families in one flat list, newest first. The
+	     publisher is already legible from each row's name and icon, so we don't
+	     group by publisher. Flush full-width rows separated by subtle hairlines. -->
+	<section class="mt-14">
+		<h2 class="mb-2 text-[20px] font-semibold tracking-tight">More models</h2>
+		{@render familyList(otherFamilies)}
+	</section>
 
 	<!-- Decision models: a short explainer, since the concept is new and the
 	     only way to use one is the API, then the same rows. -->
@@ -56,6 +74,25 @@
 				>
 			</p>
 			{@render familyList(decisionFamilies)}
+		</section>
+	{/if}
+
+	<!-- Embedding models: same shape as the decision section -- what they're
+	     for, that the API is the way in, then the rows. -->
+	{#if embeddingFamilies.length > 0}
+		<section class="mt-14">
+			<h2 class="text-[20px] font-semibold tracking-tight">Embedding models</h2>
+			<p class="mt-2 mb-4 max-w-2xl text-[15px] text-muted-foreground">
+				Models that turn text — and, for some, images and audio — into vectors, for search,
+				retrieval, and clustering. They don’t chat; apps call them through the API.
+				<a
+					href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-v1embeddings-openai-compatible-embeddings-api"
+					target="_blank"
+					rel="noopener"
+					class="whitespace-nowrap underline hover:text-foreground">How to use ↗</a
+				>
+			</p>
+			{@render familyList(embeddingFamilies)}
 		</section>
 	{/if}
 
@@ -105,8 +142,7 @@
 					     they read as discrete configurations rather than a run-on
 					     string; fully rounded rather than rounded-md, because the
 					     rounded-md filled chip is the quant badge on the detail
-					     pages and sizes get a distinct silhouette. Memory
-					     requirements live on the detail page. -->
+					     pages and sizes get a distinct silhouette. -->
 					<h3 class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[16px] font-medium">
 						<span class="mr-0.5">{f.name}</span>
 						{#if f.sizes.some((s) => s.vision)}
@@ -119,6 +155,17 @@
 								{s.params ?? s.name}
 							</span>
 						{/each}
+						<!-- The family's memory floor -- what the smallest build needs --
+						     so "will it run on my computer?" is answered while scanning,
+						     without opening every detail page (which lists each build's
+						     own requirement). Phrased like those ("16 GB+ memory") so the
+						     two read as one system, and as plain text rather than a pill,
+						     so it doesn't pass for another size. -->
+						{#if minMemGB(f)}
+							<span class="ml-1 text-[12px] font-normal text-muted-foreground tabular-nums">
+								{minMemGB(f)} GB+ memory
+							</span>
+						{/if}
 						<!-- Flagged here, where people pick a model, rather than only in
 						     the detail page's license line: "CC BY-NC 4.0" doesn't read
 						     as a restriction to most visitors, and the description that

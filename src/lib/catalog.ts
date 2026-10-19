@@ -67,9 +67,9 @@ export type Family = {
 	// most visitors. Absent means false.
 	nonCommercial?: boolean;
 	// Whether this family is featured. Exposed in the published catalog API for
-	// consumers to highlight; the website doesn't surface it -- the homepage
-	// grid keeps its own handpicked list, so the two move independently.
-	// Absent means false.
+	// consumers to highlight (the app suggests these), and shown as starting
+	// points at the top of the website's models page. The homepage grid keeps
+	// its own handpicked list, so the two move independently. Absent means false.
 	featured?: boolean;
 	// Memory cap (in GB) for featuring: consumers should not suggest this family
 	// on machines with more RAM than this. Marks a family as a low-memory pick
@@ -81,6 +81,11 @@ export type Family = {
 	// says how to use them; the apps detect the kind from the GGUF itself, so
 	// they don't depend on this flag. Absent means false (a chat model).
 	decision?: boolean;
+	// Whether this is an embedding model: it turns input (text, and for some
+	// models images or audio) into vectors through `/v1/embeddings`, for
+	// search and retrieval, rather than chatting. Listed and explained like
+	// decision models, and likewise not read by the apps. Absent means false.
+	embedding?: boolean;
 	sizes: Size[];
 };
 
@@ -196,7 +201,8 @@ export function minMemForBuild(b: Build): number | null {
 
 // The family's entry bar: the smallest tier that runs *any* of its builds
 // (i.e. the smallest quant of the smallest size). A floor, not a guarantee
-// for the whole family — the list page renders it as "from N GB".
+// for the whole family — the models list renders it as "N GB+ memory" on each
+// row, and the homepage picks as "N GB of memory or more".
 export function minMemGB(f: Family): number | null {
 	const tiers = f.sizes
 		.flatMap((s) => s.builds)
