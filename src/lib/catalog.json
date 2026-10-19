@@ -719,7 +719,7 @@
 	{
 		"name": "Bespoke Nimble",
 		"brand": "Bespoke Labs",
-		"description": "Bespoke Labs' **mid-sized decision model** with NC license. Given a context and typed questions, it returns a probability for each option.",
+		"description": "Bespoke Labs' **mid-sized decision model**. Given a context and typed questions, it returns a probability for each option.",
 		"released": "2026-09",
 		"license": "CC BY-NC 4.0",
 		"nonCommercial": true,
