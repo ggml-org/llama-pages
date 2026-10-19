@@ -806,7 +806,7 @@
 		"name": "Qwen 3.8 Flash Next",
 		"brand": "Qwen",
 		"description": "Alibaba's capable coding model for **long-context agents for large setups**, with vision support and 256K context.",
-		"details": "Qwen 3.8 Flash Next is the first open release of the architecture that will underpin Qwen 4: 125B total parameters with 6B activated per token, plus 51B of n-gram embeddings -- so the downloads are larger than the headline size suggests. It pairs Gated DeltaNet layers with Qwen Sparse Attention, which cuts latency on long inputs.\n\nIt is natively multimodal, understanding images alongside text, and takes 256K tokens of context natively, extensible to 1M. It ships with a multi-token prediction head for faster generation. About 29 GB of the n-gram embeddings stay on disk rather than in memory, so the IQ4_NL build runs on a 128 GB Mac or DGX Spark.",
+		"details": "Qwen 3.8 Flash Next is the largest model in Alibaba's Qwen 3.8 family. It is natively multimodal and has 1M context. It ships with a MTP head for faster generation.",
 		"released": "2026-08",
 		"license": "Qwen Community License",
 		"featured": true,
@@ -837,10 +837,11 @@
 	{
 		"name": "Muse Glimmer",
 		"brand": "Meta",
-		"description": "Meta's **local agentic model for your laptops**, with coding, tool use, and image understanding.",
-		"details": "Muse Glimmer is a 30B dense model from Meta Superintelligence Labs, distilled from Muse Spark for autonomous agentic work on consumer hardware. It combines long-horizon reasoning, reliable tool use, coding, and failure recovery with a 131K-token context window.\n\nA dedicated perception encoder adds image understanding, while support for more than 100 languages broadens its use beyond English. The two published 4-bit builds target 24 GB and 32 GB systems, and an optional DFlash drafter can accelerate generation.",
+		"description": "Meta's **local model to run on your laptop powering always-on agents**, with coding, tool use, and image understanding.",
+		"details": "Muse Glimmer is a great mid-sized dense model with small version for **always-on agents (assistants)** from Meta Superintelligence Labs. It is distilled from Muse Spark for autonomous agentic work on consumer hardware. It ships with a DFlash drafter for faster generation.",
 		"released": "2026-08",
 		"license": "Apache 2.0",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "Muse Glimmer 30B",
@@ -866,8 +867,8 @@
 	{
 		"name": "Muse Spark Open",
 		"brand": "Meta",
-		"description": "Meta's 816B-parameter mixture-of-experts model with 42B active parameters, image and audio input, adjustable reasoning, and 1M context.",
-		"details": "Muse Spark Open is Meta's 816B-parameter multimodal mixture-of-experts model. It routes each token through a subset of 256 experts, activating about 42B parameters at a time, and accepts text, image, and audio input across a 1M-token context window.\n\nReasoning depth can be adjusted from low to xhigh, and the model supports tool use for agentic workflows. The imatrix-calibrated Q2_K build is the most practical local option at 304 GB and fits in 512 GB of unified memory.",
+		"description": "Meta's large and capable agentic model, takes image and audio input, with adjustable reasoning, and 1M context.",
+		"details": "Muse Spark Open is Meta's multimodal large agentic model. Reasoning lever can be adjusted from low to xhigh, and the model supports tool use for agentic workflows. ",
 		"released": "2026-10",
 		"license": "Muse Model License",
 		"sizes": [
@@ -902,7 +903,7 @@
 		"name": "LFM 2.5",
 		"brand": "Liquid AI",
 		"description": "Liquid AI's **fast local model** for reasoning and tool use.",
-		"details": "LFM 2.5 24B-A2B is the largest model in Liquid AI's LFM 2.5 family: 24B total parameters with about 2B active per token, in a hybrid design that mixes 30 short-convolution blocks with 10 attention layers. It always reasons before answering, and with so few active parameters each reasoning token is cheap.\n\nIt is trained for agentic work and tool calling, with a 131K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks. The Q8_0 build suits a 48 GB Mac, and the Q4_K_M a 24 GB one.",
+		"details": "LFM 2.5 24B-A2B is the largest model in Liquid AI's LFM 2.5 family. It always reasons before answering. It is trained for agentic work and tool calling, with a 131K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks. ",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
 		"featured": true,
