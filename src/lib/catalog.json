@@ -805,7 +805,7 @@
 	{
 		"name": "Qwen 3.8 Flash Next",
 		"brand": "Qwen",
-		"description": "Alibaba's capable coding model for **long-context agents for large setups**, with vision support and 256K context.",
+		"description": "An experimental **preview of the Qwen 4 architecture** for long-context agents on large setups, with vision and 256K context.",
 		"details": "Qwen 3.8 Flash Next is the largest model in Alibaba's Qwen 3.8 family. It is natively multimodal and has 1M context. It ships with a MTP head for faster generation.",
 		"released": "2026-08",
 		"license": "Qwen Community License",
