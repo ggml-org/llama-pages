@@ -45,9 +45,9 @@
 		<section class="mt-14">
 			<h2 class="text-[20px] font-semibold tracking-tight">Decision models</h2>
 			<p class="mt-2 mb-4 max-w-2xl text-[15px] text-muted-foreground">
-				Robust, production-grade models that take typed questions with documents as input and return
-				a probability for each option as output. Use for a variety of tasks: route a ticket,
-				moderate content, pick an agent’s next step. They don't output free text like LLMs.
+				Models that take a document and typed questions, and return a probability for each option --
+				route a ticket, moderate content, pick an agent’s next step. They don’t chat; apps call them
+				through the API.
 				<a
 					href="https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp"
 					target="_blank"
