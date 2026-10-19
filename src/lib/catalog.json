@@ -243,7 +243,7 @@
 	{
 		"name": "Qwen 3.8",
 		"brand": "Qwen",
-		"description": "Alibaba's multimodal **mid-sized models for coding and research**, for long-horizon agentic work with 256K native context.",
+		"description": "Alibaba's multimodal **mid-sized models for coding and research**, long-horizon agentic work with 256K native context.",
 		"details": "Qwen 3.8 succeeds the 3.6 line, pairing a very large mixture-of-experts flagship with a 27B dense model -- the size that runs locally. It aims at coding, professional work, research, and long-horizon agentic tasks, and thinking depth is adjustable, so the same weights can answer quickly or reason at length.\n\nIt is natively multimodal, understanding images alongside text, and takes 256K tokens of context natively.",
 		"released": "2026-08",
 		"license": "Apache 2.0",
