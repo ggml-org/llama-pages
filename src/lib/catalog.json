@@ -610,7 +610,7 @@
 	{
 		"name": "Kev",
 		"brand": "Jared Palmer",
-		"description": "Decision models that take context and typed questions as input, and return a calibrated probability for each option as output.",
+		"description": "Decision models that take context and typed questions as input, and output a calibrated probability for each option.",
 		"released": "2026-09",
 		"license": "Apache 2.0",
 		"decision": true,
