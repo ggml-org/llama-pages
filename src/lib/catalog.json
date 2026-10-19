@@ -214,7 +214,7 @@
 	{
 		"name": "Qwen 3.5 Small",
 		"brand": "Qwen",
-		"description": "Alibaba's compact multimodal reasoning models runnable from **phones to large setups**, with vision, switchable thinking, and support for 201 languages.",
+		"description": "Alibaba's compact multimodal reasoning models **for phones and laptops**, with vision, switchable thinking, and support for 201 languages.",
 		"details": "The small tier of Qwen 3.5 is Alibaba's set of compact, natively multimodal models built for on-device and latency-sensitive use. They understand both text and images out of the box.\n\nEach model supports switchable thinking and non-thinking modes, letting you turn step-by-step reasoning on for hard problems or off for fast replies, with language coverage spanning 201 languages.",
 		"released": "2026-01",
 		"license": "Apache 2.0",
