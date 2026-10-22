@@ -850,15 +850,15 @@
 				"builds": [
 					{
 						"quant": "Q4_K_M",
-						"size": "16.8 GB",
-						"sizeBytes": 16756683904,
-						"repo": "meta-models/Muse-Glimmer-30B-GGUF"
+						"size": "19.2 GB",
+						"sizeBytes": 19246214464,
+						"repo": "ggml-org/Muse-Glimmer-30B-GGUF"
 					},
 					{
-						"quant": "Q4_K_XL",
-						"size": "19.7 GB",
-						"sizeBytes": 19653960832,
-						"repo": "meta-models/Muse-Glimmer-30B-GGUF"
+						"quant": "Q8_0",
+						"size": "29.6 GB",
+						"sizeBytes": 29612961088,
+						"repo": "ggml-org/Muse-Glimmer-30B-GGUF"
 					}
 				]
 			}
