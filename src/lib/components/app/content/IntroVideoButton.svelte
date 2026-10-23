@@ -52,6 +52,19 @@
 		video?.focus();
 	}
 
+	// Number keys jump to that tenth of the video (1 to 10%, 0 to the start),
+	// as on YouTube. Not with a modifier, so Cmd/Ctrl+number still switches
+	// tabs. Skipped until the duration is known.
+	function jump(e: KeyboardEvent) {
+		if (!video || e.metaKey || e.ctrlKey || e.altKey || !/^[0-9]$/.test(e.key)) {
+			return;
+		}
+
+		if (Number.isFinite(video.duration)) {
+			video.currentTime = (video.duration * Number(e.key)) / 10;
+		}
+	}
+
 	// Closing pauses rather than resets, so reopening after an accidental
 	// close picks up where the visitor left off.
 	function close() {
@@ -103,6 +116,7 @@
 	<video
 		bind:this={video}
 		onseeked={refocus}
+		onkeydown={jump}
 		src="/intro/intro.mp4"
 		preload="none"
 		controls
