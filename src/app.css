@@ -164,6 +164,15 @@
 		@apply font-sans;
 	}
 
+	/* Lock the page while a modal <dialog> is open: the native element makes
+	   the page behind it inert but still lets it scroll. `scrollbar-gutter`
+	   keeps the room of the scrollbar that's hidden, so with always-visible
+	   scrollbars (Windows) the page doesn't shift sideways. */
+	html:has(dialog:modal) {
+		overflow: hidden;
+		scrollbar-gutter: stable;
+	}
+
 	h1,
 	h2,
 	h3,
