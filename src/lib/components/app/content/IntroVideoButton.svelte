@@ -16,6 +16,8 @@
 	import { Button } from '$lib/components/ui/button';
 
 	// Shown on the button: knowing it's short makes the click an easy yes.
+	// Hardcoded rather than read from the video, which isn't loaded until the
+	// modal opens -- update it along with static/intro/intro.mp4.
 	const DURATION = '0:36';
 
 	// The OSes to show the button on, as its `data-os-only` (see app.css).
@@ -54,8 +56,14 @@
 	// waited for rather than the click, so a drag along the timeline isn't
 	// interrupted. Focus that arrives by Tab is left alone, so the player's
 	// own buttons (volume, captions, fullscreen) stay reachable.
+	//
+	// Not once the dialog is closing: closing pauses the video, and the
+	// pause would pull focus back into the fading-out dialog, so Safari
+	// lost it instead of returning it to the "Watch the intro" button.
 	function focusDialog() {
-		dialog?.focus();
+		if (dialog?.open) {
+			dialog.focus();
+		}
 	}
 
 	// YouTube's shortcuts: Space plays and pauses, ←/→ skip 5 seconds, M
@@ -102,12 +110,6 @@
 
 		e.preventDefault();
 	}
-
-	// Closing pauses rather than resets, so reopening after an accidental
-	// close picks up where the visitor left off.
-	function close() {
-		dialog?.close();
-	}
 </script>
 
 <Button data-os-only={os} onclick={show} size="lg" variant="outline">
@@ -117,9 +119,11 @@
 </Button>
 
 <!-- onclose catches every way out (Escape, the close button, the backdrop)
-     and pauses the video. Only a click straight on the <dialog> element
-     closes it -- that's the backdrop, since its content covers the rest --
-     so clicks on the player's controls don't.
+     and pauses the video -- rather than resetting it, so reopening after an
+     accidental close picks up where the visitor left off. Only a click
+     straight on the <dialog> element closes it -- that's the backdrop,
+     since its content covers the rest -- so clicks on the player's controls
+     don't.
 
      Sized as large as the window allows: it's a screen recording, and the
      app's text in it is small. The width is capped by the height (16:9, with
@@ -133,7 +137,7 @@
 	bind:this={dialog}
 	tabindex="-1"
 	onclose={() => video?.pause()}
-	onclick={(e) => e.target === dialog && close()}
+	onclick={(e) => e.target === dialog && dialog?.close()}
 	onkeydown={onKeydown}
 	aria-label="Llama intro video"
 	class="m-auto w-[calc(100%-2rem)] max-w-[min(100rem,calc((100dvh-8rem)*16/9))] bg-transparent p-0 outline-none backdrop:bg-black/80"
@@ -142,7 +146,7 @@
 		<button
 			type="button"
 			aria-label="Close"
-			onclick={close}
+			onclick={() => dialog?.close()}
 			class="cursor-pointer p-1 text-white/70 hover:text-white"
 		>
 			<X class="size-5" />
