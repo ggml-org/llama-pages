@@ -11,7 +11,10 @@
 	// by default.
 	//
 	// Built on the native <dialog> element, like ModelsCatalogInstallDialog:
-	// focus trapping, Escape-to-close and the backdrop come for free.
+	// focus trapping, Escape-to-close and the backdrop come for free. Unlike
+	// that dialog it opens and closes instantly, with no fade: playback has
+	// to start in the click itself (see show), so the video played while
+	// the page was still dimming.
 	import { Play, X } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button';
 
@@ -170,29 +173,3 @@
 		<track kind="captions" src="/intro/intro.vtt" srclang="en" label="English" />
 	</video>
 </dialog>
-
-<style>
-	/* Quick fade on open and close, as in ModelsCatalogInstallDialog: native
-	   <dialog> toggles `display`, which `allow-discrete` plus
-	   `@starting-style` make animatable in modern browsers. */
-	dialog,
-	dialog::backdrop {
-		opacity: 0;
-		transition:
-			opacity 0.15s ease,
-			overlay 0.15s allow-discrete,
-			display 0.15s allow-discrete;
-	}
-
-	dialog[open],
-	dialog[open]::backdrop {
-		opacity: 1;
-	}
-
-	@starting-style {
-		dialog[open],
-		dialog[open]::backdrop {
-			opacity: 0;
-		}
-	}
-</style>
