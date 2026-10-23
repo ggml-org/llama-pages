@@ -39,13 +39,19 @@
 <!-- onclose catches every way out (Escape, the close button, a click) and
      drops the player. Any click that reaches the dialog closes it: clicks
      inside the player stay in the iframe and never get here, so what's left
-     is the backdrop and the space around the video. -->
+     is the backdrop and the space around the video.
+
+     Sized as large as the window allows: it's a screen recording, and the
+     app's text in it is small. The width is capped by the height (16:9, with
+     room for the close button and a margin), so the video is never cut off,
+     and by 100rem, past which it's big enough. -->
+
 <dialog
 	bind:this={dialog}
 	onclose={() => (open = false)}
 	onclick={() => dialog?.close()}
 	aria-label="Llama intro video"
-	class="m-auto w-[calc(100%-2rem)] max-w-[min(64rem,calc((100dvh-6rem)*16/9))] bg-transparent p-0 backdrop:bg-black/80"
+	class="m-auto w-[calc(100%-2rem)] max-w-[min(100rem,calc((100dvh-8rem)*16/9))] bg-transparent p-0 backdrop:bg-black/80"
 >
 	<div class="flex justify-end pb-2">
 		<button
