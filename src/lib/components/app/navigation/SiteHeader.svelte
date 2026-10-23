@@ -21,12 +21,11 @@
 
 	// The GitHub link goes to the source of what the page offers. The docs
 	// describe llama.cpp, so there it's llama.cpp's repo. Elsewhere it's the
-	// repo of the app offered to the visitor's OS, matching the homepage's
-	// "View on GitHub" button: the Mac app's for Mac and everyone else
-	// (phones, crawlers), the Windows app's for Windows. Linux has no app and
-	// is offered the command-line install, which is llama.cpp. Switched with
-	// `data-os-only` (see app.css), so the prerendered page never flashes the
-	// wrong link.
+	// repo of the app offered to the visitor's OS: the Mac app's for Mac and
+	// everyone else (phones, crawlers), the Windows app's for Windows. Linux
+	// has no app and is offered the command-line install, which is llama.cpp.
+	// Switched with `data-os-only` (see app.css), so the prerendered page never
+	// flashes the wrong link.
 	const APP_REPOS = [
 		{ os: 'mac other', url: MACOS_REPO_URL },
 		{ os: 'windows', url: WINDOWS_REPO_URL },

@@ -58,19 +58,11 @@
 	import { logoFor } from '$lib/assets/logos';
 	import windowsIcon from '$lib/assets/windows-icon.svg?raw';
 	import { families, minMemGB, slugify } from '$lib/catalog';
-	import { CopyButton, Logo, MacStatusIcon } from '$lib/components/app';
+	import { CopyButton, IntroVideoButton, Logo, MacStatusIcon } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
-	import { MACOS_REPO_URL, SITE_DESCRIPTION, SITE_TITLE, WINDOWS_REPO_URL } from '$lib/constants';
+	import { SITE_DESCRIPTION, SITE_TITLE, WINDOWS_REPO_URL } from '$lib/constants';
 	import Prism from '$lib/prism';
 	import type { Snippet } from 'svelte';
-
-	// -- Hero GitHub button ---------------------------------------------------------
-	//
-	// One per OS (see the button's comment); `os` is its `data-os-only`.
-	const GITHUB_REPOS = [
-		{ os: 'mac other', url: MACOS_REPO_URL },
-		{ os: 'windows', url: WINDOWS_REPO_URL }
-	];
 
 	// -- "Like OpenAI" clients ----------------------------------------------------
 	//
@@ -540,26 +532,26 @@
 		<div data-os-only="mac windows other" class="flex flex-col items-center gap-3 sm:flex-row">
 			{@render downloadButtons()}
 
-			<!-- The second button is the repo: most users are developers, and
-			     for them the source is the natural next click and a trust signal.
-			     Each OS gets the repo of the app it's offered, so Windows visitors
-			     don't land on the Mac app's code. Everyone else gets the Mac app's,
-			     matching the header's GitHub link. Linux gets none: there's no
-			     Linux app, and linking llama.cpp would suggest there is. (It was
-			     a demo video before; worth bringing back if one gets made.) -->
-			{#each GITHUB_REPOS as r (r.url)}
-				<Button
-					data-os-only={r.os}
-					href={r.url}
-					target="_blank"
-					rel="noreferrer"
-					size="lg"
-					variant="outline"
-				>
-					View on GitHub
-					<ArrowUpRight class="size-4" />
-				</Button>
-			{/each}
+			<!-- The second button is the intro video: it shows what the app is
+			     and how it works in under a minute, which the text and pictures
+			     can only describe. It replaced "View on GitHub" -- the repo is
+			     still a click away in the header, with its star count, and
+			     "Open source" sits right below. The video shows the Mac app, so
+			     Windows keeps the GitHub button (the Windows app's repo) until
+			     there's a Windows video: its app doesn't have everything the
+			     video shows yet. Linux gets neither: there's no Linux app. -->
+			<IntroVideoButton os="mac other" />
+			<Button
+				data-os-only="windows"
+				href={WINDOWS_REPO_URL}
+				target="_blank"
+				rel="noreferrer"
+				size="lg"
+				variant="outline"
+			>
+				View on GitHub
+				<ArrowUpRight class="size-4" />
+			</Button>
 		</div>
 
 		<!-- The reassurances sit right under the buttons, where the "should I
