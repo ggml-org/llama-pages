@@ -58,31 +58,49 @@
 		dialog?.focus();
 	}
 
-	// Space plays and pauses, and number keys jump to that tenth of the video
-	// (1 to 10%, 0 to the start), as on YouTube. Space only when the dialog
-	// itself has focus: on the close button it should close, and on the
-	// player Chrome already handles it, and can't be stopped from doing so,
-	// so handling it here too would toggle twice. Keys with a modifier are
-	// left alone, so Cmd/Ctrl+number still switches tabs.
+	// YouTube's shortcuts: Space plays and pauses, ←/→ skip 5 seconds, M
+	// mutes, F toggles fullscreen, and number keys jump to that tenth of the
+	// video (1 to 10%, 0 to the start).
+	//
+	// Only when the dialog itself has focus: on the close button Space should
+	// close, and once the viewer has tabbed into the player, Chrome handles
+	// Space (and the arrows) itself and can't be stopped from doing so, so
+	// handling them here too would act twice. Keys with a modifier are left
+	// alone, so Cmd/Ctrl+number still switches tabs.
 	function onKeydown(e: KeyboardEvent) {
-		if (!video || e.metaKey || e.ctrlKey || e.altKey) {
+		if (!video || e.target !== dialog || e.metaKey || e.ctrlKey || e.altKey) {
 			return;
 		}
 
-		if (e.key === ' ' && e.target === dialog) {
-			e.preventDefault();
+		const key = e.key.toLowerCase();
 
+		if (key === ' ') {
 			if (video.paused) {
 				video.play().catch(() => {});
 			} else {
 				video.pause();
 			}
+		} else if (key === 'arrowleft' || key === 'arrowright') {
+			// Setting currentTime past either end clamps to it.
+			video.currentTime += key === 'arrowleft' ? -5 : 5;
+		} else if (key === 'm') {
+			video.muted = !video.muted;
+		} else if (key === 'f') {
+			if (document.fullscreenElement) {
+				document.exitFullscreen().catch(() => {});
+			} else {
+				video.requestFullscreen().catch(() => {});
+			}
+		} else if (/^[0-9]$/.test(key)) {
+			// Skipped until the duration is known.
+			if (Number.isFinite(video.duration)) {
+				video.currentTime = (video.duration * Number(key)) / 10;
+			}
+		} else {
+			return;
 		}
 
-		// Skipped until the duration is known.
-		if (/^[0-9]$/.test(e.key) && Number.isFinite(video.duration)) {
-			video.currentTime = (video.duration * Number(e.key)) / 10;
-		}
+		e.preventDefault();
 	}
 
 	// Closing pauses rather than resets, so reopening after an accidental
