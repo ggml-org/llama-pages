@@ -26,11 +26,7 @@
 
 	function show() {
 		dialog?.showModal();
-
-		// The dialog focuses its first focusable element, the close button,
-		// so Space -- which viewers expect to pause -- would close the modal.
-		// Focusing the player instead gives Space to its built-in controls.
-		video?.focus();
+		focusDialog();
 
 		// Started right here in the click handler, not with the `autoplay`
 		// attribute: browsers (Safari especially) only allow playback with
@@ -41,26 +37,50 @@
 		video?.play().catch(() => {});
 	}
 
-	// Clicking the player's timeline leaves focus on the timeline slider,
-	// which ignores Space, so Space stopped pausing after a seek (Chrome).
-	// Handing focus back to the player after each seek fixes that; it waits
-	// for `seeked` rather than the click so a drag along the timeline isn't
-	// interrupted. The blur is needed because the player already counts as
-	// focused (the slider is inside it), so a plain focus() does nothing.
-	function refocus() {
-		video?.blur();
-		video?.focus();
+	// Keyboard focus is kept on the dialog itself rather than on the player,
+	// and the keys are handled in onKeydown. Two things rule out leaving it
+	// to the player:
+	//
+	//   - The dialog would focus its first focusable element, the close
+	//     button, so Space -- which viewers expect to pause -- would close
+	//     the modal.
+	//   - Chrome keeps the player's controls on screen for as long as the
+	//     player has focus after a key press, so a single Space or number
+	//     key left them stuck over the video.
+	//
+	// Clicking the player (to pause, or on its timeline) gives it focus, so
+	// focus is handed back after each play, pause and seek. That also gets
+	// focus off the timeline slider, which would swallow Space. A seek is
+	// waited for rather than the click, so a drag along the timeline isn't
+	// interrupted. Focus that arrives by Tab is left alone, so the player's
+	// own buttons (volume, captions, fullscreen) stay reachable.
+	function focusDialog() {
+		dialog?.focus();
 	}
 
-	// Number keys jump to that tenth of the video (1 to 10%, 0 to the start),
-	// as on YouTube. Not with a modifier, so Cmd/Ctrl+number still switches
-	// tabs. Skipped until the duration is known.
-	function jump(e: KeyboardEvent) {
-		if (!video || e.metaKey || e.ctrlKey || e.altKey || !/^[0-9]$/.test(e.key)) {
+	// Space plays and pauses, and number keys jump to that tenth of the video
+	// (1 to 10%, 0 to the start), as on YouTube. Space only when the dialog
+	// itself has focus: on the close button it should close, and on the
+	// player Chrome already handles it, and can't be stopped from doing so,
+	// so handling it here too would toggle twice. Keys with a modifier are
+	// left alone, so Cmd/Ctrl+number still switches tabs.
+	function onKeydown(e: KeyboardEvent) {
+		if (!video || e.metaKey || e.ctrlKey || e.altKey) {
 			return;
 		}
 
-		if (Number.isFinite(video.duration)) {
+		if (e.key === ' ' && e.target === dialog) {
+			e.preventDefault();
+
+			if (video.paused) {
+				video.play().catch(() => {});
+			} else {
+				video.pause();
+			}
+		}
+
+		// Skipped until the duration is known.
+		if (/^[0-9]$/.test(e.key) && Number.isFinite(video.duration)) {
 			video.currentTime = (video.duration * Number(e.key)) / 10;
 		}
 	}
@@ -86,13 +106,19 @@
      Sized as large as the window allows: it's a screen recording, and the
      app's text in it is small. The width is capped by the height (16:9, with
      room for the close button and a margin), so the video is never cut off,
-     and by 100rem, past which it's big enough. -->
+     and by 100rem, past which it's big enough.
+
+     tabindex="-1" makes the dialog focusable from code (see focusDialog)
+     without adding it to the Tab order. No focus ring: it would outline the
+     whole modal, which says nothing about where focus is. -->
 <dialog
 	bind:this={dialog}
+	tabindex="-1"
 	onclose={() => video?.pause()}
 	onclick={(e) => e.target === dialog && close()}
+	onkeydown={onKeydown}
 	aria-label="Llama intro video"
-	class="m-auto w-[calc(100%-2rem)] max-w-[min(100rem,calc((100dvh-8rem)*16/9))] bg-transparent p-0 backdrop:bg-black/80"
+	class="m-auto w-[calc(100%-2rem)] max-w-[min(100rem,calc((100dvh-8rem)*16/9))] bg-transparent p-0 outline-none backdrop:bg-black/80"
 >
 	<div class="flex justify-end pb-2">
 		<button
@@ -107,21 +133,17 @@
 
 	<!-- preload="none": nothing is downloaded until the modal opens. The
 	     captions track has no `default`, so it's off until the viewer turns
-	     it on from the player's controls.
-
-	     No focus ring: the player gets focus when the modal opens (see show),
-	     so the first key press drew a ring around it. It's the only thing
-	     in the modal besides the close button (which keeps its ring), so the
-	     ring said nothing about where focus is. -->
+	     it on from the player's controls. -->
 	<video
 		bind:this={video}
-		onseeked={refocus}
-		onkeydown={jump}
+		onplay={focusDialog}
+		onpause={focusDialog}
+		onseeked={focusDialog}
 		src="/intro/intro.mp4"
 		preload="none"
 		controls
 		playsinline
-		class="aspect-video w-full rounded-xl bg-black outline-none"
+		class="aspect-video w-full rounded-xl bg-black"
 	>
 		<track kind="captions" src="/intro/intro.vtt" srclang="en" label="English" />
 	</video>
