@@ -82,42 +82,44 @@
 
 	<section class="mt-10">
 		<!-- Section header line: a heading on the left anchors the row, with the
-		     quantization toggle as the right-aligned control. The toggle's full
-		     explanation lives in the info icon's tooltip -- the one place the
-		     site explains what quantization is. -->
-		<div class="mb-2 flex items-center justify-between">
+		     quantization toggle as the right-aligned control -- the one place the
+		     site explains what quantization is. The explanation sits on a second
+		     line under the label, always visible: it used to hide in an info
+		     icon's tooltip, which few people found. A switch rather than a
+		     checkbox, at the right edge and sized to span both lines, so the
+		     control and the two lines read as one unit, settings-row style. The
+		     whole thing is the label, so a click anywhere on it toggles. The
+		     heading sits at the bottom, level with the second line, just above
+		     the table it names. -->
+		<div class="mb-2 flex items-end justify-between gap-4">
 			<h2 class="text-[13px] text-muted-foreground">Sizes</h2>
 			{#if hasQuantized}
-				<div class="flex items-center gap-1.5">
-					<label
-						class="flex cursor-pointer items-baseline gap-2 text-[13px] text-muted-foreground select-none"
-					>
-						<input type="checkbox" bind:checked={showQuantized} class="accent-sky-500" />
-						<span>Show smaller quantizations</span>
-					</label>
-					<!-- Info icon carrying the quantization explainer. A native title
-					     tooltip on hover; explicit rather than hiding the hint on the
-					     label itself, so it's discoverable. -->
-					<span
-						class="cursor-help text-muted-foreground/70"
-						title="Quantized further to run in less memory, at a small cost in quality."
-					>
-						<svg
-							aria-label="What are smaller quantizations?"
-							role="img"
-							viewBox="0 0 16 16"
-							class="h-3.5 w-3.5"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-							stroke-linecap="round"
-						>
-							<circle cx="8" cy="8" r="6.5" />
-							<path d="M6.3 6.2a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.5-.7 1v.3" />
-							<circle cx="8" cy="11.3" r="0.1" stroke-width="1.6" />
-						</svg>
+				<label class="flex cursor-pointer items-center gap-3 text-right select-none">
+					<span class="flex flex-col">
+						<span class="text-[13px] text-muted-foreground">Show smaller quantizations</span>
+						<span id="quantized-hint" class="text-[12px] text-muted-foreground/70">
+							Less memory, at a small cost in quality
+						</span>
 					</span>
-				</div>
+					<!-- The switch: a visually hidden native checkbox (role="switch" so
+					     assistive tech announces on/off) drives the drawn track and thumb
+					     through peer-checked / peer-focus-visible. -->
+					<input
+						type="checkbox"
+						role="switch"
+						bind:checked={showQuantized}
+						aria-describedby="quantized-hint"
+						class="peer sr-only"
+					/>
+					<span
+						aria-hidden="true"
+						class="relative h-8 w-13 shrink-0 rounded-full bg-muted-foreground/25 transition-colors peer-checked:bg-sky-500 peer-focus-visible:ring-2 peer-focus-visible:ring-sky-500/50 peer-focus-visible:ring-offset-2 peer-checked:[&>span]:translate-x-5"
+					>
+						<span
+							class="absolute top-0.5 left-0.5 h-7 w-7 rounded-full bg-white transition-transform"
+						></span>
+					</span>
+				</label>
 			{/if}
 		</div>
 
