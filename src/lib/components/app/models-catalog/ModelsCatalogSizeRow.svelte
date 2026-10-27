@@ -3,10 +3,13 @@
 	// the build to the page, which opens the install dialog. On a Mac the
 	// button also fires the app deeplink first, so the dialog lands on top of
 	// an install that may already be underway.
+	import ModelsCatalogLocalBadge from './ModelsCatalogLocalBadge.svelte';
 	import ModelsCatalogVisionBadge from './ModelsCatalogVisionBadge.svelte';
 	import { Terminal } from '@lucide/svelte';
 	import { type Build, deeplink, displaySize, minMemForBuild, type Size } from '$lib/catalog';
+	import { localQuantLabels, matchesBuild, modelsForSize } from '$lib/models/local-models';
 	import { deviceInfo } from '$lib/stores/device/index.svelte';
+	import { llamaModels } from '$lib/stores/llama-models';
 
 	let {
 		oninstall,
@@ -33,16 +36,22 @@
 	// fallbacks. The smaller, more heavily quantized builds only appear when the
 	// page-level toggle asks for them.
 	const shown = $derived(showQuantized ? size.builds : size.builds.slice(0, 1));
+	const localModels = $derived(modelsForSize(size, $llamaModels.models));
+	// Mention quants outside the visible rows, including ones absent from the catalog.
+	const otherLocalModels = $derived(
+		localModels.filter((model) => !shown.some((build) => matchesBuild(model, build)))
+	);
 </script>
 
 {#each shown as build, i (build.repo + (build.quant ?? ''))}
+	{@const buildModels = localModels.filter((model) => matchesBuild(model, build))}
 	<tr class="border-t border-border/40 {i > 0 ? 'border-dashed' : ''}">
 		<!-- Row label: the full size name plus a vision badge, repeated on every
 		     build row so each reads as a complete entry. Below it, the build's
 		     memory requirement -- same formula the app uses, so the site never
 		     promises something the app would reject. -->
 		<td class="py-1.5 pr-3">
-			<span class="inline-flex items-center gap-1.5 tabular-nums">
+			<span class="inline-flex flex-wrap items-center gap-1.5 tabular-nums">
 				{size.name}
 				{#if build.quant}
 					<span
@@ -54,11 +63,24 @@
 				{#if size.vision}
 					<ModelsCatalogVisionBadge />
 				{/if}
+				{#if buildModels.length}
+					<ModelsCatalogLocalBadge loaded={buildModels.some((model) => model.loaded)} />
+				{/if}
 			</span>
 			{#if minMemForBuild(build)}
 				<span class="block text-[13px] text-muted-foreground/70 tabular-nums">
 					requires {minMemForBuild(build)} GB+ memory
 				</span>
+			{/if}
+			{#if i === 0 && otherLocalModels.length}
+				{#each [true, false] as loaded (loaded)}
+					{@const models = otherLocalModels.filter((model) => model.loaded === loaded)}
+					{#if models.length}
+						<span class="mt-0.5 block">
+							<ModelsCatalogLocalBadge {loaded} quants={localQuantLabels(models)} />
+						</span>
+					{/if}
+				{/each}
 			{/if}
 		</td>
 

@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { type Build, releasedFor, type Size } from '$lib/catalog';
-	import { ModelsCatalogInstallDialog, ModelsCatalogSizeRow } from '$lib/components/app';
+	import {
+		ModelsCatalogInstallDialog,
+		ModelsCatalogLocalServer,
+		ModelsCatalogSizeRow
+	} from '$lib/components/app';
 
 	let { data }: { data: PageData } = $props();
 	const family = $derived(data.family);
@@ -34,14 +38,19 @@
 	     The license is labeled, since a bare "OpenMDW 1.1" or "MIT" after a
 	     date doesn't say what it is. -->
 	<header>
-		<h1 class="text-[30px] font-semibold tracking-tight">{family.name}</h1>
-		<div class="mt-2.5 text-[13px] text-muted-foreground">
-			<span class="tabular-nums">{releasedFor(family)}</span>
-			<span aria-hidden="true" class="mx-1">·</span>
-			<span>License: {family.license}</span>
-			{#if family.nonCommercial}
-				<span>(non-commercial)</span>
-			{/if}
+		<div class="flex flex-col items-start gap-5 sm:flex-row sm:justify-between sm:gap-6">
+			<div>
+				<h1 class="text-[30px] font-semibold tracking-tight">{family.name}</h1>
+				<div class="mt-2.5 text-[13px] text-muted-foreground">
+					<span class="tabular-nums">{releasedFor(family)}</span>
+					<span aria-hidden="true" class="mx-1">·</span>
+					<span>License: {family.license}</span>
+					{#if family.nonCommercial}
+						<span>(non-commercial)</span>
+					{/if}
+				</div>
+			</div>
+			<ModelsCatalogLocalServer />
 		</div>
 		<p class="mt-3 max-w-xl text-[15px] text-muted-foreground">
 			{#each family.description.split(/(\*\*[^*]+\*\*)/g) as part, i (i)}
