@@ -4,6 +4,7 @@ import {
 	localModelLabel,
 	localQuantLabels,
 	matchesBuild,
+	modelChatUrl,
 	modelsForSize
 } from '../src/lib/models/local-models';
 import { afterEach, describe, expect, test, vi } from 'vitest';
@@ -48,8 +49,22 @@ describe('catalog matching', () => {
 
 		expect(matches).toHaveLength(1);
 		expect(matches[0].loaded).toBe(true);
+		expect(matches[0].id).toBe('custom-name');
 		expect(localModelLabel('http://localhost:9931', true)).toBe('Loaded locally');
 		expect(localModelLabel('https://llama.example.com', true)).toBe('Loaded on your server');
+	});
+
+	test('chat links preserve the original server ID and custom base path', () => {
+		const matches = modelsForSize(size, [
+			model('My model / Q8 & fast', 'unloaded', ['example/model-GGUF:Q8_0'])
+		]);
+		const url = new URL(modelChatUrl('https://llama.example.com/llama/', matches[0]));
+
+		expect(url.origin).toBe('https://llama.example.com');
+		expect(url.pathname).toBe('/llama/');
+		expect(url.searchParams.get('model')).toBe('My model / Q8 & fast');
+		expect(url.searchParams.get('load')).toBe('true');
+		expect(url.searchParams.has('q')).toBe(false);
 	});
 
 	test('matches exact repos and quants without case sensitivity, including unloaded models', () => {

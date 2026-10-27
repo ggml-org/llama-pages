@@ -2,6 +2,7 @@ import type { Build, Size } from '$lib/catalog';
 import { isLoopback, type LlamaModel } from '$lib/docs/llama-app';
 
 export type LocalModelMatch = {
+	id: string;
 	loaded: boolean;
 	repo: string;
 	quant?: string;
@@ -27,9 +28,11 @@ export function modelsForSize(size: Size, models: LlamaModel[] | null): LocalMod
 			const repo = parsed[1].toLowerCase();
 			const quant = parsed[2]?.toUpperCase();
 			const key = `${repo}:${quant ?? ''}`;
-			const loaded = model.status === 'loaded' || matches.get(key)?.loaded === true;
+			const previous = matches.get(key);
+			const loaded = model.status === 'loaded' || previous?.loaded === true;
+			const serverId = previous?.loaded ? previous.id : model.id;
 
-			matches.set(key, { loaded, quant, repo });
+			matches.set(key, { id: serverId, loaded, quant, repo });
 		}
 	}
 
@@ -50,4 +53,14 @@ export function localQuantLabels(models: LocalModelMatch[]): string {
 
 export function localModelLabel(base: string, loaded: boolean): string {
 	return `${loaded ? 'Loaded' : 'Downloaded'} ${isLoopback(base) ? 'locally' : 'on your server'}`;
+}
+
+/** Select the server's original ID (including custom aliases) and load on arrival. */
+export function modelChatUrl(base: string, model: LocalModelMatch): string {
+	const url = new URL(`${base.replace(/\/+$/, '')}/`);
+
+	url.searchParams.set('model', model.id);
+	url.searchParams.set('load', 'true');
+
+	return url.toString();
 }
