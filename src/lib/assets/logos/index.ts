@@ -7,10 +7,12 @@ import gemma from './gemma.svg?raw';
 // GLM models are made by Z.ai, so we use the Z brand logo for that brand.
 import glm from './glm.svg?raw';
 import liquid from './liquid.svg?raw';
+import meta from './meta.svg?raw';
 import mistral from './mistral.svg?raw';
 import nvidia from './nvidia.svg?raw';
 import openai from './openai.svg?raw';
 // Laguna models are made by Poolside, so we use the Poolside logo for that brand.
+// Muse models are made by Meta.
 import poolside from './poolside.svg?raw';
 import qwen from './qwen.svg?raw';
 
@@ -22,6 +24,7 @@ const byBrand: Record<string, string> = {
 	GLM: glm,
 	Laguna: poolside,
 	'Liquid AI': liquid,
+	Meta: meta,
 	Mistral: mistral,
 	NVIDIA: nvidia,
 	OpenAI: openai,
