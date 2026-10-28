@@ -929,6 +929,63 @@
 		]
 	},
 	{
+		"name": "LFM 3 Omni",
+		"brand": "Liquid AI",
+		"description": "Liquid AI's tiny **omni model** for text, images, and audio, from transcribing speech to asking about a photo.",
+		"details": "LFM3-Omni-2B is Liquid AI's first omni-modal model in the LFM3 family. One small model handles speech recognition, image understanding, and chat, and through llama.cpp's `/tts` endpoint it can also speak. It is built for on-device use.",
+		"released": "2026-10",
+		"license": "LFM Open License 1.0",
+		"sizes": [
+			{
+				"name": "LFM 3 Omni 2B",
+				"params": "2B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "1.8 GB",
+						"sizeBytes": 1846240736,
+						"repo": "ggml-org/LFM3-Omni-2B-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "1.1 GB",
+						"sizeBytes": 1099630048,
+						"repo": "ggml-org/LFM3-Omni-2B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "Flint",
+		"brand": "Recursive",
+		"description": "Recursive's **coding-agent model**: investigates codebases, fixes bugs, implements features, and writes tests.",
+		"details": "Flint is a mixture-of-experts model from Recursive with 39.8B total and about 2.5B active parameters, so it runs fast for its size. It supports reasoning and multi-turn tool use, with a 262K-token context. Text only.",
+		"released": "2026-10",
+		"license": "Apache 2.0",
+		"sizes": [
+			{
+				"name": "Flint 40B-A2.5B",
+				"params": "40B-A2.5B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "42.4 GB",
+						"sizeBytes": 42350359520,
+						"repo": "ggml-org/Flint-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "23.4 GB",
+						"sizeBytes": 23387911136,
+						"repo": "ggml-org/Flint-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "EmbeddingGemma 2",
 		"brand": "Gemma",
 		"description": "Google's multimodal embedding model. Maps text, images, audio, and code into one shared vector space for search and retrieval.",
