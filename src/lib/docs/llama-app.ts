@@ -115,7 +115,7 @@ export async function fetchLlamaModels(base: string, timeout = 1500): Promise<Ll
 		}
 
 		// Keep only the inventory fields, not server arguments or local file paths.
-		return body.data
+		const models: LlamaModel[] = body.data
 			.filter(
 				(model: unknown): model is Record<string, unknown> =>
 					!!model && typeof model === 'object' && 'id' in model && typeof model.id === 'string'
@@ -133,8 +133,49 @@ export async function fetchLlamaModels(base: string, timeout = 1500): Promise<Ll
 						? model.status.value
 						: undefined
 			}));
+
+		// Only a router reports each model's status. A single-model server
+		// lists just the model it serves, which is loaded unless the server
+		// is sleeping (--sleep-idle-seconds) -- and only /props says that.
+		if (models.some((model) => model.status === undefined)) {
+			const status = await fetchSingleModelStatus(base, init);
+
+			for (const model of models) {
+				model.status ??= status;
+			}
+		}
+
+		return models;
 	} catch {
 		return null;
+	}
+}
+
+/**
+ * 'sleeping' while a single-model server has unloaded its model to free
+ * memory, 'loaded' otherwise (including servers too old to sleep, which
+ * don't report it); undefined if /props doesn't answer.
+ */
+async function fetchSingleModelStatus(
+	base: string,
+	init: RequestInit
+): Promise<string | undefined> {
+	try {
+		const res = await fetch(`${base}/props`, init);
+
+		if (!res.ok) {
+			return undefined;
+		}
+
+		const body = await res.json();
+
+		if (!body || typeof body !== 'object') {
+			return undefined;
+		}
+
+		return body.is_sleeping === true ? 'sleeping' : 'loaded';
+	} catch {
+		return undefined;
 	}
 }
 

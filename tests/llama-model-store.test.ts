@@ -39,9 +39,9 @@ test('switching servers clears matches and ignores a slower response from the ol
 	const newRequest = refreshLlamaModels();
 
 	expect(get(llamaModels)).toEqual({ base, models: null, status: 'checking' });
-	resolveNew(new Response('{"data":[{"id":"new/model:Q8_0"}]}'));
+	resolveNew(new Response('{"data":[{"id":"new/model:Q8_0","status":{"value":"loaded"}}]}'));
 	await newRequest;
-	resolveOld(new Response('{"data":[{"id":"old/model:Q8_0"}]}'));
+	resolveOld(new Response('{"data":[{"id":"old/model:Q8_0","status":{"value":"loaded"}}]}'));
 	await oldRequest;
 	expect(get(llamaModels).models?.map((model) => model.id)).toEqual(['new/model:Q8_0']);
 	expect(get(llamaModels).base).toBe(base);
@@ -56,7 +56,9 @@ test('the site contacts the server only after the visitor connects, then on late
 	const storage = new Map<string, string>();
 	const fetch = vi
 		.fn()
-		.mockImplementation(async () => new Response('{"data":[{"id":"some/model:Q8_0"}]}'));
+		.mockImplementation(
+			async () => new Response('{"data":[{"id":"some/model:Q8_0","status":{"value":"loaded"}}]}')
+		);
 
 	vi.stubGlobal('localStorage', {
 		getItem: (key: string) => storage.get(key) ?? null,
