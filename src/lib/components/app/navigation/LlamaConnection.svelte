@@ -9,6 +9,7 @@
 	import {
 		connectLlama,
 		disconnectLlama,
+		LLAMA_CONNECTION_SHOW_EVENT,
 		llamaModels,
 		watchLlamaModels
 	} from '$lib/stores/llama-models';
@@ -17,6 +18,14 @@
 	// The header is on every page, so mounting the watcher here keeps the
 	// inventory (and the marks it drives in the catalog) current site-wide.
 	onMount(watchLlamaModels);
+
+	// Other parts of the site open this popover rather than asking about the
+	// server themselves (see showLlamaConnection).
+	onMount(() => {
+		window.addEventListener(LLAMA_CONNECTION_SHOW_EVENT, onShow);
+
+		return () => window.removeEventListener(LLAMA_CONNECTION_SHOW_EVENT, onShow);
+	});
 
 	const base = $derived($llamaModels.base);
 	const status = $derived($llamaModels.status);
@@ -58,6 +67,22 @@
 
 	function close() {
 		open = false;
+	}
+
+	function onShow(event: Event) {
+		// Hidden on this device (no offsetParent), so the caller falls back.
+		if (!container?.offsetParent) {
+			return;
+		}
+
+		event.preventDefault();
+
+		if (!open) {
+			toggle();
+		}
+
+		// Brings the header into view too, if the page is scrolled.
+		trigger?.focus();
 	}
 
 	function connect() {

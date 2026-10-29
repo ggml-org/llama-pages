@@ -120,3 +120,16 @@ export function watchLlamaModels(): () => void {
 		inventory.set({ base: DEFAULT_LLAMA_SERVER_URL, models: null, status: 'off' });
 	};
 }
+
+/** Asks the header's connection popover to open; see showLlamaConnection. */
+export const LLAMA_CONNECTION_SHOW_EVENT = 'llama-connection-show';
+
+/**
+ * Opens the header's connection popover, so other parts of the site (the
+ * docs' "Open in Llama") send visitors to the one place to connect. Returns
+ * false where the header doesn't show it (phones, Linux, Safari).
+ */
+export function showLlamaConnection(): boolean {
+	// The header cancels the event when it opens the popover.
+	return !window.dispatchEvent(new Event(LLAMA_CONNECTION_SHOW_EVENT, { cancelable: true }));
+}
