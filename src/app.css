@@ -192,3 +192,10 @@
 :root[data-os='other'] [data-os-only]:not([data-os-only~='other']) {
 	display: none;
 }
+
+/* Hidden in Safari, for what its engine can't do. `<html data-browser>` is
+   set before the first paint (see app.html), so the element never flashes
+   in and out. */
+:root[data-browser='safari'] [data-hidden-in-safari] {
+	display: none;
+}

@@ -10,6 +10,13 @@
 import { STORAGE_KEY } from '$lib/constants';
 
 export const DEFAULT_LLAMA_SERVER_URL = 'http://localhost:9931';
+export const LLAMA_SERVER_CHANGE_EVENT = 'llama-server-change';
+
+export type LlamaModel = {
+	id: string;
+	aliases: string[];
+	status?: string;
+};
 
 export function getLlamaServerUrl(): string {
 	return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_LLAMA_SERVER_URL;
@@ -17,6 +24,7 @@ export function getLlamaServerUrl(): string {
 
 export function saveLlamaServerUrl(base: string): void {
 	localStorage.setItem(STORAGE_KEY, base);
+	window.dispatchEvent(new Event(LLAMA_SERVER_CHANGE_EVENT));
 }
 
 /**
@@ -78,11 +86,14 @@ export function llamaServerLabel(base: string): string {
 	}
 }
 
-/** Whether a llama-server answers at this base URL. */
-export async function probeLlamaServer(base: string): Promise<boolean> {
+/**
+ * null means unverified; an empty array means a reachable server with no models.
+ * The timeout is short for background checks; see connectLlama for the long one.
+ */
+export async function fetchLlamaModels(base: string, timeout = 1500): Promise<LlamaModel[] | null> {
 	try {
 		const init: RequestInit & { targetAddressSpace?: 'loopback' } = {
-			signal: AbortSignal.timeout(1500)
+			signal: AbortSignal.timeout(timeout)
 		};
 
 		// Marks the request as intentionally targeting loopback for Chrome's
@@ -94,13 +105,40 @@ export async function probeLlamaServer(base: string): Promise<boolean> {
 		const res = await fetch(`${base}/v1/models`, init);
 
 		if (!res.ok) {
-			return false;
+			return null;
 		}
 
 		const body = await res.json();
 
-		return Array.isArray(body?.data);
+		if (!Array.isArray(body?.data)) {
+			return null;
+		}
+
+		// Keep only the inventory fields, not server arguments or local file paths.
+		return body.data
+			.filter(
+				(model: unknown): model is Record<string, unknown> =>
+					!!model && typeof model === 'object' && 'id' in model && typeof model.id === 'string'
+			)
+			.map((model: Record<string, unknown>) => ({
+				aliases: Array.isArray(model.aliases)
+					? model.aliases.filter((alias: unknown): alias is string => typeof alias === 'string')
+					: [],
+				id: model.id as string,
+				status:
+					model.status &&
+					typeof model.status === 'object' &&
+					'value' in model.status &&
+					typeof model.status.value === 'string'
+						? model.status.value
+						: undefined
+			}));
 	} catch {
-		return false;
+		return null;
 	}
+}
+
+/** Whether a llama-server answers at this base URL. */
+export async function probeLlamaServer(base: string): Promise<boolean> {
+	return (await fetchLlamaModels(base)) !== null;
 }

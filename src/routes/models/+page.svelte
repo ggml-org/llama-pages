@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { ChevronRight } from '@lucide/svelte';
+	import { Check, ChevronRight } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import { logoFor } from '$lib/assets/logos';
 	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
-	import { ModelsCatalogVisionBadge } from '$lib/components/app';
+	import { ModelsCatalogLocalBadge, ModelsCatalogVisionBadge } from '$lib/components/app';
+	import { localModelLabel, modelsForSize } from '$lib/models/local-models';
+	import { llamaModels } from '$lib/stores/llama-models';
 
 	// Decision and embedding models get their own sections below the main
 	// list: they don't chat, so mixed into a newest-first list of chat models
@@ -121,6 +123,7 @@
 {#snippet familyList(list: typeof families)}
 	<div class="flex flex-col">
 		{#each list as f, i (f.name)}
+			{@const localSizes = f.sizes.map((size) => modelsForSize(size, $llamaModels.models))}
 			{#if i > 0}
 				<div aria-hidden="true" class="border-t border-border/40"></div>
 			{/if}
@@ -148,13 +151,30 @@
 						{#if f.sizes.some((s) => s.vision)}
 							<ModelsCatalogVisionBadge />
 						{/if}
-						{#each f.sizes as s (s.name)}
+						{#each f.sizes as s, sizeIndex (s.name)}
+							{@const localModels = localSizes[sizeIndex]}
+							{@const loaded = localModels.some((model) => model.loaded)}
 							<span
-								class="rounded-full bg-muted px-2 py-1 text-[11px] leading-none font-normal text-muted-foreground tabular-nums"
+								class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] leading-none font-normal tabular-nums {loaded
+									? 'bg-blue-500/10 text-blue-700 dark:text-blue-400'
+									: localModels.length
+										? 'bg-green-500/10 text-green-700 dark:text-green-400'
+										: 'bg-muted text-muted-foreground'}"
+								title={localModels.length
+									? `${s.name} — ${localModels.map((model) => `${localModelLabel($llamaModels.base, model.loaded)}: ${model.quant ?? 'unspecified quantization'}`).join('; ')}`
+									: undefined}
 							>
+								{#if localModels.length}
+									<Check class="size-2.5" aria-hidden="true" />
+								{/if}
 								{s.params ?? s.name}
 							</span>
 						{/each}
+						{#if localSizes.some((models) => models.length > 0)}
+							<ModelsCatalogLocalBadge
+								loaded={localSizes.some((models) => models.some((model) => model.loaded))}
+							/>
+						{/if}
 						<!-- The family's memory floor -- what the smallest build needs --
 						     so "will it run on my computer?" is answered while scanning,
 						     without opening every detail page (which lists each build's

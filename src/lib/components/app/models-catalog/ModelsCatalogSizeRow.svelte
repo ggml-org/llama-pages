@@ -3,10 +3,18 @@
 	// the build to the page, which opens the install dialog. On a Mac the
 	// button also fires the app deeplink first, so the dialog lands on top of
 	// an install that may already be underway.
+	import ModelsCatalogLocalBadge from './ModelsCatalogLocalBadge.svelte';
 	import ModelsCatalogVisionBadge from './ModelsCatalogVisionBadge.svelte';
-	import { Terminal } from '@lucide/svelte';
+	import { MessageCircle, Terminal } from '@lucide/svelte';
 	import { type Build, deeplink, displaySize, minMemForBuild, type Size } from '$lib/catalog';
+	import {
+		localQuantLabels,
+		matchesBuild,
+		modelChatUrl,
+		modelsForSize
+	} from '$lib/models/local-models';
 	import { deviceInfo } from '$lib/stores/device/index.svelte';
+	import { llamaModels } from '$lib/stores/llama-models';
 
 	let {
 		oninstall,
@@ -33,16 +41,22 @@
 	// fallbacks. The smaller, more heavily quantized builds only appear when the
 	// page-level toggle asks for them.
 	const shown = $derived(showQuantized ? size.builds : size.builds.slice(0, 1));
+	const localModels = $derived(modelsForSize(size, $llamaModels.models));
+	// Mention quants outside the visible rows, including ones absent from the catalog.
+	const otherLocalModels = $derived(
+		localModels.filter((model) => !shown.some((build) => matchesBuild(model, build)))
+	);
 </script>
 
 {#each shown as build, i (build.repo + (build.quant ?? ''))}
+	{@const buildModels = localModels.filter((model) => matchesBuild(model, build))}
 	<tr class="border-t border-border/40 {i > 0 ? 'border-dashed' : ''}">
 		<!-- Row label: the full size name plus a vision badge, repeated on every
 		     build row so each reads as a complete entry. Below it, the build's
 		     memory requirement -- same formula the app uses, so the site never
 		     promises something the app would reject. -->
 		<td class="py-1.5 pr-3">
-			<span class="inline-flex items-center gap-1.5 tabular-nums">
+			<span class="inline-flex flex-wrap items-center gap-1.5 tabular-nums">
 				{size.name}
 				{#if build.quant}
 					<span
@@ -54,11 +68,24 @@
 				{#if size.vision}
 					<ModelsCatalogVisionBadge />
 				{/if}
+				{#if buildModels.length}
+					<ModelsCatalogLocalBadge loaded={buildModels.some((model) => model.loaded)} />
+				{/if}
 			</span>
 			{#if minMemForBuild(build)}
 				<span class="block text-[13px] text-muted-foreground/70 tabular-nums">
 					requires {minMemForBuild(build)} GB+ memory
 				</span>
+			{/if}
+			{#if i === 0 && otherLocalModels.length}
+				{#each [true, false] as loaded (loaded)}
+					{@const models = otherLocalModels.filter((model) => model.loaded === loaded)}
+					{#if models.length}
+						<span class="mt-0.5 block">
+							<ModelsCatalogLocalBadge {loaded} quants={localQuantLabels(models)} />
+						</span>
+					{/if}
+				{/each}
 			{/if}
 		</td>
 
@@ -93,40 +120,52 @@
 					</svg>
 				</a>
 
-				<!-- One primary button, worded by platform: "Install" on a Mac (the
+				{#if buildModels.length}
+					<a
+						href={modelChatUrl($llamaModels.base, buildModels[0])}
+						target="_blank"
+						rel="noopener noreferrer external"
+						class="flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-center whitespace-nowrap text-primary-foreground hover:bg-primary/80"
+					>
+						<MessageCircle class="size-3.5" aria-hidden="true" />
+						Chat with model
+					</a>
+				{:else}
+					<!-- One primary button, worded by platform: "Install" on a Mac (the
 				     deeplink installs into the app), "Run…" elsewhere -- the site's
 				     established verb for a build's CLI action, with the ellipsis
 				     signalling (per the classic menu convention) that a dialog
 				     follows rather than an immediate action. isMac is false during
 				     SSR, so non-Mac visitors get the Run… wording from first paint. -->
-				<button
-					type="button"
-					onclick={() => install(build)}
-					class="flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-center text-primary-foreground hover:bg-primary/80"
-				>
-					{#if deviceInfo.isMac}
-						<svg
-							aria-hidden="true"
-							viewBox="0 0 16 16"
-							class="h-3.5 w-3.5"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.75"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path d="M8 2v8" />
-							<path d="M4.5 7L8 10.5 11.5 7" />
-							<path d="M3 13.5h10" />
-						</svg>
-						Install
-					{:else}
-						<!-- Terminal prompt icon: hints before the click that the CLI is
+					<button
+						type="button"
+						onclick={() => install(build)}
+						class="flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-center text-primary-foreground hover:bg-primary/80"
+					>
+						{#if deviceInfo.isMac}
+							<svg
+								aria-hidden="true"
+								viewBox="0 0 16 16"
+								class="h-3.5 w-3.5"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.75"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M8 2v8" />
+								<path d="M4.5 7L8 10.5 11.5 7" />
+								<path d="M3 13.5h10" />
+							</svg>
+							Install
+						{:else}
+							<!-- Terminal prompt icon: hints before the click that the CLI is
 						     involved, matching the dialog's "run this in your terminal". -->
-						<Terminal class="size-3.5" aria-hidden="true" />
-						Run…
-					{/if}
-				</button>
+							<Terminal class="size-3.5" aria-hidden="true" />
+							Run…
+						{/if}
+					</button>
+				{/if}
 			</div>
 		</td>
 	</tr>

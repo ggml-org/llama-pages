@@ -37,6 +37,15 @@
 							: /Linux/.test(ua) && !/Android/.test(ua)
 								? 'linux'
 								: 'other';
+
+				// Safari's engine, for features it blocks (see
+				// `[data-hidden-in-safari]` in app.css): WebKit that isn't
+				// Chromium -- Chrome, Edge and Opera all say "Chrome" -- which
+				// also covers other WebKit browsers, like DuckDuckGo's, that
+				// share the limit.
+				if (/AppleWebKit/.test(ua) && !/Chrome|Chromium/.test(ua)) {
+					document.documentElement.dataset.browser = 'safari';
+				}
 			})();
 		</script>
 		<!-- Privacy-friendly analytics by Plausible -->
