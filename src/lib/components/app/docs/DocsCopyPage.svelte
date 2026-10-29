@@ -33,11 +33,12 @@
 		unknown: 'Can’t reach Llama'
 	} as const;
 
-	const llamaHref = $derived.by(() => {
+	const llamaPath = $derived.by(() => {
 		const prompt = `Answer questions about this documentation page:\n\n${markdown}`;
 
-		return `${llamaBase}/?q=${encodeURIComponent(prompt)}`;
+		return `/?q=${encodeURIComponent(prompt)}`;
 	});
+	const llamaHref = $derived(`${llamaBase}${llamaPath}`);
 
 	async function fetchMarkdown(): Promise<string> {
 		const res = await fetch(mdPath);
@@ -64,15 +65,15 @@
 
 	/**
 	 * Until the server is confirmed, opens the header's popover instead,
-	 * where the visitor connects, fixes the port, or sees why it fails.
-	 * Where the header doesn't show it (phones, Linux, Safari), the link
-	 * opens anyway: whether a server answers is advisory only (see
-	 * $lib/docs/llama-app).
+	 * where the visitor connects, fixes the port, or sees why it fails --
+	 * and once connected, the popover opens Llama with this page. Where the
+	 * header doesn't show it (phones, Linux, Safari), the link opens anyway:
+	 * whether a server answers is advisory only (see $lib/docs/llama-app).
 	 */
 	function openInLlama(event: MouseEvent) {
 		open = false;
 
-		if (llamaStatus !== 'ready' && showLlamaConnection()) {
+		if (llamaStatus !== 'ready' && showLlamaConnection(llamaPath)) {
 			event.preventDefault();
 			// This click would otherwise reach the header's click-outside
 			// handler, closing the popover it just opened.

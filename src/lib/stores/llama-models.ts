@@ -126,10 +126,14 @@ export const LLAMA_CONNECTION_SHOW_EVENT = 'llama-connection-show';
 
 /**
  * Opens the header's connection popover, so other parts of the site (the
- * docs' "Open in Llama") send visitors to the one place to connect. Returns
- * false where the header doesn't show it (phones, Linux, Safari).
+ * docs' "Open in Llama") send visitors to the one place to connect. `then`
+ * is a path on the server (`/?q=…`) to open once connected -- a path, since
+ * connecting may change the address. Returns false where the header doesn't
+ * show the popover (phones, Linux, Safari).
  */
-export function showLlamaConnection(): boolean {
+export function showLlamaConnection(then?: string): boolean {
 	// The header cancels the event when it opens the popover.
-	return !window.dispatchEvent(new Event(LLAMA_CONNECTION_SHOW_EVENT, { cancelable: true }));
+	return !window.dispatchEvent(
+		new CustomEvent(LLAMA_CONNECTION_SHOW_EVENT, { cancelable: true, detail: { then } })
+	);
 }

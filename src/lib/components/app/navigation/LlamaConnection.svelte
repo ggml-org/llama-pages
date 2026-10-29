@@ -46,8 +46,31 @@
 	let open = $state(false);
 	let serverInput = $state('');
 	let inputError = $state('');
+	// Where to go once connected, when something sent the visitor here to
+	// connect first (see showLlamaConnection). Dropped when the popover closes.
+	let then = $state<string | null>(null);
+	let thenBlocked = $state(false);
 	let container: HTMLElement | undefined = $state();
 	let trigger: HTMLButtonElement | undefined = $state();
+
+	$effect(() => {
+		if (status !== 'ready' || then === null || thenBlocked) {
+			return;
+		}
+
+		// No 'noopener' feature: it makes window.open return null even on
+		// success, which would hide a blocked popup.
+		const popup = window.open(`${base}${then}`, '_blank');
+
+		if (popup) {
+			popup.opener = null;
+			close();
+		} else {
+			// Blocked, as popups are when the click that connected was a while
+			// ago (say, a slow answer to the browser's prompt): offer the link.
+			thenBlocked = true;
+		}
+	});
 
 	function hostOf(url: string): string {
 		try {
@@ -58,7 +81,13 @@
 	}
 
 	function toggle() {
-		open = !open;
+		if (open) {
+			close();
+
+			return;
+		}
+
+		open = true;
 		inputError = '';
 		// A local server is entered as just its port, the way the app's
 		// Settings show it; a remote one as its full URL.
@@ -67,6 +96,8 @@
 
 	function close() {
 		open = false;
+		then = null;
+		thenBlocked = false;
 	}
 
 	function onShow(event: Event) {
@@ -80,6 +111,9 @@
 		if (!open) {
 			toggle();
 		}
+
+		then = (event as CustomEvent<{ then?: string }>).detail?.then ?? null;
+		thenBlocked = false;
 
 		// Brings the header into view too, if the page is scrolled.
 		trigger?.focus();
@@ -282,6 +316,17 @@
 						Connect
 					</button>
 				{:else}
+					{#if status === 'ready' && then !== null && thenBlocked}
+						<a
+							href={`${base}${then}`}
+							target="_blank"
+							rel="noopener noreferrer external"
+							onclick={close}
+							class="flex h-8 items-center rounded-lg bg-primary px-3.5 text-[13px] font-medium text-primary-foreground"
+						>
+							Open in Llama
+						</a>
+					{/if}
 					<button
 						type="button"
 						onclick={disconnect}
