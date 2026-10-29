@@ -1,4 +1,4 @@
-import { STORAGE_KEY } from '$lib/constants';
+import { CONNECTED_KEY, STORAGE_KEY } from '$lib/constants';
 import {
 	DEFAULT_LLAMA_SERVER_URL,
 	fetchLlamaModels,
@@ -11,21 +11,31 @@ import { writable } from 'svelte/store';
 type ModelInventory = {
 	base: string;
 	models: LlamaModel[] | null;
-	status: 'unknown' | 'checking' | 'ready';
+	// 'off' until the visitor connects Llama from the header: the site
+	// makes no request before then (see CONNECTED_KEY).
+	status: 'off' | 'unknown' | 'checking' | 'ready';
 };
 
 const inventory = writable<ModelInventory>({
 	base: DEFAULT_LLAMA_SERVER_URL,
 	models: null,
-	status: 'unknown'
+	status: 'off'
 });
 
 export const llamaModels = { subscribe: inventory.subscribe };
 
+/**
+ * How long the first check may wait. In Chrome, it's the request that shows
+ * the Local Network Access prompt, and the request stays pending while the
+ * prompt is up -- with the usual 1.5 s timeout, a visitor who took a moment
+ * to click Allow would get "Can't reach" for a connection they just allowed.
+ */
+const PERMISSION_TIMEOUT_MS = 60_000;
+
 let requestVersion = 0;
 let pending: { base: string; promise: Promise<void> } | null = null;
 
-export function refreshLlamaModels(): Promise<void> {
+export function refreshLlamaModels(timeout?: number): Promise<void> {
 	const base = getLlamaServerUrl();
 
 	if (pending?.base === base) {
@@ -35,7 +45,7 @@ export function refreshLlamaModels(): Promise<void> {
 	const version = ++requestVersion;
 
 	inventory.set({ base, models: null, status: 'checking' });
-	const promise = fetchLlamaModels(base).then((models) => {
+	const promise = fetchLlamaModels(base, timeout).then((models) => {
 		// A slow response from a previous address must never overwrite the new one.
 		if (version !== requestVersion) {
 			return;
@@ -50,13 +60,48 @@ export function refreshLlamaModels(): Promise<void> {
 	return promise;
 }
 
-/** Called only on mount: local inventory is never fetched or stored during SSR. */
-export function connectLlamaModels(): () => void {
+function isConnected(): boolean {
+	return localStorage.getItem(CONNECTED_KEY) !== null;
+}
+
+/**
+ * The explicit opt-in, from the header's Connect button: remembers it so
+ * later visits check on their own, then checks now. In Chrome, this first
+ * check is what shows the Local Network Access prompt, so it should only
+ * ever follow a click.
+ */
+export function connectLlama(): Promise<void> {
+	localStorage.setItem(CONNECTED_KEY, '1');
+
+	return refreshLlamaModels(PERMISSION_TIMEOUT_MS);
+}
+
+/** The opt-out: forgets the opt-in and clears the marks, ignoring any check still in flight. */
+export function disconnectLlama(): void {
+	localStorage.removeItem(CONNECTED_KEY);
+	requestVersion++;
+	pending = null;
+	inventory.set({ base: getLlamaServerUrl(), models: null, status: 'off' });
+}
+
+/**
+ * Keeps the inventory current while mounted (by the site header, so on
+ * every page): checks on load, on focus -- say, after downloading a model in
+ * the app -- and when the server address changes, here or in another tab.
+ * Called only on mount: local inventory is never fetched or stored during SSR.
+ */
+export function watchLlamaModels(): () => void {
+	// Refreshes only after the opt-in, so a first-time visitor never triggers
+	// a request (or a permission prompt) by loading, focusing, or editing.
 	const refresh = () => {
-		void refreshLlamaModels();
+		if (isConnected()) {
+			void refreshLlamaModels();
+		} else {
+			inventory.set({ base: getLlamaServerUrl(), models: null, status: 'off' });
+		}
 	};
 	const onStorage = (event: StorageEvent) => {
-		if (event.key === STORAGE_KEY || event.key === null) {
+		if (event.key === STORAGE_KEY || event.key === CONNECTED_KEY || event.key === null) {
 			refresh();
 		}
 	};
@@ -72,6 +117,6 @@ export function connectLlamaModels(): () => void {
 		window.removeEventListener(LLAMA_SERVER_CHANGE_EVENT, refresh);
 		requestVersion++;
 		pending = null;
-		inventory.set({ base: DEFAULT_LLAMA_SERVER_URL, models: null, status: 'unknown' });
+		inventory.set({ base: DEFAULT_LLAMA_SERVER_URL, models: null, status: 'off' });
 	};
 }

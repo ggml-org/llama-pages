@@ -3,11 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { logoFor } from '$lib/assets/logos';
 	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
-	import {
-		ModelsCatalogLocalBadge,
-		ModelsCatalogLocalServer,
-		ModelsCatalogVisionBadge
-	} from '$lib/components/app';
+	import { ModelsCatalogLocalBadge, ModelsCatalogVisionBadge } from '$lib/components/app';
 	import { localModelLabel, modelsForSize } from '$lib/models/local-models';
 	import { llamaModels } from '$lib/stores/llama-models';
 
@@ -39,15 +35,10 @@
 	     everything runs in the app) so the list below reads as a
 	     recommendation, not an attempt at completeness. -->
 	<header class="mb-10">
-		<div class="flex flex-col items-start gap-5 sm:flex-row sm:justify-between sm:gap-6">
-			<div>
-				<h1 class="text-[30px] font-semibold tracking-tight">Models</h1>
-				<p class="mt-2.5 text-[13px] text-muted-foreground tabular-nums">
-					Updated {releasedFor(families[0])}
-				</p>
-			</div>
-			<ModelsCatalogLocalServer />
-		</div>
+		<h1 class="text-[30px] font-semibold tracking-tight">Models</h1>
+		<p class="mt-2.5 text-[13px] text-muted-foreground tabular-nums">
+			Updated {releasedFor(families[0])}
+		</p>
 		<p class="mt-3 max-w-2xl text-[15px] text-muted-foreground">
 			A curated selection of open models — every one runs in llama.app.
 		</p>

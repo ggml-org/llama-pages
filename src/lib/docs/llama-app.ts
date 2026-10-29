@@ -86,11 +86,14 @@ export function llamaServerLabel(base: string): string {
 	}
 }
 
-/** null means unverified; an empty array means a reachable server with no models. */
-export async function fetchLlamaModels(base: string): Promise<LlamaModel[] | null> {
+/**
+ * null means unverified; an empty array means a reachable server with no models.
+ * The timeout is short for background checks; see connectLlama for the long one.
+ */
+export async function fetchLlamaModels(base: string, timeout = 1500): Promise<LlamaModel[] | null> {
 	try {
 		const init: RequestInit & { targetAddressSpace?: 'loopback' } = {
-			signal: AbortSignal.timeout(1500)
+			signal: AbortSignal.timeout(timeout)
 		};
 
 		// Marks the request as intentionally targeting loopback for Chrome's

@@ -2,7 +2,7 @@
 	import { Monitor, Moon, Sun } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { GitHubLink, Logo } from '$lib/components/app';
+	import { GitHubLink, LlamaConnection, Logo } from '$lib/components/app';
 	import { LLAMA_CPP_REPO_URL, MACOS_REPO_URL, WINDOWS_REPO_URL } from '$lib/constants';
 	import { setMode, userPrefersMode } from 'mode-watcher';
 
@@ -82,6 +82,10 @@
 	</nav>
 
 	<div class="flex items-center gap-4 md:gap-6">
+		<!-- First on the right, before the repo links: it's about the visitor's
+		     own app, the one thing here that changes with them. -->
+		<LlamaConnection />
+
 		{#if onDocs}
 			<GitHubLink href={LLAMA_CPP_REPO_URL} stars={stars?.[LLAMA_CPP_REPO_URL]} />
 		{:else}
