@@ -12,7 +12,9 @@ test('no page contacts the local server until the visitor connects', async ({ pa
 		return route.fulfill({ json: { data: [{ id: 'some/model:Q8_0' }] } });
 	});
 
-	for (const path of ['/models?os=mac', '/models/lfm-2-5?os=mac', '/docs?os=mac']) {
+	// The catalog comes last, where the test clicks Connect: /docs redirects
+	// and drops `?os=mac`, and on a Linux machine (like CI) the pill is hidden.
+	for (const path of ['/docs?os=mac', '/models/lfm-2-5?os=mac', '/models?os=mac']) {
 		await page.goto(`http://localhost:4173${path}`);
 		await page.waitForLoadState('networkidle');
 	}
