@@ -41,6 +41,12 @@ export type Size = {
 	// this (e.g. the small Gemma 4 E-series on 32 GB+ Macs). Absent means the
 	// family's cap (if any) applies.
 	maxMemGb?: number;
+	// Whether this size is the suggested starting point for newcomers: small
+	// enough to run on any supported machine, and a good first taste of local
+	// models. The apps badge it and list it first among their suggestions, so
+	// someone new doesn't have to choose. Meant for one size at a time; the
+	// website doesn't render it. Absent means false.
+	goodFirstModel?: boolean;
 	builds: Build[];
 };
 
