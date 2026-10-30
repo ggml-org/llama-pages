@@ -935,11 +935,13 @@
 		"details": "LFM3-Omni-2B is Liquid AI's first omni-modal model in the LFM3 family. One small model handles speech recognition, image understanding, and chat, and through llama.cpp's `/tts` endpoint it can also speak. It is built for on-device use.",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "LFM 3 Omni 2B",
 				"params": "2B",
 				"vision": true,
+				"goodFirstModel": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
