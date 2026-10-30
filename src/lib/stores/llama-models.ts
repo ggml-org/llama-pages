@@ -1,10 +1,12 @@
 import { CONNECTED_KEY, STORAGE_KEY } from '$lib/constants';
 import {
 	DEFAULT_LLAMA_SERVER_URL,
+	diagnoseLlamaServer,
 	fetchLlamaModels,
 	getLlamaServerUrl,
 	LLAMA_SERVER_CHANGE_EVENT,
-	type LlamaModel
+	type LlamaModel,
+	type LlamaServerProblem
 } from '$lib/docs/llama-app';
 import { writable } from 'svelte/store';
 
@@ -14,6 +16,8 @@ type ModelInventory = {
 	// 'off' until the visitor connects Llama from the header: the site
 	// makes no request before then (see CONNECTED_KEY).
 	status: 'off' | 'unknown' | 'checking' | 'ready';
+	// Why it's 'unknown', when the browser lets the site tell.
+	problem?: LlamaServerProblem;
 };
 
 const inventory = writable<ModelInventory>({
@@ -45,13 +49,15 @@ export function refreshLlamaModels(timeout?: number): Promise<void> {
 	const version = ++requestVersion;
 
 	inventory.set({ base, models: null, status: 'checking' });
-	const promise = fetchLlamaModels(base, timeout).then((models) => {
+	const promise = fetchLlamaModels(base, timeout).then(async (models) => {
+		const problem = models === null ? await diagnoseLlamaServer(base) : undefined;
+
 		// A slow response from a previous address must never overwrite the new one.
 		if (version !== requestVersion) {
 			return;
 		}
 
-		inventory.set({ base, models, status: models === null ? 'unknown' : 'ready' });
+		inventory.set({ base, models, problem, status: models === null ? 'unknown' : 'ready' });
 		pending = null;
 	});
 
