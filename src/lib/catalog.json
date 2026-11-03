@@ -35,81 +35,6 @@
 		]
 	},
 	{
-		"name": "Gemma 3",
-		"brand": "Gemma",
-		"description": "Google's efficient multimodal models sized **from phones to workstations**, with vision, 140+ languages, and up to 128K context.",
-		"details": "Gemma 3 is Google's family of open multimodal models, distilled from the same research behind Gemini. The lineup spans from a 270M model light enough for phones to a 27B model that holds its own against far larger systems, with vision support arriving at 4B and above.\n\nEvery size handles text and understands 140+ languages, and the larger ones add image input, with context windows up to 128K tokens. That makes Gemma 3 a flexible base for everything from on-device assistants to cloud deployments.",
-		"released": "2025-03",
-		"license": "Gemma license",
-		"featured": true,
-		"maxMemGb": 8,
-		"sizes": [
-			{
-				"name": "Gemma 3 270M",
-				"params": "270M",
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "241 MB",
-						"sizeBytes": 241410624,
-						"repo": "ggml-org/gemma-3-270m-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 1B",
-				"params": "1B",
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "720 MB",
-						"sizeBytes": 720425600,
-						"repo": "ggml-org/gemma-3-1b-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 4B",
-				"params": "4B",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "2.5 GB",
-						"sizeBytes": 2526080992,
-						"repo": "ggml-org/gemma-3-4b-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 12B",
-				"params": "12B",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "7.1 GB",
-						"sizeBytes": 7131017792,
-						"repo": "ggml-org/gemma-3-12b-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 27B",
-				"params": "27B",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "15.9 GB",
-						"sizeBytes": 15908791488,
-						"repo": "ggml-org/gemma-3-27b-it-qat-GGUF"
-					}
-				]
-			}
-		]
-	},
-	{
 		"name": "Gemma 4",
 		"brand": "Gemma",
 		"description": "Google's most capable open **agentic models for your laptops**, with vision, audio, and support for 140+ languages.",
@@ -437,6 +362,36 @@
 						"size": "8.2 GB",
 						"sizeBytes": 8239591488,
 						"repo": "mistralai/Ministral-3-14B-Reasoning-2512-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "GLM 5.3",
+		"brand": "GLM",
+		"description": "Z.ai's **agentic coding model for large setups**, with vision and an MTP head for faster generation.",
+		"details": "GLM 5.3 is Zhipu AI's agentic model line, built for software engineering, tool use, and long multi-turn workflows. Flash is a 320B mixture-of-experts model with 18B parameters active per token, so it generates far faster than its size suggests -- though every parameter still has to be in memory.\n\nIt understands images as well as text, and ships with a multi-token-prediction head that speeds up generation through speculative decoding.",
+		"released": "2026-08",
+		"license": "MIT",
+		"featured": true,
+		"sizes": [
+			{
+				"name": "GLM 5.3 Flash",
+				"params": "320B-A18B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q4_K",
+						"size": "181 GB",
+						"sizeBytes": 181372463648,
+						"repo": "ggml-org/GLM-5.3-Flash-GGUF"
+					},
+					{
+						"quant": "Q2_K",
+						"size": "134 GB",
+						"sizeBytes": 133809056544,
+						"repo": "ggml-org/GLM-5.3-Flash-GGUF"
 					}
 				]
 			}

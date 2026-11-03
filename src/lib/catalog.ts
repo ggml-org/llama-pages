@@ -4,9 +4,9 @@
 import data from './catalog.json';
 
 // Vocabulary (shared with the apps):
-//   family — the named release line, e.g. "Gemma 3". Holds the shared metadata.
-//   size   — a parameter tier within a family, e.g. "Gemma 3 4B".
-//   build  — a downloadable quant of a size, e.g. that 4B at Q4.
+//   family — the named release line, e.g. "Gemma 4". Holds the shared metadata.
+//   size   — a parameter tier within a family, e.g. "Gemma 4 E4B".
+//   build  — a downloadable quant of a size, e.g. that E4B at Q4.
 // "brand" (e.g. "Gemma") and "publisher" (e.g. "Google") are attributes of a
 // family, not levels of their own. The data nests these strictly:
 // family → size → build.
@@ -79,7 +79,7 @@ export type Family = {
 	featured?: boolean;
 	// Memory cap (in GB) for featuring: consumers should not suggest this family
 	// on machines with more RAM than this. Marks a family as a low-memory pick
-	// (e.g. Gemma 3 for 8 GB Macs). Absent means no cap.
+	// (e.g. a small family for 8 GB Macs). Absent means no cap.
 	maxMemGb?: number;
 	// Whether this is a decision model: it answers typed questions with a
 	// probability per option through llama.cpp's `/v1/systemone` endpoint,
