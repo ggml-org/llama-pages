@@ -3,8 +3,8 @@
 	// the build to the page, which opens the install dialog. On a Mac the
 	// button also fires the app deeplink first, so the dialog lands on top of
 	// an install that may already be underway.
+	import ModelsCatalogInputBadges from './ModelsCatalogInputBadges.svelte';
 	import ModelsCatalogLocalBadge from './ModelsCatalogLocalBadge.svelte';
-	import ModelsCatalogVisionBadge from './ModelsCatalogVisionBadge.svelte';
 	import { MessageCircle, Terminal } from '@lucide/svelte';
 	import { type Build, deeplink, displaySize, minMemForBuild, type Size } from '$lib/catalog';
 	import {
@@ -51,7 +51,7 @@
 {#each shown as build, i (build.repo + (build.quant ?? ''))}
 	{@const buildModels = localModels.filter((model) => matchesBuild(model, build))}
 	<tr class="border-t border-border/40 {i > 0 ? 'border-dashed' : ''}">
-		<!-- Row label: the full size name plus a vision badge, repeated on every
+		<!-- Row label: the full size name plus input badges, repeated on every
 		     build row so each reads as a complete entry. Below it, the build's
 		     memory requirement -- same formula the app uses, so the site never
 		     promises something the app would reject. -->
@@ -65,9 +65,7 @@
 						{build.quant}
 					</span>
 				{/if}
-				{#if size.vision}
-					<ModelsCatalogVisionBadge />
-				{/if}
+				<ModelsCatalogInputBadges modalities={size.inputModalities} />
 				{#if buildModels.length}
 					<ModelsCatalogLocalBadge loaded={buildModels.some((model) => model.loaded)} />
 				{/if}

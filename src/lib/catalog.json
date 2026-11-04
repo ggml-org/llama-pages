@@ -11,6 +11,7 @@
 			{
 				"name": "GPT-OSS 20B",
 				"params": "20B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "mxfp4",
@@ -23,6 +24,7 @@
 			{
 				"name": "GPT-OSS 120B",
 				"params": "120B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "mxfp4",
@@ -46,8 +48,8 @@
 			{
 				"name": "Gemma 4 E2B",
 				"params": "E2B",
-				"vision": true,
 				"maxMemGb": 24,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -60,8 +62,8 @@
 			{
 				"name": "Gemma 4 E4B",
 				"params": "E4B",
-				"vision": true,
 				"maxMemGb": 24,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -80,7 +82,7 @@
 			{
 				"name": "Gemma 4 12B",
 				"params": "12B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -99,7 +101,7 @@
 			{
 				"name": "Gemma 4 26B-A4B",
 				"params": "26B-A4B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -118,7 +120,7 @@
 			{
 				"name": "Gemma 4 31B",
 				"params": "31B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -147,7 +149,7 @@
 			{
 				"name": "Qwen 3.5 Small 0.8B",
 				"params": "0.8B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -177,7 +179,7 @@
 			{
 				"name": "Qwen 3.8 27B",
 				"params": "27B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -206,7 +208,7 @@
 			{
 				"name": "Qwen 3.6 27B",
 				"params": "27B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -225,7 +227,7 @@
 			{
 				"name": "Qwen 3.6 35B-A3B",
 				"params": "35B-A3B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -254,7 +256,7 @@
 			{
 				"name": "Ministral 3 3B",
 				"params": "3B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -273,7 +275,7 @@
 			{
 				"name": "Ministral 3 3B Reasoning",
 				"params": "3B Reasoning",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -292,7 +294,7 @@
 			{
 				"name": "Ministral 3 8B",
 				"params": "8B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -311,7 +313,7 @@
 			{
 				"name": "Ministral 3 8B Reasoning",
 				"params": "8B Reasoning",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -330,7 +332,7 @@
 			{
 				"name": "Ministral 3 14B",
 				"params": "14B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -349,7 +351,7 @@
 			{
 				"name": "Ministral 3 14B Reasoning",
 				"params": "14B Reasoning",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -379,7 +381,7 @@
 			{
 				"name": "GLM 5.3 Flash",
 				"params": "320B-A18B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q4_K",
@@ -408,6 +410,7 @@
 			{
 				"name": "GLM 4.7 Flash",
 				"params": "Flash",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -436,7 +439,7 @@
 			{
 				"name": "Devstral 2 24B",
 				"params": "24B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -455,6 +458,7 @@
 			{
 				"name": "Devstral 2 123B",
 				"params": "123B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -483,6 +487,7 @@
 			{
 				"name": "Laguna XS 2.1 33B-A3B",
 				"params": "33B-A3B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -511,6 +516,7 @@
 			{
 				"name": "Laguna S 2.1 118B-A8B",
 				"params": "118B-A8B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -539,6 +545,7 @@
 			{
 				"name": "DeepSeek V4 Flash",
 				"params": "304B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "MXFP4",
@@ -573,6 +580,7 @@
 			{
 				"name": "Kev 0.8B",
 				"params": "0.8B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -585,6 +593,7 @@
 			{
 				"name": "Kev 4B",
 				"params": "4B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -603,6 +612,7 @@
 			{
 				"name": "Kev 9B",
 				"params": "9B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -631,7 +641,7 @@
 			{
 				"name": "Clef Flash 9B",
 				"params": "9B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -660,6 +670,7 @@
 			{
 				"name": "Laya",
 				"params": "421M",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -683,6 +694,7 @@
 			{
 				"name": "Bespoke Nimble 9B",
 				"params": "9B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -711,6 +723,7 @@
 			{
 				"name": "Nemotron 3.5 Lightning 30B-A3B",
 				"params": "30B-A3B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -739,7 +752,7 @@
 			{
 				"name": "Nemotron 3.5 Super VL 120B-A12B",
 				"params": "120B-A12B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -769,7 +782,7 @@
 			{
 				"name": "Qwen 3.8 Flash Next 125B-A6B",
 				"params": "125B-A6B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -801,7 +814,7 @@
 			{
 				"name": "Muse Glimmer 30B",
 				"params": "30B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q4_K_M",
@@ -830,7 +843,7 @@
 			{
 				"name": "Muse Spark Open 816B-A42B",
 				"params": "816B-A42B",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -866,6 +879,7 @@
 			{
 				"name": "LFM 2.5 24B-A2B",
 				"params": "24B-A2B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -895,8 +909,8 @@
 			{
 				"name": "LFM 3 Omni 2B",
 				"params": "2B",
-				"vision": true,
 				"goodFirstModel": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -925,6 +939,7 @@
 			{
 				"name": "Flint 40B-A2.5B",
 				"params": "40B-A2.5B",
+				"inputModalities": ["text"],
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -953,7 +968,7 @@
 			{
 				"name": "EmbeddingGemma 2",
 				"params": "740M",
-				"vision": true,
+				"inputModalities": ["text", "image"],
 				"builds": [
 					{
 						"quant": "Q8_0",
