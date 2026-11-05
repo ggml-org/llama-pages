@@ -3,6 +3,7 @@
 	import {
 		isLoopback,
 		llamaServerLabel,
+		localAccessPermission,
 		parseLlamaServerInput,
 		saveLlamaServerUrl
 	} from '$lib/docs/llama-app';
@@ -20,6 +21,7 @@
 
 	const base = $derived($llamaModels.base);
 	const status = $derived($llamaModels.status);
+	const problem = $derived($llamaModels.problem);
 	const local = $derived(isLoopback(base));
 	// The local app goes by its name; a remote llama-server by its hostname.
 	const name = $derived(local ? 'Llama' : llamaServerLabel(base));
@@ -34,9 +36,18 @@
 		unknown: ', can’t reach'
 	} as const;
 
+	const FIREFOX_HELP_URL =
+		'https://support.mozilla.org/kb/control-personal-device-local-network-permissions-firefox';
+
+	// Where to allow the site again once the browser's permission is set to
+	// Block. Neither browser opens its settings from a link on a web page,
+	// so the popover offers the address to paste instead.
+	const settings = $derived(problem === 'blocked' ? settingsFor(base) : null);
+
 	let open = $state(false);
 	let serverInput = $state('');
 	let inputError = $state('');
+	let copied = $state(false);
 	let container: HTMLElement | undefined = $state();
 	let trigger: HTMLButtonElement | undefined = $state();
 
@@ -45,6 +56,41 @@
 			return new URL(url).host;
 		} catch {
 			return url;
+		}
+	}
+
+	function settingsFor(server: string) {
+		const device = localAccessPermission(server) !== 'local-network';
+		const ua = navigator.userAgent;
+
+		if (/Firefox\//.test(ua)) {
+			return {
+				address: 'about:preferences#privacy-permissions',
+				firefox: true,
+				setting: device ? 'Device apps and services' : 'Local network devices'
+			};
+		}
+
+		if (/Chrome\//.test(ua)) {
+			const scheme = /Edg\//.test(ua) ? 'edge' : 'chrome';
+
+			return {
+				address: `${scheme}://settings/content/siteDetails?site=${encodeURIComponent(location.origin)}`,
+				firefox: false,
+				setting: device ? 'Apps on device' : 'Local network'
+			};
+		}
+
+		return null;
+	}
+
+	async function copy(text: string) {
+		try {
+			await navigator.clipboard.writeText(text);
+			copied = true;
+			setTimeout(() => (copied = false), 2000);
+		} catch {
+			// The address is selectable on its own.
 		}
 	}
 
@@ -222,11 +268,22 @@
 							If your browser asks, allow the connection.
 						{:else if status === 'ready'}
 							Models you’ve downloaded are marked in the catalog.
-						{:else if local}
-							Make sure the app is running. If you changed its port in Settings, enter the new one
-							here.
+						{:else if problem === 'blocked'}
+							Your browser is blocking this site from reaching {local
+								? 'apps on this computer'
+								: 'devices on your network'}.
+						{:else if problem === 'rejected'}
+							Something answers at this address, but it doesn’t let this site in.
 						{:else}
-							Make sure the server is running, or enter a different address here.
+							{#if problem === 'not-running'}
+								Nothing answers at this address.
+							{/if}
+							{#if local}
+								Make sure the app is running. If you changed its port in Settings, enter the new one
+								here.
+							{:else}
+								Make sure the server is running, or enter a different address here.
+							{/if}
 						{/if}
 					</p>
 				{/if}
@@ -235,12 +292,58 @@
 			<!-- The address form shows up only when a check fails, which is when
 			     a changed port (or a stopped app) matters -- including a port
 			     changed in the app after connecting, which fails the next check.
-			     While connected, there's nothing to change. -->
-			{#if status === 'unknown'}
+			     While connected, there's nothing to change. When the browser
+			     blocks the site, no address would help, so the form gives way
+			     to where to allow it. -->
+			{#if status === 'unknown' && problem === 'blocked'}
+				{#if settings}
+					<p class="mt-2.5 text-[13px] leading-relaxed text-foreground/80">
+						{#if settings.firefox}
+							Paste this into a new tab, click <strong class="font-medium"
+								>{settings.setting}</strong
+							>, and set {location.host} to Allow:
+						{:else}
+							Paste this into a new tab and set <strong class="font-medium"
+								>{settings.setting}</strong
+							> to Allow:
+						{/if}
+					</p>
+					<div class="mt-1.5 flex items-start gap-2">
+						<code
+							class="min-w-0 flex-1 rounded-lg border border-border px-2.5 py-1.5 font-mono text-xs break-all select-all"
+							>{settings.address}</code
+						>
+						<button
+							type="button"
+							onclick={() => copy(settings.address)}
+							class="h-8 cursor-pointer rounded-lg bg-muted px-3.5 text-[13px]"
+						>
+							{copied ? 'Copied' : 'Copy'}
+						</button>
+					</div>
+					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+						Then come back to this tab{#if settings.firefox}, or see
+							<a href={FIREFOX_HELP_URL} target="_blank" rel="noopener noreferrer" class="underline"
+								>Firefox’s help</a
+							>{/if}.
+					</p>
+				{:else}
+					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+						Allow it in this site’s settings, then come back to this tab.
+					</p>
+				{/if}
+			{:else if status === 'unknown'}
 				{@render serverForm()}
-				<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
-					Blocked your browser’s prompt? Allow it in this site’s settings.
-				</p>
+				{#if problem === 'rejected'}
+					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+						If it’s your own llama-server, its <code class="font-mono">--cors-origins</code> has to
+						allow {location.origin}.
+					</p>
+				{:else if !problem}
+					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+						Blocked your browser’s prompt? Allow it in this site’s settings.
+					</p>
+				{/if}
 			{/if}
 
 			<!-- One action, as a button at the bottom: a popover about the
@@ -265,7 +368,7 @@
 						Disconnect
 					</button>
 				{/if}
-				{#if status === 'off' || (status === 'unknown' && local)}
+				{#if status === 'off' || (status === 'unknown' && local && (!problem || problem === 'not-running'))}
 					<span class="text-[13px] text-muted-foreground">
 						Don’t have it? <a href={resolve('/')} onclick={close} class="underline">Get Llama</a>
 					</span>
