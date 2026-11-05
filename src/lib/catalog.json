@@ -162,6 +162,63 @@
 						"repo": "ggml-org/Qwen3.5-0.8B-GGUF"
 					}
 				]
+			},
+			{
+				"name": "Qwen 3.5 Small 2B",
+				"params": "2B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "2.1 GB",
+						"sizeBytes": 2076675488,
+						"repo": "unsloth/Qwen3.5-2B-MTP-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "1.3 GB",
+						"sizeBytes": 1329851808,
+						"repo": "unsloth/Qwen3.5-2B-MTP-GGUF"
+					}
+				]
+			},
+			{
+				"name": "Qwen 3.5 Small 4B",
+				"params": "4B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "4.6 GB",
+						"sizeBytes": 4610580800,
+						"repo": "unsloth/Qwen3.5-4B-MTP-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "2.8 GB",
+						"sizeBytes": 2834975040,
+						"repo": "unsloth/Qwen3.5-4B-MTP-GGUF"
+					}
+				]
+			},
+			{
+				"name": "Qwen 3.5 Small 9B",
+				"params": "9B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "9.8 GB",
+						"sizeBytes": 9786061152,
+						"repo": "unsloth/Qwen3.5-9B-MTP-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "5.9 GB",
+						"sizeBytes": 5868826976,
+						"repo": "unsloth/Qwen3.5-9B-MTP-GGUF"
+					}
+				]
 			}
 		]
 	},
@@ -915,6 +972,34 @@
 		]
 	},
 	{
+		"name": "LFM 3",
+		"brand": "Liquid AI",
+		"description": "Liquid AI's compact **text model** for fast on-device chat, in a multilingual 1.7B size.",
+		"details": "LFM3-1.7B is the text-only model in Liquid AI's third-generation LFM family, built for on-device use. It is multilingual, covering English, Arabic, Chinese, French, German, Japanese, Korean, Spanish and more.\n\nFor images and audio, see LFM 3 Omni.",
+		"released": "2026-10",
+		"license": "LFM Open License 1.0",
+		"sizes": [
+			{
+				"name": "LFM 3 1.7B",
+				"params": "1.7B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "1.8 GB",
+						"sizeBytes": 1846238496,
+						"repo": "LiquidAI/LFM3-1.7B-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "1.1 GB",
+						"sizeBytes": 1099627808,
+						"repo": "LiquidAI/LFM3-1.7B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "Flint",
 		"brand": "Recursive",
 		"description": "Recursive's **coding-agent model**: investigates codebases, fixes bugs, implements features, and writes tests.",
@@ -937,6 +1022,46 @@
 						"size": "23.4 GB",
 						"sizeBytes": 23387911136,
 						"repo": "ggml-org/Flint-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "Spark X2.6",
+		"brand": "SparkLLM",
+		"description": "SparkLLM's compact **on-device agent models**, tuned for coding, tool use, and long context, with switchable thinking levels.",
+		"details": "Spark-X2.6 is SparkLLM's second-generation family of compact language models for on-device use, in 1.7B and 4B sizes. Post-training improves coding, agent workflows with tool use and multi-step planning, long-context work, and reasoning over Spark-X2.5.\n\nThe models offer three thinking levels (none, low, and high), so you can trade reasoning depth against speed, and support contexts of up to about one million tokens, memory permitting. Text only.",
+		"released": "2026-10",
+		"license": "Apache 2.0",
+		"sizes": [
+			{
+				"name": "Spark X2.6 1.7B",
+				"params": "1.7B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "1.8 GB",
+						"sizeBytes": 1820113440,
+						"repo": "XHToken/Spark-X2.6-1.7B-GGUF"
+					}
+				]
+			},
+			{
+				"name": "Spark X2.6 4B",
+				"params": "4B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "4.4 GB",
+						"sizeBytes": 4375021824,
+						"repo": "XHToken/Spark-X2.6-4B-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "3.5 GB",
+						"sizeBytes": 3543441312,
+						"repo": "XHToken/Spark-X2.6-4B-GGUF"
 					}
 				]
 			}
