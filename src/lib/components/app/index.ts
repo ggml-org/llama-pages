@@ -13,6 +13,7 @@ export { default as MacStatusIcon } from './misc/MacStatusIcon.svelte';
 export { default as Logo } from './misc/Logo.svelte';
 export { default as SeoMetadata } from './misc/SeoMetadata.svelte';
 export { default as ModelsCatalogInstallDialog } from './models-catalog/ModelsCatalogInstallDialog.svelte';
+export { default as ModelsCatalogInputBadges } from './models-catalog/ModelsCatalogInputBadges.svelte';
 export { default as ModelsCatalogLocalBadge } from './models-catalog/ModelsCatalogLocalBadge.svelte';
 export { default as ModelsCatalogSizeRow } from './models-catalog/ModelsCatalogSizeRow.svelte';
 export { default as ModelsCatalogVisionBadge } from './models-catalog/ModelsCatalogVisionBadge.svelte';
