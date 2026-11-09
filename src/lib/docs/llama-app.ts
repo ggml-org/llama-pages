@@ -142,3 +142,97 @@ export async function fetchLlamaModels(base: string, timeout = 1500): Promise<Ll
 export async function probeLlamaServer(base: string): Promise<boolean> {
 	return (await fetchLlamaModels(base)) !== null;
 }
+
+/** Why a check failed; see diagnoseLlamaServer. */
+export type LlamaServerProblem = 'blocked' | 'not-running' | 'rejected';
+
+/**
+ * The browser permission a public site needs to reach this server: Chrome
+ * and Firefox ask before a site reaches apps on this device, or devices on
+ * the local network. null for a public server, which needs none.
+ */
+export function localAccessPermission(base: string): 'loopback-network' | 'local-network' | null {
+	if (isLoopback(base)) {
+		return 'loopback-network';
+	}
+
+	try {
+		const { hostname } = new URL(base);
+
+		return /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(hostname) ||
+			hostname.endsWith('.local')
+			? 'local-network'
+			: null;
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Why a check failed, as far as the browser lets a page tell -- a failed
+ * fetch looks the same whatever the cause:
+ * - 'blocked': the browser's permission for this site is set to Block
+ * - 'not-running': nothing answers at the address
+ * - 'rejected': something answers, but its CORS settings turn this site away
+ * undefined when it can't tell, including while the permission hasn't been
+ * granted for good: asking again could show the browser's prompt again.
+ */
+export async function diagnoseLlamaServer(base: string): Promise<LlamaServerProblem | undefined> {
+	const permission = localAccessPermission(base);
+	// A page served from this computer needs no permission, though browsers
+	// still report one as unanswered there.
+	const servedLocally = typeof location !== 'undefined' && isLoopback(location.origin);
+	const state = permission && !servedLocally ? await permissionState(permission) : undefined;
+
+	if (state === 'denied') {
+		return 'blocked';
+	}
+
+	if (state === 'prompt') {
+		return undefined;
+	}
+
+	const init = () => {
+		const init: RequestInit & { targetAddressSpace?: 'loopback' } = {
+			signal: AbortSignal.timeout(1500)
+		};
+
+		if (permission === 'loopback-network') {
+			init.targetAddressSpace = 'loopback';
+		}
+
+		return init;
+	};
+
+	// A no-cors request can't read the response, but CORS settings don't
+	// apply to it either: it only fails when nothing answers.
+	try {
+		await fetch(`${base}/v1/models`, { ...init(), mode: 'no-cors' });
+	} catch {
+		return 'not-running';
+	}
+
+	try {
+		await fetch(`${base}/v1/models`, init());
+	} catch {
+		return 'rejected';
+	}
+
+	// It answers now, so the check failed for some other reason.
+	return undefined;
+}
+
+/** undefined where the browser doesn't know the permission. */
+async function permissionState(name: string): Promise<PermissionState | undefined> {
+	// Chrome first shipped the two permissions as one, 'local-network-access',
+	// which it still answers to; Firefox only knows the separate names.
+	for (const permission of [name, 'local-network-access']) {
+		try {
+			return (await navigator.permissions.query({ name: permission as PermissionName })).state;
+		} catch {
+			// Unknown to this browser; try the next name.
+		}
+	}
+
+	return undefined;
+}

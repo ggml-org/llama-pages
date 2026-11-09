@@ -35,81 +35,6 @@
 		]
 	},
 	{
-		"name": "Gemma 3",
-		"brand": "Gemma",
-		"description": "Google's efficient multimodal models sized **from phones to workstations**, with vision, 140+ languages, and up to 128K context.",
-		"details": "Gemma 3 is Google's family of open multimodal models, distilled from the same research behind Gemini. The lineup spans from a 270M model light enough for phones to a 27B model that holds its own against far larger systems, with vision support arriving at 4B and above.\n\nEvery size handles text and understands 140+ languages, and the larger ones add image input, with context windows up to 128K tokens. That makes Gemma 3 a flexible base for everything from on-device assistants to cloud deployments.",
-		"released": "2025-03",
-		"license": "Gemma license",
-		"featured": true,
-		"maxMemGb": 8,
-		"sizes": [
-			{
-				"name": "Gemma 3 270M",
-				"params": "270M",
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "241 MB",
-						"sizeBytes": 241410624,
-						"repo": "ggml-org/gemma-3-270m-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 1B",
-				"params": "1B",
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "720 MB",
-						"sizeBytes": 720425600,
-						"repo": "ggml-org/gemma-3-1b-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 4B",
-				"params": "4B",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "2.5 GB",
-						"sizeBytes": 2526080992,
-						"repo": "ggml-org/gemma-3-4b-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 12B",
-				"params": "12B",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "7.1 GB",
-						"sizeBytes": 7131017792,
-						"repo": "ggml-org/gemma-3-12b-it-qat-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Gemma 3 27B",
-				"params": "27B",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q4_0",
-						"size": "15.9 GB",
-						"sizeBytes": 15908791488,
-						"repo": "ggml-org/gemma-3-27b-it-qat-GGUF"
-					}
-				]
-			}
-		]
-	},
-	{
 		"name": "Gemma 4",
 		"brand": "Gemma",
 		"description": "Google's most capable open **agentic models for your laptops**, with vision, audio, and support for 140+ languages.",
@@ -122,6 +47,7 @@
 				"name": "Gemma 4 E2B",
 				"params": "E2B",
 				"vision": true,
+				"audio": true,
 				"maxMemGb": 24,
 				"builds": [
 					{
@@ -136,6 +62,7 @@
 				"name": "Gemma 4 E4B",
 				"params": "E4B",
 				"vision": true,
+				"audio": true,
 				"maxMemGb": 24,
 				"builds": [
 					{
@@ -156,6 +83,7 @@
 				"name": "Gemma 4 12B",
 				"params": "12B",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -443,6 +371,36 @@
 		]
 	},
 	{
+		"name": "GLM 5.3",
+		"brand": "GLM",
+		"description": "Z.ai's **agentic coding model for large setups**, with vision and an MTP head for faster generation.",
+		"details": "GLM 5.3 is Zhipu AI's agentic model line, built for software engineering, tool use, and long multi-turn workflows. Flash is a 320B mixture-of-experts model with 18B parameters active per token, so it generates far faster than its size suggests -- though every parameter still has to be in memory.\n\nIt understands images as well as text, and ships with a multi-token-prediction head that speeds up generation through speculative decoding.",
+		"released": "2026-08",
+		"license": "MIT",
+		"featured": true,
+		"sizes": [
+			{
+				"name": "GLM 5.3 Flash",
+				"params": "320B-A18B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q4_K",
+						"size": "181 GB",
+						"sizeBytes": 181372463648,
+						"repo": "ggml-org/GLM-5.3-Flash-GGUF"
+					},
+					{
+						"quant": "Q2_K",
+						"size": "134 GB",
+						"sizeBytes": 133809056544,
+						"repo": "ggml-org/GLM-5.3-Flash-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "GLM 4.7",
 		"brand": "GLM",
 		"description": "Z.ai's fast **local agentic coding** model, built for software engineering, browser automation, and multi-turn tool use.",
@@ -602,6 +560,59 @@
 						"size": "98.6 GB",
 						"sizeBytes": 98592511104,
 						"repo": "ggml-org/DeepSeek-V4-Flash-0731-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "d1 Omni",
+		"brand": "Liquid AI",
+		"description": "Liquid AI's **tiny omni decision model** for calibrated choices over text, images, video, and audio in one forward pass.",
+		"released": "2026-10",
+		"license": "LFM Open License 1.0",
+		"decision": true,
+		"sizes": [
+			{
+				"name": "d1 Omni 2B",
+				"params": "2B",
+				"vision": true,
+				"audio": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "1.8 GB",
+						"sizeBytes": 1846241184,
+						"repo": "LiquidAI/d1-Omni-2B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "d3 Flash",
+		"brand": "vLLM Semantic Router",
+		"description": "A **leading 9B multimodal decision model** for text, images, and video, returning probabilities without generating text.",
+		"released": "2026-10",
+		"license": "Apache 2.0",
+		"decision": true,
+		"sizes": [
+			{
+				"name": "d3 Flash 9B",
+				"params": "9B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "9.5 GB",
+						"sizeBytes": 9527503328,
+						"repo": "ggml-org/vllm-d3-flash-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "6.6 GB",
+						"sizeBytes": 6603024864,
+						"repo": "ggml-org/vllm-d3-flash-GGUF"
 					}
 				]
 			}
@@ -876,6 +887,7 @@
 				"name": "Muse Spark Open 816B-A42B",
 				"params": "816B-A42B",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -935,11 +947,14 @@
 		"details": "LFM3-Omni-2B is Liquid AI's first omni-modal model in the LFM3 family. One small model handles speech recognition, image understanding, and chat, and through llama.cpp's `/tts` endpoint it can also speak. It is built for on-device use.",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "LFM 3 Omni 2B",
 				"params": "2B",
 				"vision": true,
+				"audio": true,
+				"goodFirstModel": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -997,6 +1012,7 @@
 				"name": "EmbeddingGemma 2",
 				"params": "740M",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",

@@ -14,7 +14,7 @@ llama cli -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0
 llama serve -hf ggml-org/gemma-4-e4b-it-GGUF:Q4_0
 ```
 
-`llama cli` is great for [experimentation and terminal use](cli), while `llama serve` exposes a [full-featured web UI](webui)).
+`llama cli` is great for [experimentation and terminal use](cli), while `llama serve` exposes a [full-featured web UI](webui).
 
 ## How it works
 

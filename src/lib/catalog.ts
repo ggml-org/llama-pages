@@ -4,9 +4,9 @@
 import data from './catalog.json';
 
 // Vocabulary (shared with the apps):
-//   family — the named release line, e.g. "Gemma 3". Holds the shared metadata.
-//   size   — a parameter tier within a family, e.g. "Gemma 3 4B".
-//   build  — a downloadable quant of a size, e.g. that 4B at Q4.
+//   family — the named release line, e.g. "Gemma 4". Holds the shared metadata.
+//   size   — a parameter tier within a family, e.g. "Gemma 4 E4B".
+//   build  — a downloadable quant of a size, e.g. that E4B at Q4.
 // "brand" (e.g. "Gemma") and "publisher" (e.g. "Google") are attributes of a
 // family, not levels of their own. The data nests these strictly:
 // family → size → build.
@@ -36,11 +36,21 @@ export type Size = {
 	name: string;
 	params?: string;
 	vision?: boolean;
+	// Whether this size takes audio input (speech, sounds) -- its projector has an
+	// audio encoder (`clip.has_audio_encoder`). Separate from `vision`: a projector
+	// can encode images, audio, or both. Absent means false.
+	audio?: boolean;
 	// Memory cap (in GB) for featuring, like Family.maxMemGb but for one size:
 	// consumers should not suggest this size on machines with more RAM than
 	// this (e.g. the small Gemma 4 E-series on 32 GB+ Macs). Absent means the
 	// family's cap (if any) applies.
 	maxMemGb?: number;
+	// Whether this size is the suggested starting point for newcomers: small
+	// enough to run on any supported machine, and a good first taste of local
+	// models. The apps badge it and list it first among their suggestions, so
+	// someone new doesn't have to choose. Meant for one size at a time; the
+	// website doesn't render it. Absent means false.
+	goodFirstModel?: boolean;
 	builds: Build[];
 };
 
@@ -73,7 +83,7 @@ export type Family = {
 	featured?: boolean;
 	// Memory cap (in GB) for featuring: consumers should not suggest this family
 	// on machines with more RAM than this. Marks a family as a low-memory pick
-	// (e.g. Gemma 3 for 8 GB Macs). Absent means no cap.
+	// (e.g. a small family for 8 GB Macs). Absent means no cap.
 	maxMemGb?: number;
 	// Whether this is a decision model: it answers typed questions with a
 	// probability per option through llama.cpp's `/v1/systemone` endpoint,

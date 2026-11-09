@@ -1,40 +1,48 @@
 # Installation
 
-There are several ways to get llama.cpp on your machine:
+You can easily install llama.cpp on your machine:
 
-- Recommended (Mac/Windows): one click install the desktop apps
-- Recommended (others): one-line install command
-- Install with a package manager
-- Download prebuilt binaries from the releases page
-- Run with Docker
-- Build from source
+- **Mac and Windows:** install the Llama app
+- **Linux (or if you only want the command line):** one-line install command
 
-All of them give you the same set of tools (`llama cli`, `llama serve` and others).
+## Llama app (recommended)
 
-## One-click install (recommended)
+Download the app for [Mac](https://llama.app/download/mac) or [Windows 11](https://llama.app/download/windows). It lives in the menu bar on Mac and in the system tray on Windows.
 
-If you intend to use LLMs on Mac or Windows, you can download the app from the main page, which launches right after installation.
+The app also sets up the `llama` command line for you, so you can use `llama cli`, `llama serve` and other tools from a terminal.
 
-## One-line install (recommended)
+## One-line install
 
-This is the easiest way to get started with llama.cpp. The following command detects your platform, fetches the latest version of the llama binary and installs it.
+If you're on Linux, or only want the command line, the following command detects your platform, fetches the latest `llama` binary and puts it on your PATH.
+
+On Mac and Linux:
 
 ```sh
 curl -LsSf https://llama.app/install.sh | sh
 ```
 
-To pair with a coding agent, install with a package manager or build yourself, please follow the instructions on [https://llama.app](https://llama.app).
+On Windows, using PowerShell:
+
+```powershell
+irm https://llama.app/install.ps1 | iex
+```
+
+## Other ways to install
+
+llama.cpp is also available through package managers, as prebuilt binaries, and as Docker images, and you can build it from source. See llama.cpp's [installation](https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md) and [build](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md) guides.
 
 ## Verify the installation
 
-If you have downloaded the Llama app, it should show up on your tool bar.
+If you installed the app, its icon shows up in the menu bar (Mac) or the system tray (Windows). Click it to open the app:
 
-<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app-install.png" alt="Installation" />
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-app-install.png" alt="The Llama app on Mac" />
 
-If you want to use the CLI, or you are on a platform that doesn't support the app, type:
+To check the command line, open a new terminal and run:
 
 ```sh
 llama cli --version
 ```
 
-If this prints the version and build info, you are ready to go. Continue with the [Quickstart](quickstart) to download and run your first model.
+If this prints the version and build info, you are ready to go.
+
+Continue with the [Quickstart](quickstart) to download and run your first model, or see [Using Llama App with Agents](agents) to pair it with a coding agent.
