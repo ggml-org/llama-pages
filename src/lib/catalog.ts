@@ -36,6 +36,10 @@ export type Size = {
 	name: string;
 	params?: string;
 	vision?: boolean;
+	// Whether this size takes audio input (speech, sounds) -- its projector has an
+	// audio encoder (`clip.has_audio_encoder`). Separate from `vision`: a projector
+	// can encode images, audio, or both. Absent means false.
+	audio?: boolean;
 	// Memory cap (in GB) for featuring, like Family.maxMemGb but for one size:
 	// consumers should not suggest this size on machines with more RAM than
 	// this (e.g. the small Gemma 4 E-series on 32 GB+ Macs). Absent means the

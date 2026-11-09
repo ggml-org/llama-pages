@@ -47,6 +47,7 @@
 				"name": "Gemma 4 E2B",
 				"params": "E2B",
 				"vision": true,
+				"audio": true,
 				"maxMemGb": 24,
 				"builds": [
 					{
@@ -61,6 +62,7 @@
 				"name": "Gemma 4 E4B",
 				"params": "E4B",
 				"vision": true,
+				"audio": true,
 				"maxMemGb": 24,
 				"builds": [
 					{
@@ -81,6 +83,7 @@
 				"name": "Gemma 4 12B",
 				"params": "12B",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -574,6 +577,7 @@
 				"name": "d1 Omni 2B",
 				"params": "2B",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -883,6 +887,7 @@
 				"name": "Muse Spark Open 816B-A42B",
 				"params": "816B-A42B",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -948,6 +953,7 @@
 				"name": "LFM 3 Omni 2B",
 				"params": "2B",
 				"vision": true,
+				"audio": true,
 				"goodFirstModel": true,
 				"builds": [
 					{
@@ -1006,6 +1012,7 @@
 				"name": "EmbeddingGemma 2",
 				"params": "740M",
 				"vision": true,
+				"audio": true,
 				"builds": [
 					{
 						"quant": "Q8_0",

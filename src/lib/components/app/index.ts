@@ -16,6 +16,7 @@ export { default as ModelsCatalogInstallDialog } from './models-catalog/ModelsCa
 export { default as ModelsCatalogLocalBadge } from './models-catalog/ModelsCatalogLocalBadge.svelte';
 export { default as ModelsCatalogSizeRow } from './models-catalog/ModelsCatalogSizeRow.svelte';
 export { default as ModelsCatalogVisionBadge } from './models-catalog/ModelsCatalogVisionBadge.svelte';
+export { default as ModelsCatalogAudioBadge } from './models-catalog/ModelsCatalogAudioBadge.svelte';
 export { default as GitHubLink } from './navigation/GitHubLink.svelte';
 export { default as LlamaConnection } from './navigation/LlamaConnection.svelte';
 export { default as SiteHeader } from './navigation/SiteHeader.svelte';
