@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Check } from '@lucide/svelte';
 	import { localModelLabel } from '$lib/models/local-models';
-	import { llamaModels } from '$lib/stores/llama-models';
 
 	let { loaded = false, quants }: { loaded?: boolean; quants?: string } = $props();
 </script>
@@ -12,5 +11,5 @@
 		: 'text-green-700 dark:text-green-400'}"
 >
 	<Check class="size-3" aria-hidden="true" />
-	{localModelLabel($llamaModels.base, loaded)}{quants ? `: ${quants}` : ''}
+	{localModelLabel(loaded)}{quants ? `: ${quants}` : ''}
 </span>
