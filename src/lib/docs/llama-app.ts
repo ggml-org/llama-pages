@@ -1,5 +1,7 @@
-// Talking to the user's Llama server (the local menu bar app by default, or
-// any self-hosted llama-server) from the docs pages.
+// Talking to the Llama app on the visitor's computer -- or a llama-server
+// they run there -- at `localhost:<port>`. Only local servers: one on
+// another machine would need the browser's local-network permission and
+// that server's CORS settings, for a setup almost nobody has.
 //
 // Detection is ADVISORY ONLY — a failed probe never hard-blocks navigation,
 // because it is ambiguous: the server may be down, on another port, or the
@@ -19,7 +21,11 @@ export type LlamaModel = {
 };
 
 export function getLlamaServerUrl(): string {
-	return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_LLAMA_SERVER_URL;
+	const stored = localStorage.getItem(STORAGE_KEY);
+
+	// Earlier versions accepted any server URL; a remote one saved then falls
+	// back to the default rather than half-working.
+	return stored && isLoopback(stored) ? stored : DEFAULT_LLAMA_SERVER_URL;
 }
 
 export function saveLlamaServerUrl(base: string): void {
@@ -27,40 +33,12 @@ export function saveLlamaServerUrl(base: string): void {
 	window.dispatchEvent(new Event(LLAMA_SERVER_CHANGE_EVENT));
 }
 
-/**
- * Accepts a bare port ("9931") or a URL ("llama.example.com",
- * "https://llama.example.com"); returns a normalized base URL, or null.
- */
+/** Accepts a port ("9931"); returns the local server's base URL, or null. */
 export function parseLlamaServerInput(input: string): string | null {
-	const trimmed = input.trim().replace(/\/+$/, '');
+	const trimmed = input.trim();
+	const port = Number(trimmed);
 
-	if (!trimmed) {
-		return null;
-	}
-
-	if (/^\d+$/.test(trimmed)) {
-		const port = Number(trimmed);
-
-		return port >= 1 && port <= 65535 ? `http://localhost:${port}` : null;
-	}
-
-	const withProtocol = /^https?:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
-
-	try {
-		const url = new URL(withProtocol);
-		// new URL() accepts almost any string as a single-label hostname
-		// (e.g. a port typo like "9931x"), so require a plausible host:
-		// localhost, a dotted name/IP, or a bracketed IPv6 address.
-		const host = url.hostname;
-
-		if (host !== 'localhost' && !host.includes('.') && !host.startsWith('[')) {
-			return null;
-		}
-
-		return url.origin + (url.pathname === '/' ? '' : url.pathname);
-	} catch {
-		return null;
-	}
+	return /^\d+$/.test(trimmed) && port >= 1 && port <= 65535 ? `http://localhost:${port}` : null;
 }
 
 export function isLoopback(base: string): boolean {
@@ -73,14 +51,10 @@ export function isLoopback(base: string): boolean {
 	}
 }
 
-/** ':9931' for a local server, the hostname for a remote one. */
+/** The server's port, as ':9931'. */
 export function llamaServerLabel(base: string): string {
 	try {
-		const url = new URL(base);
-
-		return isLoopback(base)
-			? `:${url.port || (url.protocol === 'https:' ? '443' : '80')}`
-			: url.hostname;
+		return `:${new URL(base).port || '80'}`;
 	} catch {
 		return base;
 	}
@@ -92,17 +66,7 @@ export function llamaServerLabel(base: string): string {
  */
 export async function fetchLlamaModels(base: string, timeout = 1500): Promise<LlamaModel[] | null> {
 	try {
-		const init: RequestInit & { targetAddressSpace?: 'loopback' } = {
-			signal: AbortSignal.timeout(timeout)
-		};
-
-		// Marks the request as intentionally targeting loopback for Chrome's
-		// Local Network Access permission model.
-		if (isLoopback(base)) {
-			init.targetAddressSpace = 'loopback';
-		}
-
-		const res = await fetch(`${base}/v1/models`, init);
+		const res = await fetch(`${base}/v1/models`, loopbackInit(timeout));
 
 		if (!res.ok) {
 			return null;
@@ -138,35 +102,17 @@ export async function fetchLlamaModels(base: string, timeout = 1500): Promise<Ll
 	}
 }
 
-/** Whether a llama-server answers at this base URL. */
-export async function probeLlamaServer(base: string): Promise<boolean> {
-	return (await fetchLlamaModels(base)) !== null;
+/**
+ * Request options for the local server. targetAddressSpace marks the request
+ * as intentionally targeting loopback for Chrome's Local Network Access
+ * permission model.
+ */
+function loopbackInit(timeout: number): RequestInit & { targetAddressSpace: 'loopback' } {
+	return { signal: AbortSignal.timeout(timeout), targetAddressSpace: 'loopback' };
 }
 
 /** Why a check failed; see diagnoseLlamaServer. */
 export type LlamaServerProblem = 'blocked' | 'not-running' | 'rejected';
-
-/**
- * The browser permission a public site needs to reach this server: Chrome
- * and Firefox ask before a site reaches apps on this device, or devices on
- * the local network. null for a public server, which needs none.
- */
-export function localAccessPermission(base: string): 'loopback-network' | 'local-network' | null {
-	if (isLoopback(base)) {
-		return 'loopback-network';
-	}
-
-	try {
-		const { hostname } = new URL(base);
-
-		return /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(hostname) ||
-			hostname.endsWith('.local')
-			? 'local-network'
-			: null;
-	} catch {
-		return null;
-	}
-}
 
 /**
  * Why a check failed, as far as the browser lets a page tell -- a failed
@@ -178,11 +124,10 @@ export function localAccessPermission(base: string): 'loopback-network' | 'local
  * granted for good: asking again could show the browser's prompt again.
  */
 export async function diagnoseLlamaServer(base: string): Promise<LlamaServerProblem | undefined> {
-	const permission = localAccessPermission(base);
 	// A page served from this computer needs no permission, though browsers
 	// still report one as unanswered there.
 	const servedLocally = typeof location !== 'undefined' && isLoopback(location.origin);
-	const state = permission && !servedLocally ? await permissionState(permission) : undefined;
+	const state = servedLocally ? undefined : await permissionState('loopback-network');
 
 	if (state === 'denied') {
 		return 'blocked';
@@ -192,28 +137,16 @@ export async function diagnoseLlamaServer(base: string): Promise<LlamaServerProb
 		return undefined;
 	}
 
-	const init = () => {
-		const init: RequestInit & { targetAddressSpace?: 'loopback' } = {
-			signal: AbortSignal.timeout(1500)
-		};
-
-		if (permission === 'loopback-network') {
-			init.targetAddressSpace = 'loopback';
-		}
-
-		return init;
-	};
-
 	// A no-cors request can't read the response, but CORS settings don't
 	// apply to it either: it only fails when nothing answers.
 	try {
-		await fetch(`${base}/v1/models`, { ...init(), mode: 'no-cors' });
+		await fetch(`${base}/v1/models`, { ...loopbackInit(1500), mode: 'no-cors' });
 	} catch {
 		return 'not-running';
 	}
 
 	try {
-		await fetch(`${base}/v1/models`, init());
+		await fetch(`${base}/v1/models`, loopbackInit(1500));
 	} catch {
 		return 'rejected';
 	}

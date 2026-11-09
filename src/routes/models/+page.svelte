@@ -168,7 +168,7 @@
 										? 'bg-green-500/10 text-green-700 dark:text-green-400'
 										: 'bg-muted text-muted-foreground'}"
 								title={localModels.length
-									? `${s.name} — ${localModels.map((model) => `${localModelLabel($llamaModels.base, model.loaded)}: ${model.quant ?? 'unspecified quantization'}`).join('; ')}`
+									? `${s.name} — ${localModels.map((model) => `${localModelLabel(model.loaded)}: ${model.quant ?? 'unspecified quantization'}`).join('; ')}`
 									: undefined}
 							>
 								{#if localModels.length}

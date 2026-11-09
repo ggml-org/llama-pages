@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import {
-		isLoopback,
-		llamaServerLabel,
-		localAccessPermission,
-		parseLlamaServerInput,
-		saveLlamaServerUrl
-	} from '$lib/docs/llama-app';
+	import { llamaServerLabel, parseLlamaServerInput, saveLlamaServerUrl } from '$lib/docs/llama-app';
 	import {
 		connectLlama,
 		disconnectLlama,
@@ -31,9 +25,6 @@
 	const base = $derived($llamaModels.base);
 	const status = $derived($llamaModels.status);
 	const problem = $derived($llamaModels.problem);
-	const local = $derived(isLoopback(base));
-	// The local app goes by its name; a remote llama-server by its hostname.
-	const name = $derived(local ? 'Llama' : llamaServerLabel(base));
 	// The address in full (`localhost:9931`), set in mono like other literals.
 	const address = $derived(hostOf(base));
 
@@ -45,84 +36,17 @@
 		unknown: ', can’t reach'
 	} as const;
 
-	const FIREFOX_HELP_URL =
-		'https://support.mozilla.org/kb/control-personal-device-local-network-permissions-firefox';
-
-	// Where to allow the site again once the browser's permission is set to
-	// Block. Neither browser opens its settings from a link on a web page,
-	// so the popover offers the address to paste instead.
-	const settings = $derived(problem === 'blocked' ? settingsFor(base) : null);
-
 	let open = $state(false);
 	let serverInput = $state('');
 	let inputError = $state('');
-	// Where to go once connected, when something sent the visitor here to
-	// connect first (see showLlamaConnection). Dropped when the popover closes.
-	let then = $state<string | null>(null);
-	let thenBlocked = $state(false);
-	let copied = $state(false);
 	let container: HTMLElement | undefined = $state();
 	let trigger: HTMLButtonElement | undefined = $state();
-
-	$effect(() => {
-		if (status !== 'ready' || then === null || thenBlocked) {
-			return;
-		}
-
-		// No 'noopener' feature: it makes window.open return null even on
-		// success, which would hide a blocked popup.
-		const popup = window.open(`${base}${then}`, '_blank');
-
-		if (popup) {
-			popup.opener = null;
-			close();
-		} else {
-			// Blocked, as popups are when the click that connected was a while
-			// ago (say, a slow answer to the browser's prompt): offer the link.
-			thenBlocked = true;
-		}
-	});
 
 	function hostOf(url: string): string {
 		try {
 			return new URL(url).host;
 		} catch {
 			return url;
-		}
-	}
-
-	function settingsFor(server: string) {
-		const device = localAccessPermission(server) !== 'local-network';
-		const ua = navigator.userAgent;
-
-		if (/Firefox\//.test(ua)) {
-			return {
-				address: 'about:preferences#privacy-permissions',
-				firefox: true,
-				setting: device ? 'Device apps and services' : 'Local network devices'
-			};
-		}
-
-		if (/Chrome\//.test(ua)) {
-			const scheme = /Edg\//.test(ua) ? 'edge' : 'chrome';
-
-			return {
-				address: `${scheme}://settings/content/siteDetails?site=${encodeURIComponent(location.origin)}`,
-				firefox: false,
-				setting: device ? 'Apps on device' : 'Local network'
-			};
-		}
-
-		return null;
-	}
-
-	async function copy(text: string) {
-		try {
-			await navigator.clipboard.writeText(text);
-			copied = true;
-			setTimeout(() => (copied = false), 2000);
-		} catch {
-			// The address is selectable on its own.
 		}
 	}
 
@@ -135,15 +59,12 @@
 
 		open = true;
 		inputError = '';
-		// A local server is entered as just its port, the way the app's
-		// Settings show it; a remote one as its full URL.
-		serverInput = local ? llamaServerLabel(base).slice(1) : base;
+		// Entered as just the port, the way the app's Settings show it.
+		serverInput = llamaServerLabel(base).slice(1);
 	}
 
 	function close() {
 		open = false;
-		then = null;
-		thenBlocked = false;
 	}
 
 	function onShow(event: Event) {
@@ -157,9 +78,6 @@
 		if (!open) {
 			toggle();
 		}
-
-		then = (event as CustomEvent<{ then?: string }>).detail?.then ?? null;
-		thenBlocked = false;
 
 		// Brings the header into view too, if the page is scrolled.
 		trigger?.focus();
@@ -181,7 +99,7 @@
 		const next = parseLlamaServerInput(serverInput);
 
 		if (!next) {
-			inputError = 'Enter a valid port (1–65535) or server URL.';
+			inputError = 'Enter a valid port (1–65535).';
 
 			return;
 		}
@@ -225,9 +143,7 @@
 
 {#snippet serverForm()}
 	<form onsubmit={saveServer} class="mt-3">
-		<label for="llama-connection-server" class="block text-xs text-muted-foreground">
-			Port or server URL
-		</label>
+		<label for="llama-connection-server" class="block text-xs text-muted-foreground"> Port </label>
 		<div class="mt-1.5 flex gap-2">
 			<input
 				id="llama-connection-server"
@@ -285,7 +201,8 @@
 		     connected, so the pill keeps one shape in every state and only the
 		     dot changes as it connects. -->
 		<span
-			>{status === 'off' ? 'Connect Llama' : name}<span class="sr-only">{STATUS_TEXT[status]}</span
+			>{status === 'off' ? 'Connect Llama' : 'Llama'}<span class="sr-only"
+				>{STATUS_TEXT[status]}</span
 			></span
 		>
 		{@render dot()}
@@ -313,11 +230,11 @@
 					     title. -->
 					<p class="flex items-center gap-2 text-sm font-semibold">
 						{#if status === 'checking'}
-							Connecting to {name}…
+							Connecting to Llama…
 						{:else if status === 'ready'}
-							Connected to {name}
+							Connected to Llama
 						{:else}
-							Can’t reach {name}
+							Can’t reach Llama
 						{/if}
 						{@render dot()}
 					</p>
@@ -328,76 +245,33 @@
 						{:else if status === 'ready'}
 							Models you’ve downloaded are marked in the catalog.
 						{:else if problem === 'blocked'}
-							Your browser is blocking this site from reaching {local
-								? 'apps on this computer'
-								: 'devices on your network'}.
+							<!-- One line rather than per-browser steps: setting the
+							     permission to Block is rare, and every browser has the
+							     site's permissions one click from the address bar. -->
+							Your browser is blocking this site from reaching apps on this computer. Allow it in this
+							site’s settings, then come back to this tab.
 						{:else if problem === 'rejected'}
 							Something answers at this address, but it doesn’t let this site in.
 							<!-- The likely cause when it's the Llama app: Agent mode restricts
 							     the server's CORS to localhost, which keeps other sites from
 							     calling its shell and file tools -- this one included. -->
-							{#if local}
-								If it’s Llama, turn off Agent mode in Settings → Chat.
-							{/if}
+							If it’s Llama, turn off Agent mode in Settings → Chat.
 						{:else}
 							{#if problem === 'not-running'}
 								Nothing answers at this address.
 							{/if}
-							{#if local}
-								Make sure the app is running. If you changed its port in Settings, enter the new one
-								here.
-							{:else}
-								Make sure the server is running, or enter a different address here.
-							{/if}
+							Make sure the app is running. If you changed its port in Settings, enter the new one here.
 						{/if}
 					</p>
 				{/if}
 			</div>
 
-			<!-- The address form shows up only when a check fails, which is when
-			     a changed port (or a stopped app) matters -- including a port
-			     changed in the app after connecting, which fails the next check.
-			     While connected, there's nothing to change. When the browser
-			     blocks the site, no address would help, so the form gives way
-			     to where to allow it. -->
-			{#if status === 'unknown' && problem === 'blocked'}
-				{#if settings}
-					<p class="mt-2.5 text-[13px] leading-relaxed text-foreground/80">
-						{#if settings.firefox}
-							Paste this into a new tab, click <strong class="font-medium"
-								>{settings.setting}</strong
-							>, and set {location.host} to Allow:
-						{:else}
-							Paste this into a new tab and set <strong class="font-medium"
-								>{settings.setting}</strong
-							> to Allow:
-						{/if}
-					</p>
-					<div class="mt-1.5 flex items-start gap-2">
-						<code
-							class="min-w-0 flex-1 rounded-lg border border-border px-2.5 py-1.5 font-mono text-xs break-all select-all"
-							>{settings.address}</code
-						>
-						<button
-							type="button"
-							onclick={() => copy(settings.address)}
-							class="h-8 cursor-pointer rounded-lg bg-muted px-3.5 text-[13px]"
-						>
-							{copied ? 'Copied' : 'Copy'}
-						</button>
-					</div>
-					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
-						Then come back to this tab{#if settings.firefox}, or see
-							<a href={FIREFOX_HELP_URL} target="_blank" rel="noopener noreferrer" class="underline"
-								>Firefox’s help</a
-							>{/if}.
-					</p>
-				{:else}
-					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
-						Allow it in this site’s settings, then come back to this tab.
-					</p>
-				{/if}
-			{:else if status === 'unknown'}
+			<!-- The port form shows up only when a check fails, which is when a
+			     changed port (or a stopped app) matters -- including a port changed
+			     in the app after connecting, which fails the next check. While
+			     connected, there's nothing to change, and when the browser blocks
+			     the site, no port would help. -->
+			{#if status === 'unknown' && problem !== 'blocked'}
 				{@render serverForm()}
 				{#if problem === 'rejected'}
 					<p class="mt-2.5 text-xs leading-relaxed text-muted-foreground">
@@ -425,17 +299,6 @@
 						Connect
 					</button>
 				{:else}
-					{#if status === 'ready' && then !== null && thenBlocked}
-						<a
-							href={`${base}${then}`}
-							target="_blank"
-							rel="noopener noreferrer external"
-							onclick={close}
-							class="flex h-8 items-center rounded-lg bg-primary px-3.5 text-[13px] font-medium text-primary-foreground"
-						>
-							Open in Llama
-						</a>
-					{/if}
 					<button
 						type="button"
 						onclick={disconnect}
@@ -444,7 +307,7 @@
 						Disconnect
 					</button>
 				{/if}
-				{#if status === 'off' || (status === 'unknown' && local && (!problem || problem === 'not-running'))}
+				{#if status === 'off' || (status === 'unknown' && (!problem || problem === 'not-running'))}
 					<span class="text-[13px] text-muted-foreground">
 						Don’t have it? <a href={resolve('/')} onclick={close} class="underline">Get Llama</a>
 					</span>

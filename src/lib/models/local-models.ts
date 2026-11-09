@@ -1,5 +1,5 @@
 import type { Build, Size } from '$lib/catalog';
-import { isLoopback, type LlamaModel } from '$lib/docs/llama-app';
+import type { LlamaModel } from '$lib/docs/llama-app';
 
 export type LocalModelMatch = {
 	id: string;
@@ -51,8 +51,8 @@ export function localQuantLabels(models: LocalModelMatch[]): string {
 	return [...new Set(models.map((model) => model.quant ?? 'unspecified quantization'))].join(', ');
 }
 
-export function localModelLabel(base: string, loaded: boolean): string {
-	return `${loaded ? 'Loaded' : 'Downloaded'} ${isLoopback(base) ? 'locally' : 'on your server'}`;
+export function localModelLabel(loaded: boolean): string {
+	return `${loaded ? 'Loaded' : 'Downloaded'} locally`;
 }
 
 /** Select the server's original ID (including custom aliases) and load on arrival. */

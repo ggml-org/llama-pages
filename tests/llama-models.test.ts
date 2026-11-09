@@ -1,5 +1,5 @@
 import type { Size } from '../src/lib/catalog';
-import { fetchLlamaModels, type LlamaModel, probeLlamaServer } from '../src/lib/docs/llama-app';
+import { fetchLlamaModels, type LlamaModel } from '../src/lib/docs/llama-app';
 import {
 	localModelLabel,
 	localQuantLabels,
@@ -38,7 +38,7 @@ describe('catalog matching', () => {
 		const matches = modelsForSize(size, [model('example/model-GGUF:Q8_0', status)]);
 
 		expect(matches[0].loaded).toBe(false);
-		expect(localModelLabel('http://localhost:9931', matches[0].loaded)).toBe('Downloaded locally');
+		expect(localModelLabel(matches[0].loaded)).toBe('Downloaded locally');
 	});
 
 	test('preserves a loaded instance when the same build is also listed as an unloaded preset', () => {
@@ -50,8 +50,7 @@ describe('catalog matching', () => {
 		expect(matches).toHaveLength(1);
 		expect(matches[0].loaded).toBe(true);
 		expect(matches[0].id).toBe('custom-name');
-		expect(localModelLabel('http://localhost:9931', true)).toBe('Loaded locally');
-		expect(localModelLabel('https://llama.example.com', true)).toBe('Loaded on your server');
+		expect(localModelLabel(true)).toBe('Loaded locally');
 	});
 
 	test('chat links preserve the original server ID and custom base path', () => {
@@ -155,7 +154,6 @@ describe('server inventory', () => {
 		);
 
 		expect(await fetchLlamaModels('http://localhost:9931')).toEqual([]);
-		expect(await probeLlamaServer('http://localhost:9931')).toBe(true);
 	});
 
 	test.each([
