@@ -570,6 +570,58 @@
 		]
 	},
 	{
+		"name": "d1 Omni",
+		"brand": "Liquid AI",
+		"description": "Liquid AI's **tiny omni decision model** for calibrated choices over text, images, video, and audio in one forward pass.",
+		"released": "2026-10",
+		"license": "LFM Open License 1.0",
+		"decision": true,
+		"sizes": [
+			{
+				"name": "d1 Omni 2B",
+				"params": "2B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "1.8 GB",
+						"sizeBytes": 1846241184,
+						"repo": "LiquidAI/d1-Omni-2B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "d3 Flash",
+		"brand": "vLLM Semantic Router",
+		"description": "A **leading 9B multimodal decision model** for text, images, and video, returning probabilities without generating text.",
+		"released": "2026-10",
+		"license": "Apache 2.0",
+		"decision": true,
+		"sizes": [
+			{
+				"name": "d3 Flash 9B",
+				"params": "9B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "9.5 GB",
+						"sizeBytes": 9527503328,
+						"repo": "ggml-org/vllm-d3-flash-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "6.6 GB",
+						"sizeBytes": 6603024864,
+						"repo": "ggml-org/vllm-d3-flash-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "Kev",
 		"brand": "Jared Palmer",
 		"description": "Decision models that take context and typed questions as input, and output a calibrated probability for each option.",
