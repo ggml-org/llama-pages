@@ -14,7 +14,6 @@ const size: Size = {
 		{ quant: 'Q8_0', repo: 'example/model-GGUF' },
 		{ quant: 'Q4_0', repo: 'example/model-GGUF' }
 	],
-	inputModalities: ['text'],
 	name: 'Example 12B'
 };
 

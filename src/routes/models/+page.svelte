@@ -3,7 +3,11 @@
 	import { resolve } from '$app/paths';
 	import { logoFor } from '$lib/assets/logos';
 	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
-	import { ModelsCatalogInputBadges, ModelsCatalogLocalBadge } from '$lib/components/app';
+	import {
+		ModelsCatalogAudioBadge,
+		ModelsCatalogLocalBadge,
+		ModelsCatalogVisionBadge
+	} from '$lib/components/app';
 	import { localModelLabel, modelsForSize } from '$lib/models/local-models';
 	import { llamaModels } from '$lib/stores/llama-models';
 
@@ -148,7 +152,12 @@
 					     pages and sizes get a distinct silhouette. -->
 					<h3 class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[16px] font-medium">
 						<span class="mr-0.5">{f.name}</span>
-						<ModelsCatalogInputBadges modalities={f.sizes.flatMap((s) => s.inputModalities)} />
+						{#if f.sizes.some((s) => s.vision)}
+							<ModelsCatalogVisionBadge />
+						{/if}
+						{#if f.sizes.some((s) => s.audio)}
+							<ModelsCatalogAudioBadge />
+						{/if}
 						{#each f.sizes as s, sizeIndex (s.name)}
 							{@const localModels = localSizes[sizeIndex]}
 							{@const loaded = localModels.some((model) => model.loaded)}

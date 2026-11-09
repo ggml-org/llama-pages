@@ -1,5 +1,6 @@
-// Single source of truth for the website and /v1/catalog.json. The API adds
-// the vision field expected by older app releases at its publication boundary.
+// Single source of truth. Imported here for the prerendered website, and served
+// verbatim at /v1/catalog.json (see src/routes/v1/catalog.json/+server.ts) for
+// the apps to fetch.
 import data from './catalog.json';
 
 // Vocabulary (shared with the apps):
@@ -31,14 +32,14 @@ export type Build = {
 	repo: string;
 };
 
-export type InputModality = 'text' | 'image' | 'audio' | 'video';
-
 export type Size = {
 	name: string;
 	params?: string;
-	// Declared model inputs. Image support alone does not establish video or
-	// soundtrack support; audio input does not establish speech output.
-	inputModalities: InputModality[];
+	vision?: boolean;
+	// Whether this size takes audio input (speech, sounds) -- its projector has an
+	// audio encoder (`clip.has_audio_encoder`). Separate from `vision`: a projector
+	// can encode images, audio, or both. Absent means false.
+	audio?: boolean;
 	// Memory cap (in GB) for featuring, like Family.maxMemGb but for one size:
 	// consumers should not suggest this size on machines with more RAM than
 	// this (e.g. the small Gemma 4 E-series on 32 GB+ Macs). Absent means the
@@ -105,21 +106,9 @@ export type Catalog = Family[];
 
 export const catalog = data as Catalog;
 
-// v1 clients decode vision. Keep it derived here until v1 is retired, so
-// the authored inputs and the legacy image indicator cannot disagree.
-export function catalogForApi(families: Catalog = catalog) {
-	return families.map((family) => ({
-		...family,
-		sizes: family.sizes.map((size) => ({
-			...size,
-			vision: size.inputModalities.includes('image')
-		}))
-	}));
-}
-
 // The catalog in display order: newest first. The website always lists
 // families this way, so we sort once here; `catalog` itself keeps the
-// authored order, which is preserved in the API.
+// authored order, since it's served verbatim as the API.
 export const families: Family[] = [...catalog].sort((a, b) => b.released.localeCompare(a.released));
 
 // URL-safe id for a family name, e.g. "Qwen 3.6" → "qwen-3-6". Lossy but stable,
