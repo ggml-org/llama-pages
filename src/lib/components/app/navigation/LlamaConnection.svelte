@@ -333,6 +333,12 @@
 								: 'devices on your network'}.
 						{:else if problem === 'rejected'}
 							Something answers at this address, but it doesn’t let this site in.
+							<!-- The likely cause when it's the Llama app: Agent mode restricts
+							     the server's CORS to localhost, which keeps other sites from
+							     calling its shell and file tools -- this one included. -->
+							{#if local}
+								If it’s Llama, turn off Agent mode in Settings → Chat.
+							{/if}
 						{:else}
 							{#if problem === 'not-running'}
 								Nothing answers at this address.
