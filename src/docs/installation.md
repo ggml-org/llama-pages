@@ -40,7 +40,7 @@ If you installed the app, its icon shows up in the menu bar (Mac) or the system 
 To check the command line, open a new terminal and run:
 
 ```sh
-llama cli --version
+llama --version
 ```
 
 If this prints the version and build info, you are ready to go.
