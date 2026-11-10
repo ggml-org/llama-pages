@@ -27,7 +27,10 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    # ggml-org's HF Jobs CPU runner: GitHub-hosted runners come from the org's shared
+    # queue, where a 1-2 min deploy could wait 30-40 min to start. No Docker on it, so
+    # this job must not use a `container:`.
+    runs-on: hf-jobs-cpu-upgrade:ubuntu26_04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
