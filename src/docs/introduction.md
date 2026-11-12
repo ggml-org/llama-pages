@@ -2,7 +2,7 @@
 
 Llama App is a desktop app (built on llama.cpp) that lets you download and run large language models locally and chat with them in a few clicks on Mac and Windows.
 
-The app lives in your Mac's menu bar or Windows system tray. Choose from models recommended for your platform, download one, and start chatting. Click the link on the main page to install the app, and then pick the [model of your choice on Hugging Face Hub](https://huggingface.co/models?apps=llama-app&sort=trending), or simply pick one of the model recommendations on the app.
+The app lives in your Mac's menu bar or Windows system tray. Choose from models recommended for your platform, download one, and start chatting. Click the link on the [main page](https://llama.app/) to install the app. Once downloaded the app, pick the [model of your choice on Hugging Face Hub](https://huggingface.co/models?apps=llama-app&sort=trending), or simply pick one of the model recommendations on the app.
 
 <video src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-lfm.mp4" aria-label="Using a model from the Hub" autoplay muted loop playsinline controls></video>
 
