@@ -4,20 +4,26 @@ This guide takes you from a fresh [installation](installation) to chatting with 
 
 ## Download your first model
 
-### Llama app
+### Llama
 
-On the Llama app, click on the downwards arrow next to one of the models recommended for your platform.
+On Llama app, click on the downwards arrow next to one of the models recommended for your platform.
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-onboarding.png" alt="Onboarding" />
 Once downloaded, you can click on the model, which opens chat options. Depending on your memory and the length of the conversation you want to have, select the context window > Chat with the model.
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/ctx-windows.png" alt="Context window" />
+
+### Hub
+
+Hugging Face Hub hosts thousands of Llama compatible models you can use with the app. You can get started with any of them by clicking "Use this Model" → Llama. This will automatically download the model.
+
+<video src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-lfm.mp4" aria-label="Using a model from the Hub" autoplay muted loop playsinline controls></video>
 
 ### Llama CLI
 
 If you want to use the CLI to chat with models, pass a Hugging Face repository with the `-hf` flag. The model is downloaded automatically the first time you use it:
 
 ```sh
-llama cli -hf unsloth/gemma-4-E4B-it-GGUF:Q4_K_M
+llama cli -hf unsloth/gemma-4-E4B-it-GGUF
 ```
 
 We picked a 4-bit quantized version of Gemma-4 E4B, a model that can take image, text, and audio inputs, using just ~6GB of memory with a context window of 16k tokens. There are [thousands of GGUF models on Hugging Face](https://huggingface.co/models?library=gguf&sort=trending) to choose from.
