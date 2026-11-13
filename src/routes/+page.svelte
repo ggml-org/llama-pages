@@ -42,6 +42,8 @@
 		Copy,
 		FileText,
 		Gauge,
+		Glasses,
+		Headphones,
 		Image,
 		Layers,
 		LayoutGrid,
@@ -58,7 +60,7 @@
 	import { logoFor } from '$lib/assets/logos';
 	import windowsIcon from '$lib/assets/windows-icon.svg?raw';
 	import { families, minMemGB, slugify } from '$lib/catalog';
-	import { CopyButton, IntroVideoButton, Logo, MacStatusIcon } from '$lib/components/app';
+	import { CopyButton, IntroVideoButton, Logo, MacStatusIcon, SfSymbol } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { SITE_DESCRIPTION, SITE_TITLE, WINDOWS_REPO_URL } from '$lib/constants';
 	import Prism from '$lib/prism';
@@ -85,26 +87,40 @@
 
 	// -- Menu mock ------------------------------------------------------------------
 	//
-	// Rows as the shipping menu shows them (lowercase family names, a size
-	// chip), with real download sizes from the catalog. `loaded` marks the
-	// model currently in memory, which the app shows as a solid blue logo
-	// circle -- one touch of color that also says "it's running".
+	// Rows as the menu shows them: the catalog's family name, a size chip,
+	// and the vision / audio markers, with real download sizes from the
+	// catalog. The quant chip and context line the app also shows are left
+	// out -- jargon a newcomer would have to parse before getting the point.
+	// `loaded` marks the model currently in memory, which the app shows as a
+	// solid blue logo circle -- one touch of color that also says "it's
+	// running".
 	type MenuModel = {
+		audio?: boolean;
 		brand: string;
 		loaded?: boolean;
 		name: string;
 		params: string;
 		size: string;
+		vision?: boolean;
 	};
 
 	const MENU_INSTALLED: MenuModel[] = [
-		{ brand: 'Qwen', loaded: true, name: 'Qwen3.8', params: '27B', size: '19.0 GB' },
-		{ brand: 'OpenAI', name: 'gpt-oss', params: '20B', size: '12.1 GB' },
-		{ brand: 'Gemma', name: 'gemma-4', params: 'E4B', size: '4.59 GB' }
+		{ brand: 'Qwen', loaded: true, name: 'Qwen 3.8', params: '27B', size: '19.0 GB', vision: true },
+		{ brand: 'OpenAI', name: 'GPT-OSS', params: '20B', size: '12.1 GB' },
+		{ audio: true, brand: 'Gemma', name: 'Gemma 4', params: '12B', size: '12.7 GB', vision: true }
 	];
 
 	const MENU_RECOMMENDED: MenuModel[] = [
-		{ brand: 'Gemma', name: 'gemma-4', params: '12B', size: '7.22 GB' }
+		// The catalog's good first model, so it's what the real menu recommends
+		// first on a fresh install.
+		{
+			audio: true,
+			brand: 'Liquid AI',
+			name: 'LFM 3 Omni',
+			params: '2B',
+			size: '1.8 GB',
+			vision: true
+		}
 	];
 
 	// -- Nothing to set up --------------------------------------------------------
@@ -371,7 +387,7 @@
 	     (chevron); recommended rows download (arrow). Lines are set tight
 	     (leading-4.5 / leading-4), as in the app, so the rows sit close
 	     together; the trailing glyph is fainter than the secondary text. -->
-	{#snippet menuModel(m: MenuModel, recommended: boolean)}
+	{#snippet menuModel(m: MenuModel, recommended: boolean, mac: boolean)}
 		<div class="flex items-center gap-2.5 px-1 py-1">
 			<span
 				class="flex size-7 shrink-0 items-center justify-center rounded-full [&_svg]:size-4 {m.loaded
@@ -385,11 +401,37 @@
 				<span class="flex items-center gap-1.5 leading-4.5">
 					{m.name}
 					{@render paramsChip(m.params)}
+					<!-- The app's capability markers: glasses for image input,
+					     headphones for audio, in the secondary text color. On the
+					     Mac, the app's own SF Symbols, at the name's size, in its
+					     tertiary text color (black at 32%) and with the side
+					     padding its symbol images carry (about 0.09em), so they sit
+					     back from the name as in the app. -->
+					{#if m.vision}
+						{#if mac}
+							<SfSymbol name="eyeglasses" class="mx-[0.09em] text-foreground/32" />
+						{:else}
+							<Glasses class="size-3.5 text-muted-foreground" />
+						{/if}
+					{/if}
+					{#if m.audio}
+						{#if mac}
+							<SfSymbol name="headphones" class="mx-[0.09em] text-foreground/32" />
+						{:else}
+							<Headphones class="size-3.5 text-muted-foreground" />
+						{/if}
+					{/if}
 				</span>
 				<span class="block text-[13px] leading-4 text-muted-foreground">{m.size}</span>
 			</span>
 			{#if recommended}
-				<ArrowDown class="size-3.5 text-foreground/35" />
+				{#if mac}
+					<SfSymbol name="arrowDown" class="text-[13px] text-foreground/35" />
+				{:else}
+					<ArrowDown class="size-3.5 text-foreground/35" />
+				{/if}
+			{:else if mac}
+				<SfSymbol name="chevronRight" class="text-[13px] text-foreground/35" />
 			{:else}
 				<ChevronRight class="size-3.5 text-foreground/35" />
 			{/if}
@@ -398,7 +440,8 @@
 
 	<!-- The menu's contents, shared by the Mac menu and the Windows tray
 	     flyout: the two apps show the same things, so the page shows them
-	     the same way, in each OS's own frame. `machine` is the word for the
+	     the same way, in each OS's own frame. The Mac one draws its glyphs
+	     with the app's SF Symbols (SfSymbol); the PC one keeps Lucide. `machine` is the word for the
 	     computer ("Mac" or "PC"). The edge markers assume the frame's 12px
 	     padding and 1px border (see edgeMarker). -->
 	{#snippet menuBody(machine: string)}
@@ -412,7 +455,11 @@
 						{@render edgeMarker(2, 'left')}
 						localhost:9931
 					</span>
-					<Copy class="size-3.5" />
+					{#if machine === 'Mac'}
+						<SfSymbol name="copy" class="text-[12px]" />
+					{:else}
+						<Copy class="size-3.5" />
+					{/if}
 				</span>
 				<span class="relative text-blue-600 dark:text-blue-400">
 					Open chat
@@ -425,7 +472,7 @@
 			Installed models
 		</p>
 		{#each MENU_INSTALLED as m (m.name + m.params)}
-			{@render menuModel(m, false)}
+			{@render menuModel(m, false, machine === 'Mac')}
 		{/each}
 
 		<p class="mt-2 border-t border-border px-1 pt-2.5 pb-0.5 text-[13px] text-foreground/80">
@@ -435,13 +482,17 @@
 			</span>
 		</p>
 		{#each MENU_RECOMMENDED as m (m.name + m.params)}
-			{@render menuModel(m, true)}
+			{@render menuModel(m, true, machine === 'Mac')}
 		{/each}
 
 		<!-- The catalog link, laid out like a model row. -->
 		<div class="mt-2 flex items-center gap-2.5 border-t border-border px-1 pt-2 pb-1">
 			<span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-foreground/6">
-				<LayoutGrid class="size-3.5 text-foreground/70" />
+				{#if machine === 'Mac'}
+					<SfSymbol name="grid" class="text-[13px] text-foreground/70" />
+				{:else}
+					<LayoutGrid class="size-3.5 text-foreground/70" />
+				{/if}
 			</span>
 			<span class="min-w-0 flex-1">
 				<span class="block leading-4.5">Browse models</span>
@@ -449,18 +500,22 @@
 					Full catalog on the web
 				</span>
 			</span>
-			<ArrowUpRight class="size-3.5 text-foreground/35" />
+			{#if machine === 'Mac'}
+				<SfSymbol name="arrowUpRight" class="text-[13px] text-foreground/35" />
+			{:else}
+				<ArrowUpRight class="size-3.5 text-foreground/35" />
+			{/if}
 		</div>
 
 		<!-- Settings and Quit are small bordered buttons in the app. The
-		     llama.cpp build is the one the Mac app pins (`floorVersion` in
-		     LlamaBinaries.swift); it's hard-coded, so bump it now and then.
+		     llama.cpp build is the one the Mac app installs (`targetVersion`
+		     in LlamaBinaries.swift); it's hard-coded, so bump it now and then.
 		     The app's own version, shown first in the real footer, is left
 		     out: the llama.cpp build is the part that says what's inside. -->
 		<div
 			class="mt-2 flex items-center justify-between border-t border-border px-1 pt-2.5 text-[13px] text-muted-foreground"
 		>
-			<span>llama.cpp b9726</span>
+			<span>llama.cpp b12110</span>
 			<span class="flex gap-1.5">
 				<span class="rounded-md border border-foreground/15 px-1.5 leading-5">Settings</span>
 				<span class="rounded-md border border-foreground/15 px-1.5 leading-5">Quit</span>
@@ -656,16 +711,18 @@
 			     icons are the real SF Symbols (see MacStatusIcon).
 
 			     A status item's menu hangs from its icon: the menu's left edge
-			     sits just left of the icon. So the bar is stacked right over
-			     the menu, and its status items span exactly the menu's width
-			     (the pl-1 is the small step in from the edge the real one
-			     has). The icons' natural widths don't add up to the menu's, so
+			     lines up with the left edge of the icon's highlight. So the
+			     bar is stacked right over the menu, and its status items span
+			     exactly the menu's width, starting with the highlight. The
+			     highlight is translucent white, with generous side padding, as
+			     macOS draws a pressed status item -- more see-through than the
+			     menu, so the menu reads brighter. The icons' natural widths don't add up to the menu's, so
 			     justify-between spreads the rest evenly; Spotlight, Control
 			     Center, and sound are there so the gaps stay close to macOS's
 			     rather than yawning. -->
 			<div data-os-only="mac other" aria-hidden="true" class="flex flex-col gap-2.5">
-				<div class="flex items-center justify-between pl-1 text-xs font-medium text-foreground/85">
-					<span class="flex h-5 items-center rounded-full bg-foreground/15 px-2">
+				<div class="flex items-center justify-between text-xs font-medium text-foreground/85">
+					<span class="flex h-[22px] items-center rounded-full bg-white/20 px-3">
 						<Logo --logo-height="0.75rem" />
 					</span>
 
