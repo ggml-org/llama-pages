@@ -2,7 +2,7 @@
 	import { Check, ChevronRight } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import { logoFor } from '$lib/assets/logos';
-	import { families, minMemGB, releasedFor, slugify } from '$lib/catalog';
+	import { families, minMemGB, releasedFor, sizeLabel, slugify } from '$lib/catalog';
 	import {
 		ModelsCatalogAudioBadge,
 		ModelsCatalogLocalBadge,
@@ -158,7 +158,7 @@
 						{#if f.sizes.some((s) => s.audio)}
 							<ModelsCatalogAudioBadge />
 						{/if}
-						{#each f.sizes as s, sizeIndex (s.name)}
+						{#each f.sizes as s, sizeIndex (s.params)}
 							{@const localModels = localSizes[sizeIndex]}
 							{@const loaded = localModels.some((model) => model.loaded)}
 							<span
@@ -168,13 +168,13 @@
 										? 'bg-green-500/10 text-green-700 dark:text-green-400'
 										: 'bg-muted text-muted-foreground'}"
 								title={localModels.length
-									? `${s.name} — ${localModels.map((model) => `${localModelLabel(model.loaded)}: ${model.quant ?? 'unspecified quantization'}`).join('; ')}`
+									? `${sizeLabel(f, s)} — ${localModels.map((model) => `${localModelLabel(model.loaded)}: ${model.quant ?? 'unspecified quantization'}`).join('; ')}`
 									: undefined}
 							>
 								{#if localModels.length}
 									<Check class="size-2.5" aria-hidden="true" />
 								{/if}
-								{s.params ?? s.name}
+								{s.params}
 							</span>
 						{/each}
 						{#if localSizes.some((models) => models.length > 0)}

@@ -14,7 +14,7 @@ const size: Size = {
 		{ quant: 'Q8_0', repo: 'example/model-GGUF' },
 		{ quant: 'Q4_0', repo: 'example/model-GGUF' }
 	],
-	name: 'Example 12B'
+	params: '12B'
 };
 
 function model(id: string, status = 'unloaded', aliases: string[] = []): LlamaModel {

@@ -250,7 +250,7 @@
 		"name": "Ministral 3",
 		"brand": "Mistral",
 		"description": "Mistral AI's compact **multimodal models for on-device apps**, offering strong performance across 3B, 8B, and 14B sizes.",
-		"details": "Ministral 3 is Mistral AI's family of compact edge models, offered in 3B, 8B, and 14B sizes with both instruct and reasoning variants. Each size is multimodal and tuned for the best cost-to-performance ratio on local hardware.\n\nThe reasoning variants add explicit step-by-step thinking for harder tasks, while the instruct models stay fast and direct, giving you a consistent family to deploy from laptops to small servers.",
+		"details": "Ministral 3 is Mistral AI's family of compact edge models, offered in 3B, 8B, and 14B sizes. Each size is multimodal and tuned for the best cost-to-performance ratio on local hardware.\n\nThese are the instruct models: fast and direct. For explicit step-by-step thinking on harder tasks, see Ministral 3 Reasoning.",
 		"released": "2025-12",
 		"license": "Apache 2.0",
 		"sizes": [
@@ -274,25 +274,6 @@
 				]
 			},
 			{
-				"name": "Ministral 3 3B Reasoning",
-				"params": "3B Reasoning",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q8_0",
-						"size": "4.1 GB",
-						"sizeBytes": 4099963264,
-						"repo": "ggml-org/Ministral-3-3B-Reasoning-2512-GGUF"
-					},
-					{
-						"quant": "Q4_K_M",
-						"size": "2.1 GB",
-						"sizeBytes": 2147021472,
-						"repo": "mistralai/Ministral-3-3B-Reasoning-2512-GGUF"
-					}
-				]
-			},
-			{
 				"name": "Ministral 3 8B",
 				"params": "8B",
 				"vision": true,
@@ -308,25 +289,6 @@
 						"size": "5.2 GB",
 						"sizeBytes": 5198911904,
 						"repo": "mistralai/Ministral-3-8B-Instruct-2512-GGUF"
-					}
-				]
-			},
-			{
-				"name": "Ministral 3 8B Reasoning",
-				"params": "8B Reasoning",
-				"vision": true,
-				"builds": [
-					{
-						"quant": "Q8_0",
-						"size": "9.5 GB",
-						"sizeBytes": 9486068384,
-						"repo": "ggml-org/Ministral-3-8B-Reasoning-2512-GGUF"
-					},
-					{
-						"quant": "Q4_K_M",
-						"size": "5.2 GB",
-						"sizeBytes": 5198910368,
-						"repo": "mistralai/Ministral-3-8B-Reasoning-2512-GGUF"
 					}
 				]
 			},
@@ -348,10 +310,58 @@
 						"repo": "mistralai/Ministral-3-14B-Instruct-2512-GGUF"
 					}
 				]
+			}
+		]
+	},
+	{
+		"name": "Ministral 3 Reasoning",
+		"brand": "Mistral",
+		"description": "Mistral AI's compact **multimodal reasoning models for on-device apps**, thinking step by step across 3B, 8B, and 14B sizes.",
+		"details": "Ministral 3 Reasoning is the reasoning counterpart to Ministral 3: the same compact, multimodal edge models in 3B, 8B, and 14B sizes, trained to think step by step before answering.\n\nThey trade some speed for deliberation on harder tasks, while the instruct models stay fast and direct -- a consistent family to deploy from laptops to small servers.",
+		"released": "2025-12",
+		"license": "Apache 2.0",
+		"sizes": [
+			{
+				"name": "Ministral 3 Reasoning 3B",
+				"params": "3B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "4.1 GB",
+						"sizeBytes": 4099963264,
+						"repo": "ggml-org/Ministral-3-3B-Reasoning-2512-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "2.1 GB",
+						"sizeBytes": 2147021472,
+						"repo": "mistralai/Ministral-3-3B-Reasoning-2512-GGUF"
+					}
+				]
 			},
 			{
-				"name": "Ministral 3 14B Reasoning",
-				"params": "14B Reasoning",
+				"name": "Ministral 3 Reasoning 8B",
+				"params": "8B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "9.5 GB",
+						"sizeBytes": 9486068384,
+						"repo": "ggml-org/Ministral-3-8B-Reasoning-2512-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "5.2 GB",
+						"sizeBytes": 5198910368,
+						"repo": "mistralai/Ministral-3-8B-Reasoning-2512-GGUF"
+					}
+				]
+			},
+			{
+				"name": "Ministral 3 Reasoning 14B",
+				"params": "14B",
 				"vision": true,
 				"builds": [
 					{
@@ -371,7 +381,7 @@
 		]
 	},
 	{
-		"name": "GLM 5.3",
+		"name": "GLM 5.3 Flash",
 		"brand": "GLM",
 		"description": "Z.ai's **agentic coding model for large setups**, with vision and an MTP head for faster generation.",
 		"details": "GLM 5.3 is Zhipu AI's agentic model line, built for software engineering, tool use, and long multi-turn workflows. Flash is a 320B mixture-of-experts model with 18B parameters active per token, so it generates far faster than its size suggests -- though every parameter still has to be in memory.\n\nIt understands images as well as text, and ships with a multi-token-prediction head that speeds up generation through speculative decoding.",
@@ -380,7 +390,7 @@
 		"featured": true,
 		"sizes": [
 			{
-				"name": "GLM 5.3 Flash",
+				"name": "GLM 5.3 Flash 320B-A18B",
 				"params": "320B-A18B",
 				"vision": true,
 				"builds": [
@@ -401,7 +411,7 @@
 		]
 	},
 	{
-		"name": "GLM 4.7",
+		"name": "GLM 4.7 Flash",
 		"brand": "GLM",
 		"description": "Z.ai's fast **local agentic coding** model, built for software engineering, browser automation, and multi-turn tool use.",
 		"details": "GLM 4.7 is Zhipu AI's lineup of agentic models built for software engineering and tool use. It's trained for multi-turn workflows like browsing, code editing, and orchestrating external tools.\n\nThe Flash variant balances capability and footprint so the model's agentic strengths stay within reach of a single high-memory GPU.",
@@ -409,8 +419,8 @@
 		"license": "MIT",
 		"sizes": [
 			{
-				"name": "GLM 4.7 Flash",
-				"params": "Flash",
+				"name": "GLM 4.7 Flash 30B-A3B",
+				"params": "30B-A3B",
 				"builds": [
 					{
 						"quant": "Q8_0",
@@ -532,7 +542,7 @@
 		]
 	},
 	{
-		"name": "DeepSeek V4",
+		"name": "DeepSeek V4 Flash",
 		"brand": "DeepSeek",
 		"description": "DeepSeek's reasoning and coding model for **large setups**, combining sparse MoE efficiency with 1M context.",
 		"details": "DeepSeek V4 is a sparse mixture-of-experts family aimed at code agents, full-stack development, and long reasoning chains. Flash is the member that ships as a GGUF: 304B total parameters with only a few experts active per token, so it runs far faster than its size suggests -- though every parameter still has to be in memory.\n\nReasoning effort is selectable (low, high, max), trading latency for deliberation, and the model takes 1M tokens of context. Even at Q2 it needs a very high-memory Mac.",
@@ -540,7 +550,7 @@
 		"license": "MIT",
 		"sizes": [
 			{
-				"name": "DeepSeek V4 Flash",
+				"name": "DeepSeek V4 Flash 304B",
 				"params": "304B",
 				"builds": [
 					{
