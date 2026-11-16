@@ -21,14 +21,14 @@
 	// and the backdrop come for free, no dialog dependency needed.
 	import { Check, Copy, X } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
-	import { type Build, cliCommand, displaySize, minMemForBuild, type Size } from '$lib/catalog';
+	import { type Build, cliCommand, displaySize, minMemForBuild } from '$lib/catalog';
 	import { MACOS_DOWNLOAD_URL } from '$lib/constants';
 	import { deviceInfo } from '$lib/stores/device/index.svelte';
 
-	// The build being installed plus its size (for the title), or null when the
-	// dialog is closed. Owned by the page (bindable) so closing the dialog
-	// clears it there too.
-	let { run = $bindable() }: { run: { build: Build; size: Size } | null } = $props();
+	// The build being installed plus its size's label (for the title), or null
+	// when the dialog is closed. Owned by the page (bindable) so closing the
+	// dialog clears it there too.
+	let { run = $bindable() }: { run: { build: Build; label: string } | null } = $props();
 
 	let dialog = $state<HTMLDialogElement | null>(null);
 
@@ -106,7 +106,7 @@
 
 			<h2 class="text-[17px] font-semibold tracking-tight">
 				{deviceInfo.isMac ? 'Install' : 'Run'}
-				{run.size.name}
+				{run.label}
 			</h2>
 			{#if byline}
 				<p class="mt-1 text-[13px] text-muted-foreground tabular-nums">{byline}</p>

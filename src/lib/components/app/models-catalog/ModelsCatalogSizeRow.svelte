@@ -7,7 +7,15 @@
 	import ModelsCatalogLocalBadge from './ModelsCatalogLocalBadge.svelte';
 	import ModelsCatalogVisionBadge from './ModelsCatalogVisionBadge.svelte';
 	import { MessageCircle, Terminal } from '@lucide/svelte';
-	import { type Build, deeplink, displaySize, minMemForBuild, type Size } from '$lib/catalog';
+	import {
+		type Build,
+		deeplink,
+		displaySize,
+		type Family,
+		minMemForBuild,
+		type Size,
+		sizeLabel
+	} from '$lib/catalog';
 	import {
 		localQuantLabels,
 		matchesBuild,
@@ -18,10 +26,16 @@
 	import { llamaModels } from '$lib/stores/llama-models';
 
 	let {
+		family,
 		oninstall,
 		showQuantized = false,
 		size
-	}: { size: Size; showQuantized?: boolean; oninstall: (b: Build, s: Size) => void } = $props();
+	}: {
+		family: Family;
+		size: Size;
+		showQuantized?: boolean;
+		oninstall: (b: Build, s: Size) => void;
+	} = $props();
 
 	// One primary action per row, platform-dependent behind the same label
 	// intent: on a Mac, fire the app deeplink (a no-op without the app -- the
@@ -58,7 +72,7 @@
 		     promises something the app would reject. -->
 		<td class="py-1.5 pr-3">
 			<span class="inline-flex flex-wrap items-center gap-1.5 tabular-nums">
-				{size.name}
+				{sizeLabel(family, size)}
 				{#if build.quant}
 					<span
 						class="rounded-md bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground uppercase tabular-nums"

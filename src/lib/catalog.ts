@@ -5,7 +5,9 @@ import data from './catalog.json';
 
 // Vocabulary (shared with the apps):
 //   family — the named release line, e.g. "Gemma 4". Holds the shared metadata.
-//   size   — a parameter tier within a family, e.g. "Gemma 4 E4B".
+//            A variant line is its own family ("GLM 5.3 Flash", "Ministral 3
+//            Reasoning"), so a family name is always the model's full name.
+//   size   — a parameter tier within a family, e.g. Gemma 4's "E4B".
 //   build  — a downloadable quant of a size, e.g. that E4B at Q4.
 // "brand" (e.g. "Gemma") and "publisher" (e.g. "Google") are attributes of a
 // family, not levels of their own. The data nests these strictly:
@@ -33,7 +35,13 @@ export type Build = {
 };
 
 export type Size = {
-	name: string;
+	// Deprecated: the size's label, always `family.name + " " + params`. Kept
+	// only for shipped Windows app versions, which display it; consumers build
+	// the label from the family name and `params` instead (see `sizeLabel`).
+	// Remove once those versions are gone.
+	name?: string;
+	// The parameter count and nothing else, e.g. "E4B", "30B-A3B" -- variants
+	// ("Flash", "Reasoning") belong in the family name, not here.
 	params?: string;
 	vision?: boolean;
 	// Whether this size takes audio input (speech, sounds) -- its projector has an
@@ -118,6 +126,11 @@ export function slugify(family: string): string {
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-+|-+$/g, '');
+}
+
+// A size's full label, e.g. "Gemma 4 E4B": the family name plus the size.
+export function sizeLabel(family: Family, size: Size): string {
+	return size.params ? `${family.name} ${size.params}` : family.name;
 }
 
 // The family for a given slug, or undefined if no family matches.
