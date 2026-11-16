@@ -42,7 +42,7 @@ export type Size = {
 	name?: string;
 	// The parameter count and nothing else, e.g. "E4B", "30B-A3B" -- variants
 	// ("Flash", "Reasoning") belong in the family name, not here.
-	params?: string;
+	params: string;
 	vision?: boolean;
 	// Whether this size takes audio input (speech, sounds) -- its projector has an
 	// audio encoder (`clip.has_audio_encoder`). Separate from `vision`: a projector
@@ -130,7 +130,7 @@ export function slugify(family: string): string {
 
 // A size's full label, e.g. "Gemma 4 E4B": the family name plus the size.
 export function sizeLabel(family: Family, size: Size): string {
-	return size.params ? `${family.name} ${size.params}` : family.name;
+	return `${family.name} ${size.params}`;
 }
 
 // The family for a given slug, or undefined if no family matches.
