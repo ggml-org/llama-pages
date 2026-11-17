@@ -158,7 +158,7 @@
 		<span></span>
 
 		<span class="relative flex h-5 items-center rounded-full bg-foreground/15 px-2">
-			<Logo --logo-height="0.75rem" />
+			<Logo --logo-height="0.84rem" />
 
 			<!-- The app's hint is a plain NSPopover, which macOS draws translucent
 			     white in light mode and translucent dark gray (not black) in dark
