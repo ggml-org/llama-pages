@@ -706,7 +706,9 @@
 			     bar is transparent, with the icons straight on the wallpaper.
 			     The Llama icon is "pressed", since its menu is open. Sizes
 			     follow the real bar: status icons roughly as tall as the
-			     clock's capitals. The Logo component sizes itself from
+			     clock's capitals, and the Llama mark as tall as the Control Center
+			     icon (~1.12x Wi-Fi, measured off a screenshot of the real bar).
+			     The Logo component sizes itself from
 			     --logo-height (a utility class can't override it). The status
 			     icons are the real SF Symbols (see MacStatusIcon).
 
@@ -723,7 +725,7 @@
 			<div data-os-only="mac other" aria-hidden="true" class="flex flex-col gap-2.5">
 				<div class="flex items-center justify-between text-xs font-medium text-foreground/85">
 					<span class="flex h-[22px] items-center rounded-full bg-white/20 px-3">
-						<Logo --logo-height="0.75rem" />
+						<Logo --logo-height="0.84rem" />
 					</span>
 
 					<MacStatusIcon name="sound" />
