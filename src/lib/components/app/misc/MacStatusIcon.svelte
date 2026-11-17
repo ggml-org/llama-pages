@@ -62,6 +62,10 @@
 	let icon = $derived(icons[name]);
 </script>
 
-<svg viewBox={icon.viewBox} class="{icon.height} w-auto {cls}" fill="currentColor">
+<!-- overflow-visible: the paths run to within ~0.1px of the viewBox edge,
+     and the bar's justify-between puts each icon at a fractional position
+     that gets snapped to the pixel grid -- clipped to its box, an icon lost
+     its edge pixels (Control Center's rounded right end came out flat). -->
+<svg viewBox={icon.viewBox} class="{icon.height} w-auto overflow-visible {cls}" fill="currentColor">
 	<path d={icon.d} />
 </svg>
