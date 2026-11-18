@@ -4,6 +4,10 @@ Decision models take a question and options and return probability for each opti
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/decision-models.png" alt="decision models" />
 
+To solve a similar task (to what decision models solves here) you can force an LLM to provide structured output like below. 
+
+<img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/structured-output.png" alt="comparing structured output" />
+
 Decision models are faster than their LLM equivalents returning JSON outputs, because to do classification, decision models do only one forward pass, whereas LLMs do one forward pass and generate many tokens for the JSON output on top of it. Decision models are also more robust as they can only return typed responses. These models are also typically come in smaller sizes compared to LLMs.
 
 ## Start the server
