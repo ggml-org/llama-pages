@@ -4,7 +4,7 @@ Decision models take a question and options and return probability for each opti
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/decision-models.png" alt="decision models" />
 
-Decision models are faster than their LLM equivalents returning JSON outputs, because to do classification, decision models do only one forward pass, whereas LLMs do one forward pass and generate many tokens for the JSON output on top of it. Decision models are also more robust as they can only return typed responses.
+Decision models are faster than their LLM equivalents returning JSON outputs, because to do classification, decision models do only one forward pass, whereas LLMs do one forward pass and generate many tokens for the JSON output on top of it. Decision models are also more robust as they can only return typed responses. These models are also typically come in smaller sizes compared to LLMs.
 
 ## Start the server
 
@@ -15,7 +15,7 @@ Install [Llama App](installation). You can get to serve them (on 9931) with a si
 If you are on Linux you can also run this command in a terminal:
 
 ```sh
-llama serve -hf Cloudflare/clef-flash
+llama serve -hf LiquidAI/d1-3B-GGUF
 ```
 
 Keep the server running. Send requests to `http://localhost:9931/v1/systemone` from a second terminal or your app.
