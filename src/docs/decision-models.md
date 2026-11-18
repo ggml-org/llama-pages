@@ -8,7 +8,7 @@ Decision models are faster than their LLM equivalents returning JSON outputs, be
 
 ## Start the server
 
-Install [Llama App](installation). You can serve them on 9931 by running them.
+Install [Llama App](installation). You can get to serve them (on 9931) with a single click. 
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-decision-models.png" alt="decision models on llama" />
 
