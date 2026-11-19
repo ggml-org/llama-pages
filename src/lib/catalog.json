@@ -925,7 +925,7 @@
 		"name": "LFM 2.5",
 		"brand": "Liquid AI",
 		"description": "Liquid AI's **fast local model** for reasoning and tool use.",
-		"details": "LFM 2.5 24B-A2B is the largest model in Liquid AI's LFM 2.5 family. It always reasons before answering. It is trained for agentic work and tool calling, with a 131K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks. ",
+		"details": "LFM 2.5 24B-A2B is the largest model in Liquid AI's LFM 2.5 family. It always reasons before answering. It is trained for agentic work and tool calling, with a 128K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks. ",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
 		"featured": true,
@@ -945,6 +945,34 @@
 						"size": "14.5 GB",
 						"sizeBytes": 14526259232,
 						"repo": "ggml-org/LFM2.5-24B-A2B-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "LFM 3",
+		"brand": "Liquid AI",
+		"description": "Liquid AI's tiny **agent model** for assistants like OpenClaw and Hermes Agent, with a 256K-token context.",
+		"details": "LFM3-1.7B is the text model in Liquid AI's LFM3 family. It reasons before answering and is trained for local agents, tool calling, and structured outputs, with a 256K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks, and doesn't recommend it for agentic coding or complex multi-step reasoning.",
+		"released": "2026-10",
+		"license": "LFM Open License 1.0",
+		"sizes": [
+			{
+				"name": "LFM 3 1.7B",
+				"params": "1.7B",
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "1.8 GB",
+						"sizeBytes": 1846238464,
+						"repo": "ggml-org/LFM3-1.7B-GGUF"
+					},
+					{
+						"quant": "Q4_K_M",
+						"size": "1.1 GB",
+						"sizeBytes": 1099627776,
+						"repo": "ggml-org/LFM3-1.7B-GGUF"
 					}
 				]
 			}
@@ -986,7 +1014,7 @@
 		"name": "Flint",
 		"brand": "Recursive",
 		"description": "Recursive's **coding-agent model**: investigates codebases, fixes bugs, implements features, and writes tests.",
-		"details": "Flint is a mixture-of-experts model from Recursive with 39.8B total and about 2.5B active parameters, so it runs fast for its size. It supports reasoning and multi-turn tool use, with a 262K-token context. Text only.",
+		"details": "Flint is a mixture-of-experts model from Recursive with 39.8B total and about 2.5B active parameters, so it runs fast for its size. It supports reasoning and multi-turn tool use, with a 256K-token context. Text only.",
 		"released": "2026-10",
 		"license": "Apache 2.0",
 		"sizes": [
