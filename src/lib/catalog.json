@@ -953,8 +953,8 @@
 	{
 		"name": "LFM 3",
 		"brand": "Liquid AI",
-		"description": "Liquid AI's tiny **agent model** for tool calling and structured output, small enough for any Mac.",
-		"details": "LFM3-1.7B is the text model in Liquid AI's LFM3 family. It reasons before answering and is trained for local agents, tool calling, and structured outputs, with a 262K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks, and doesn't recommend it for agentic coding.",
+		"description": "Liquid AI's tiny **agent model** for assistants like OpenClaw and Hermes Agent, with a 262K-token context.",
+		"details": "LFM3-1.7B is the text model in Liquid AI's LFM3 family. It reasons before answering and is trained for local agents, tool calling, and structured outputs, with a 262K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks, and doesn't recommend it for agentic coding or complex multi-step reasoning.",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
 		"sizes": [
