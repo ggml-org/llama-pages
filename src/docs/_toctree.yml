@@ -18,7 +18,11 @@
       title: API server
     - local: agents
       title: Using Llama App with Agents
-- title: Conceptual guides
+- title: Recipes
+  sections:
+    - local: decision-models
+      title: Decision models
+- title: Conceptual guides (advanced)
   sections:
     - local: prefill-vs-decode
       title: Prefill vs Decode
