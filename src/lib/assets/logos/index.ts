@@ -15,6 +15,8 @@ import openai from './openai.svg?raw';
 // Muse models are made by Meta.
 import poolside from './poolside.svg?raw';
 import qwen from './qwen.svg?raw';
+// Spark models are made by SparkLLM.
+import spark from './spark.svg?raw';
 
 // Keyed by the `brand` label used in catalog.json.
 const byBrand: Record<string, string> = {
@@ -28,7 +30,8 @@ const byBrand: Record<string, string> = {
 	Mistral: mistral,
 	NVIDIA: nvidia,
 	OpenAI: openai,
-	Qwen: qwen
+	Qwen: qwen,
+	SparkLLM: spark
 };
 // Generic cube, shown for brands we have no logo for.
 // Mirrors LlamaBarn's `cube.fill` fallback.
