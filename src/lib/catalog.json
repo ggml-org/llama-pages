@@ -1039,6 +1039,35 @@
 		]
 	},
 	{
+		"name": "Inkling 2 Mini",
+		"brand": "Thinking Machines",
+		"description": "Thinking Machines Lab's **mid-sizedmultimodal model for local agents, best in class across various benchmarks**, with vision, tool use, and adjustable reasoning.",
+		"details": "Inkling 2 Mini is a mid-sized model from Thinking Machines Lab. Supports differential reasoning-effort control with 1M context window. The IQ4_NL build runs on a 32 GB Mac.",
+		"released": "2026-11",
+		"license": "Apache 2.0",
+		"sizes": [
+			{
+				"name": "Inkling 2 Mini 26B-A3B",
+				"params": "26B-A3B",
+				"vision": true,
+				"builds": [
+					{
+						"quant": "Q8_0",
+						"size": "27.8 GB",
+						"sizeBytes": 27820099264,
+						"repo": "ggml-org/Inkling-2-Mini-GGUF"
+					},
+					{
+						"quant": "IQ4_NL",
+						"size": "17.6 GB",
+						"sizeBytes": 17627940768,
+						"repo": "ggml-org/Inkling-2-Mini-GGUF"
+					}
+				]
+			}
+		]
+	},
+	{
 		"name": "EmbeddingGemma 2",
 		"brand": "Gemma",
 		"description": "Google's multimodal embedding model. Maps text, images, audio, and code into one shared vector space for search and retrieval.",
