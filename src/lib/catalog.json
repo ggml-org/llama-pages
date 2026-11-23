@@ -429,10 +429,10 @@
 						"repo": "ggml-org/GLM-4.7-Flash-GGUF"
 					},
 					{
-						"quant": "Q4_K_M",
-						"size": "18.3 GB",
-						"sizeBytes": 18312339808,
-						"repo": "unsloth/GLM-4.7-Flash-GGUF"
+						"quant": "Q4_K",
+						"size": "18.2 GB",
+						"sizeBytes": 18244193920,
+						"repo": "ggml-org/GLM-4.7-Flash-GGUF"
 					}
 				]
 			}
@@ -592,8 +592,8 @@
 					{
 						"quant": "Q8_0",
 						"size": "1.8 GB",
-						"sizeBytes": 1846241184,
-						"repo": "LiquidAI/d1-Omni-2B-GGUF"
+						"sizeBytes": 1846241408,
+						"repo": "ggml-org/d1-Omni-2B-GGUF"
 					}
 				]
 			}
