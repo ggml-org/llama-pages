@@ -1055,13 +1055,15 @@
 						"quant": "Q8_0",
 						"size": "27.8 GB",
 						"sizeBytes": 27820099264,
-						"repo": "ggml-org/Inkling-2-Mini-GGUF"
+						"repo": "ggml-org/Inkling-2-Mini-GGUF",
+						"minEngine": "b12650"
 					},
 					{
 						"quant": "IQ4_NL",
 						"size": "17.6 GB",
 						"sizeBytes": 17627940768,
-						"repo": "ggml-org/Inkling-2-Mini-GGUF"
+						"repo": "ggml-org/Inkling-2-Mini-GGUF",
+						"minEngine": "b12650"
 					}
 				]
 			}
