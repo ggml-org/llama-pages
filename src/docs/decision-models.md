@@ -1,6 +1,6 @@
 # Decision models
 
-Decision models take a question and options and return probability for each option, where best option is the answer to the question. These models can answer yes/no questions as well as multi-choice, and there's multimodal (vision language model, Omni model) alternatives. Multimodal ones can even do vision or audio-specific tasks like bounding box detection. You can see below an illustration on how they are separated from LLMs.
+Decision models take a question and options and return probability for each option, where the best option is the answer to the question. These models can answer yes/no questions as well as multi-choice, and there's multimodal (vision language model, Omni model) alternatives. Multimodal ones can even do vision or audio-specific tasks like bounding box detection. You can see below an illustration on how they are separated from LLMs.
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/decision-models.png" alt="decision models" />
 
