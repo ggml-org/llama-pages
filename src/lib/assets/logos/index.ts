@@ -24,6 +24,8 @@ import openai from './openai.svg?raw';
 // Muse models are made by Meta.
 import poolside from './poolside.svg?raw';
 import qwen from './qwen.svg?raw';
+// Spark models are made by SparkLLM.
+import spark from './spark.svg?raw';
 
 // Keyed by the `brand` label used in catalog.json.
 const byBrand: Record<string, string> = {
@@ -37,7 +39,8 @@ const byBrand: Record<string, string> = {
 	Mistral: mistral,
 	NVIDIA: nvidia,
 	OpenAI: openai,
-	Qwen: qwen
+	Qwen: qwen,
+	SparkLLM: spark
 };
 
 // Inline SVG markup for a brand's logo, falling back to a generic cube.
