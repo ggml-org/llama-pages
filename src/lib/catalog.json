@@ -1041,8 +1041,8 @@
 	{
 		"name": "Inkling 2 Mini",
 		"brand": "Thinking Machines",
-		"description": "Thinking Machines Lab's **mid-sizedmultimodal model for local agents, best in class across various benchmarks**, with vision, tool use, and adjustable reasoning.",
-		"details": "Inkling 2 Mini is a mid-sized model from Thinking Machines Lab. Supports differential reasoning-effort control with 1M context window. The IQ4_NL build runs on a 32 GB Mac.",
+		"description": "Thinking Machines Lab's **multimodal model for local agents**, with vision, tool use, and adjustable reasoning.",
+		"details": "Inkling 2 Mini is a mid-sized model from Thinking Machines Lab. It reasons before answering, with adjustable reasoning effort, and has a 1M-token context. The IQ4_NL build runs on a 32 GB Mac.",
 		"released": "2026-11",
 		"license": "Apache 2.0",
 		"sizes": [
