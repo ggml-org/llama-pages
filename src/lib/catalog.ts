@@ -32,6 +32,13 @@ export type Build = {
 	// Absent means the whole download loads.
 	memBytes?: number;
 	repo: string;
+	// The oldest llama.cpp build that can run this build, as a tag (e.g.
+	// "b12650") -- set when a model needs engine support newer than what
+	// shipped apps may run (a new architecture, tokenizer, or quant type).
+	// The Mac app (0.49.0+) hides the build from its recommendations while
+	// its engine is older, so a model can be listed as soon as it's
+	// published. Absent means any engine.
+	minEngine?: string;
 };
 
 export type Size = {
