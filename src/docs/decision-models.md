@@ -30,7 +30,7 @@ Keep the server running. Send requests to `http://localhost:9931/v1/systemone` f
 
 This example asks three questions about one ticket. The decision model will answer all three at once, in a single pass. In the json below, put your ticket in `state`, and each task in `questions`.
 
-Here are the field types for different informations you want to get out of the query:
+Decision models support three types of responses:
 
 - `noul`: Ask yes/no questions, like "is the customer angry?". Answer is a float ranging from 0 to 1, where closer to 0 is a no, closer to 1 is a yes, and around 0.5 introduces uncertainty.
 - `score`: Ask questions on an ordered scale, like "how urgent is the ticket?". Provide levels from lowest to highest in `criteria`. The model returns a score between 0 and the number of levels minus one. For three levels, the score ranges from 0 to 2 and can include decimals, such as 1.7.
