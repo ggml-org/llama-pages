@@ -12,7 +12,7 @@ To solve a similar task (to what decision models solves here) you can force an L
 
 Decision models are much faster than their LLM equivalents (even when returning JSON outputs), because they only run one forward pass to assign the probabilities. LLMs, in contrast, need to do many passes to generate all the tokens that make up the output. Decision models are also more robust, as they can only return typed responses. In addition, they typically come in smaller sizes compared to LLMs.
 
-## Start the server
+## Decision models in Llama
 
 Just install [Llama App](installation). You can run decision models with a single click, exactly as you do with LLMs. Launching a decision model will expose it through a server listening on port 9931.
 
