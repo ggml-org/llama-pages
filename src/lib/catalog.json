@@ -6,7 +6,6 @@
 		"details": "OpenAI's first open-weight release since GPT-2, GPT-OSS brings frontier-style reasoning to models you can run on your own hardware. Both sizes are trained for chain-of-thought reasoning, function calling, and tool use, with adjustable reasoning effort so you can trade latency for depth.\n\nThe 20B model targets a single consumer GPU, while the 120B model is built for high-memory workstations and servers. Both ship in the efficient MXFP4 format and are released under a permissive license for commercial use.",
 		"released": "2025-08",
 		"license": "Apache 2.0",
-		"featured": true,
 		"sizes": [
 			{
 				"name": "GPT-OSS 20B",
@@ -957,6 +956,7 @@
 		"details": "LFM3-1.7B is the text model in Liquid AI's LFM3 family. It reasons before answering and is trained for local agents, tool calling, and structured outputs, with a 256K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks, and doesn't recommend it for agentic coding or complex multi-step reasoning.",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "LFM 3 1.7B",
@@ -1045,6 +1045,7 @@
 		"details": "Inkling 2 Mini is a mid-sized model from Thinking Machines Lab. It reasons before answering, with adjustable reasoning effort, and has a 1M-token context. The IQ4_NL build runs on a 32 GB Mac.",
 		"released": "2026-11",
 		"license": "Apache 2.0",
+		"featured": true,
 		"sizes": [
 			{
 				"name": "Inkling 2 Mini 26B-A3B",
