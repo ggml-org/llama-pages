@@ -10,7 +10,7 @@ To solve a similar task (to what decision models solves here) you can force an L
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/structured-output.png" alt="comparing structured output" />
 
-Decision models are faster than their LLM equivalents returning JSON outputs, because to do classification, decision models do only one forward pass, whereas LLMs do one forward pass and generate many tokens for the JSON output on top of it. Decision models are also more robust as they can only return typed responses. These models are also typically come in smaller sizes compared to LLMs.
+Decision models are much faster than their LLM equivalents (even when returning JSON outputs), because they only run one forward pass to assign the probabilities. LLMs, in contrast, need to do many passes to generate all the tokens that make up the output. Decision models are also more robust, as they can only return typed responses. In addition, they typically come in smaller sizes compared to LLMs.
 
 ## Start the server
 
