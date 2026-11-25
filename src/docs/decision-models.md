@@ -34,7 +34,7 @@ Decision models support three types of responses:
 
 - `noul`: Ask yes/no questions, like "is the customer angry?". The answer is a float ranging from 0 to 1, where values closer to 0 mean "no" and those closer to 1 mean "yes". The closer they get to 0.5, the more uncertainty in the answer.
 - `score`: Answers follow an ordered scale, like the responses to "how urgent is the ticket?". Provide your desired levels, from lowest to highest, in `criteria`. The model returns a score between 0 and the number of levels minus one. For three levels, the score ranges from 0 to 2 and can include decimals, such as 1.7.
-- `choice`: Ask questions with multiple choices, provide option descriptions. Model will return the top option and probability for each option.
+- `choice`: Ask questions with multiple choices, provide option descriptions. The model will return the top option and the estimated probabilities for each option.
 
 ```sh
 curl --fail-with-body http://localhost:9931/v1/systemone \
