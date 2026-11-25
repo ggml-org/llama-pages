@@ -28,7 +28,7 @@ Keep the server running. Send requests to `http://localhost:9931/v1/systemone` f
 
 ## Recipe: classify a support ticket
 
-This request asks three questions about one ticket. Put the ticket in `state`. Put each task in `questions`.
+This example asks three questions about one ticket. The decision model will answer all three at once, in a single pass. In the json below, put your ticket in `state`, and each task in `questions`.
 
 Here are the field types for different informations you want to get out of the query:
 
