@@ -96,7 +96,6 @@ print("Priority score:", answers["priority"]["score"])
 print("Contact requested:", answers["contact"]["noul"] >= 0.80)
 ```
 
-Sort tickets by priority score. The `confidence` field is separate from the selected option's probability. Use one field consistently when you set a threshold.
 
 ## Multimodal decision models
 
