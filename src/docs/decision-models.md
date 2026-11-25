@@ -14,7 +14,7 @@ Decision models are much faster than their LLM equivalents (even when returning 
 
 ## Start the server
 
-Install [Llama App](installation). You can get to serve them (on 9931) with a single click.
+Just install [Llama App](installation). You can run decision models with a single click, exactly as you do with LLMs. Launching a decision model will expose it through a server listening on port 9931.
 
 <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/llama.cpp/llama-decision-models.png" alt="decision models on llama" />
 
