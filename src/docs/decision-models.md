@@ -228,6 +228,6 @@ You can use decision models for many other use cases. Here's some inspiration:
 - **Content moderation:** use `choice` with your policy categories and a review category. Describe each category in `criteria`.
 - **Lead qualification on emails:** use `score` with levels such as no interest, exploring, and ready to buy.
 
-Test clear, ambiguous, and unrelated inputs with known answers. Select thresholds from these results. Repeat the checks when you change the model or criteria.
+Test clear, ambiguous, and unrelated inputs with known answers. Select thresholds from these results. Repeat the checks when you change the model or criteria, and adapt the thresholds so they match your problem.
 
 To learn more about decision models, read [Decision Models in Hugging Face](https://huggingface.co/blog/decision). For more examples, see [Decision Models in llama.cpp](https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp).
