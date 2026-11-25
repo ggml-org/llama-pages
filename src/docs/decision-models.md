@@ -64,6 +64,56 @@ curl --fail-with-body http://localhost:9931/v1/systemone \
   }' > decision.json
 ```
 
+You can see the response in `decision.json` below.
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+	"model": "ggml-org/d1-Omni-2B-GGUF:Q8_0",
+	"answers": {
+		"team": {
+			"type": "choice",
+			"choice": "technical",
+			"probabilities": {
+				"accounts": 0.0043428597619479675,
+				"technical": 0.8019496959073844,
+				"other": 0.19370744433066756
+			},
+			"confidence": 0.8019496959073844
+		},
+		"priority": {
+			"type": "score",
+			"score": 3.0,
+			"legend": {
+				"0": "No deadline",
+				"1": "Within a week",
+				"2": "Within a day",
+				"3": "Within an hour"
+			},
+			"probabilities": {
+				"0": 0.02882640537795715,
+				"1": 0.037764286398170595,
+				"2": 0.05103959533407914,
+				"3": 0.8823697128897932
+			},
+			"confidence": 0.8823697128897932
+		},
+		"contact": {
+			"type": "noul",
+			"noul": 0.9396878289459554
+		}
+	},
+	"usage": {
+		"input_tokens": 192,
+		"output_tokens": 0
+	}
+}
+```
+
+</details>
+
 Read the results under `answers`. The question names identify the results.
 
 | Task                   | Type     | Result to use                                                        |
@@ -95,7 +145,6 @@ print("Queue:", queue)
 print("Priority score:", answers["priority"]["score"])
 print("Contact requested:", answers["contact"]["noul"] >= 0.80)
 ```
-
 
 ## Multimodal decision models
 
