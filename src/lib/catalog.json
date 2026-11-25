@@ -956,7 +956,7 @@
 		"details": "LFM3-1.7B is the text model in Liquid AI's LFM3 family. It reasons before answering and is trained for local agents, tool calling, and structured outputs, with a 256K-token context and 16 languages. Liquid AI recommends pairing it with retrieval or web search for knowledge-heavy tasks, and doesn't recommend it for agentic coding or complex multi-step reasoning.",
 		"released": "2026-10",
 		"license": "LFM Open License 1.0",
-		"featured": true,
+		"featured": false,
 		"sizes": [
 			{
 				"name": "LFM 3 1.7B",
